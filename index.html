@@ -75,14 +75,17 @@
       height: 100svh;
       min-height: 0;
       overflow: hidden;
-      padding: clamp(1rem, 2.2vw, 1.7rem) clamp(1.25rem, 4vw, 4.75rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(3rem, 7vh, 5rem) clamp(1.25rem, 4vw, 4.75rem);
     }
 
-    .site-header,
-    .site-footer {
+    .site-header {
       position: absolute;
       left: clamp(1.25rem, 4vw, 4.75rem);
       right: clamp(1.25rem, 4vw, 4.75rem);
+      top: clamp(1rem, 2.2vw, 1.7rem);
       z-index: 20;
       display: flex;
       align-items: center;
@@ -90,12 +93,22 @@
       gap: 1rem;
     }
 
-    .site-header {
-      top: clamp(1rem, 2.2vw, 1.7rem);
+    .site-footer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: clamp(3rem, 7vh, 5rem);
+      z-index: 20;
     }
 
-    .site-footer {
-      bottom: clamp(1rem, 2.2vw, 1.7rem);
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: min(100%, 82rem);
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 4.75rem);
     }
 
     .brand {
@@ -163,23 +176,21 @@
     .home {
       display: grid;
       grid-template-columns: minmax(14rem, 1fr) minmax(18rem, min(52vmin, 34rem)) minmax(14rem, 1fr);
-      align-items: center;
+      align-items: start;
       gap: clamp(1.5rem, 3.6vw, 4.5rem);
       width: min(100%, 82rem);
-      height: 100%;
-      min-height: 0;
       margin: 0 auto;
       padding: 0;
     }
 
     .intro {
-      align-self: center;
+      align-self: start;
       justify-self: start;
       text-align: left;
     }
 
     .eyebrow {
-      margin: 0 0 1.1rem;
+      margin: 0 0 0.85rem;
       color: var(--green);
       font-size: 0.82rem;
       font-weight: 700;
@@ -417,7 +428,7 @@
     }
 
     .section-panel {
-      align-self: center;
+      align-self: start;
       min-height: 18rem;
       padding-left: clamp(0rem, 2vw, 1.4rem);
     }
@@ -549,6 +560,10 @@
       color: var(--dim);
     }
 
+    .footer-code {
+      color: rgba(219, 255, 212, 0.78);
+    }
+
     .socials {
       display: flex;
       align-items: center;
@@ -556,11 +571,19 @@
     }
 
     @media (max-width: 1080px) {
+      .shell {
+        display: block;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
       .home {
         position: relative;
         grid-template-columns: 1fr;
         place-items: center;
         width: min(100%, 44rem);
+        height: 100svh;
+        min-height: 0;
       }
 
       .intro {
@@ -650,8 +673,10 @@
         grid-template-columns: 1fr;
       }
 
-      .site-footer {
+      .footer-inner {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
       }
 
       .section-panel {
@@ -761,11 +786,13 @@
     </main>
 
     <footer class="site-footer">
-      <span class="footer-code">Probably ain't same old.</span>
-      <div class="socials" aria-label="External links">
-        <a class="social-link" href="https://github.com/samoldsamold" rel="noreferrer" target="_blank">GitHub</a>
-        <a class="social-link" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer" target="_blank">LinkedIn</a>
-        <a class="social-link" href="mailto:samoldzhou@163.com">Email</a>
+      <div class="footer-inner">
+        <span class="footer-code">Probably ain't same old.</span>
+        <div class="socials" aria-label="External links">
+          <a class="social-link" href="https://github.com/samoldsamold" rel="noreferrer" target="_blank">GitHub</a>
+          <a class="social-link" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer" target="_blank">LinkedIn</a>
+          <a class="social-link" href="mailto:samoldzhou@163.com">Email</a>
+        </div>
       </div>
     </footer>
   </div>
@@ -806,7 +833,7 @@
       },
       labs: {
         kicker: "L / Labs",
-        title: "Curious on purpose.",
+        title: "Curious on purpose. Still in progress.",
         cn: "实验室 · 原型",
         copy: "Side projects, prototypes, half-finished tests, and playful technical ideas. This room stays curious on purpose.",
         href: "labs.html",
