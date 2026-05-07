@@ -669,6 +669,111 @@
             gap: 16px;
         }
     }
+
+    /* Touch devices (no fine pointer): always show floating controls + fix glow at center */
+    @media (hover: none) {
+        body::before {
+            background: radial-gradient(circle 340px at 50vw 50vh, rgba(var(--glow-rgb), 0.18), rgba(var(--glow-rgb), 0.08) 36%, rgba(var(--glow-rgb), 0) 76%);
+        }
+
+        .floating-controls {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            display: block;
+            pointer-events: none;
+        }
+
+        .floating-bubble {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3.25rem;
+            height: 3.25rem;
+            border: 1px solid rgba(var(--glow-rgb), 0.68);
+            border-radius: 999px;
+            background: rgba(7, 11, 18, 0.86);
+            color: #d9e4d6;
+            box-shadow: 0 0 0 1px rgba(var(--glow-rgb), 0.08), 0 12px 28px rgba(0, 0, 0, 0.34);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .floating-bubble .material-symbols-outlined {
+            font-size: 1.45rem;
+        }
+
+        .floating-bubble:focus-visible,
+        .contact-fab.is-open {
+            color: #99f899;
+            border-color: rgb(var(--glow-rgb));
+            transform: translateY(-2px) scale(1.06);
+            box-shadow: 0 0 22px rgba(var(--glow-rgb), 0.2), 0 12px 28px rgba(0, 0, 0, 0.34);
+            outline: 0;
+        }
+
+        .floating-lang-button {
+            position: fixed;
+            top: max(1rem, env(safe-area-inset-top));
+            right: max(1rem, env(safe-area-inset-right));
+        }
+
+        .floating-stack {
+            position: fixed;
+            right: max(1rem, env(safe-area-inset-right));
+            bottom: max(1rem, env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.8rem;
+            pointer-events: auto;
+        }
+
+        .contact-cluster {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .contact-dock {
+            position: absolute;
+            right: calc(100% + 0.75rem);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid rgba(var(--glow-rgb), 0.44);
+            border-radius: 999px;
+            background: rgba(7, 11, 18, 0.9);
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateX(0.75rem) scale(0.96);
+            pointer-events: none;
+            transition: opacity 180ms ease, transform 180ms ease;
+        }
+
+        .contact-dock.is-open {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .contact-dock .social-action {
+            width: 2.75rem;
+            height: 2.75rem;
+        }
+
+        .contact-dock .social-icon {
+            width: 1.45rem;
+            height: 1.45rem;
+        }
+    }
 </style></head>
 <body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
 <div class="mx-auto min-h-screen max-w-screen-xl relative">
@@ -1464,6 +1569,11 @@
         };
 
         if (!reduceMotion) {
+            // Detect whether primary input is a fine pointer (mouse).
+            // Tablets without mouse → hover:none → touch-mode glow/card logic.
+            const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+            let isMouseDevice = hasFinePointer.matches;
+
             let lastPointer = {
                 clientX: window.innerWidth / 2,
                 clientY: window.innerHeight / 2
@@ -1498,7 +1608,7 @@
 
                 document.body.classList.toggle('cursor-in-card', Boolean(activeCard));
 
-                if (activeCard) {
+                if (activeCard && event) {
                     moveCardGlow(activeCard, event);
                 }
             };
@@ -1509,35 +1619,86 @@
                 setLitCard(activeCard, event);
             };
 
+            // Touch/no-mouse: light the card whose top/bottom edge straddles the viewport center.
+            const updateScrollCardLit = () => {
+                const vcenter = window.innerHeight / 2;
+                let activeCard = null;
+
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    if (rect.top < vcenter && rect.bottom > vcenter) {
+                        activeCard = card;
+                    }
+                });
+
+                cards.forEach(card => card.classList.toggle('is-card-lit', card === activeCard));
+                document.body.classList.toggle('cursor-in-card', Boolean(activeCard));
+
+                if (activeCard) {
+                    activeCard.style.setProperty('--card-x', '50%');
+                    activeCard.style.setProperty('--card-y', '50%');
+                }
+            };
+
+            const resetToCenter = () => {
+                document.documentElement.style.setProperty('--cursor-x', '50vw');
+                document.documentElement.style.setProperty('--cursor-y', '50vh');
+                cards.forEach(c => c.classList.remove('is-card-lit'));
+                document.body.classList.remove('cursor-in-card');
+                updateScrollCardLit();
+            };
+
+            // Handle hot-plug of mouse (e.g. tablet with keyboard attached).
+            hasFinePointer.addEventListener('change', (e) => {
+                isMouseDevice = e.matches;
+                if (!isMouseDevice) {
+                    resetToCenter();
+                }
+            });
+
             document.addEventListener('pointermove', (event) => {
+                if (event.pointerType !== 'mouse') return;
                 updateGlobalGlow(event);
                 syncPointerZone(event);
             }, { passive: true });
 
             document.addEventListener('wheel', (event) => {
+                if (!isMouseDevice) return;
                 updateGlobalGlow(event);
                 syncPointerZone(event);
             }, { passive: true });
 
             window.addEventListener('scroll', () => {
                 requestAnimationFrame(() => {
-                    syncPointerZone(lastPointer);
+                    if (isMouseDevice) {
+                        syncPointerZone(lastPointer);
+                    } else {
+                        updateScrollCardLit();
+                    }
                 });
             }, { passive: true });
 
             cards.forEach(card => {
                 card.addEventListener('pointerenter', (event) => {
+                    if (event.pointerType !== 'mouse') return;
                     setLitCard(card, event);
                 });
 
                 card.addEventListener('pointermove', (event) => {
+                    if (event.pointerType !== 'mouse') return;
                     moveCardGlow(card, event);
                 }, { passive: true });
 
                 card.addEventListener('pointerleave', (event) => {
+                    if (event.pointerType !== 'mouse') return;
                     syncPointerZone(event);
                 });
             });
+
+            // Initial state for touch devices.
+            if (!isMouseDevice) {
+                updateScrollCardLit();
+            }
         }
 
         if (sidebar) {
