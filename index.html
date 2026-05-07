@@ -3,365 +3,869 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>samoldsamold</title>
+  <meta name="description" content="SAMOLD, the personal website of Zhou Yongyu. Showcase, Articles, Moments, Overview, Labs, and Discoveries.">
+  <title>SAMOLD ZHOU| Zhou Yongyu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <style>
-    .material-symbols-outlined {
-      font-family: 'Material Symbols Outlined';
-      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-      display: inline-block;
-      line-height: 1;
+    *, *::before, *::after {
+      box-sizing: border-box;
     }
-
-    /* ── Reset ──────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #070b12;
-      --glow:    128, 255, 40;
-      --text:    #dde8d9;
-      --muted:   #3d4b3b;
-      --surface: rgba(7, 11, 18, 0.92);
-      --border:  rgba(128, 255, 40, 0.28);
+      --page-bg: #03070a;
+      --page-surface: #0b1017;
+      --surface-soft: rgba(11, 16, 23, 0.78);
+      --text: #e2e9df;
+      --muted: #bfcaba;
+      --dim: #667064;
+      --line: #3f493d;
+      --green: #90ee90;
+      --green-soft: #dbffd4;
+      --glow-rgb: 128, 255, 40;
+      --cursor-x: 50vw;
+      --cursor-y: 50vh;
     }
 
-    html, body { width: 100%; height: 100%; }
-
-    body {
-      background: var(--bg);
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
-      overscroll-behavior: none;
+    html {
+      scroll-behavior: smooth;
+      background: var(--page-bg);
+      height: 100%;
       overflow: hidden;
     }
 
-    /* ── Global ambient glow ────────────────────────────────── */
+    body {
+      height: 100%;
+      min-height: 100svh;
+      margin: 0;
+      overflow: hidden;
+      background: var(--page-bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      overscroll-behavior: none;
+    }
+
     body::before {
-      content: '';
+      content: "";
       position: fixed;
       inset: 0;
+      z-index: 8;
       pointer-events: none;
-      background: radial-gradient(
-        ellipse 620px 480px at 50% 48%,
-        rgba(var(--glow), 0.055) 0%,
-        rgba(var(--glow), 0.018) 45%,
-        transparent 72%
-      );
+      background: radial-gradient(circle 460px at var(--cursor-x) var(--cursor-y), rgba(var(--glow-rgb), 0.2), rgba(var(--glow-rgb), 0.09) 34%, rgba(var(--glow-rgb), 0.026) 62%, transparent 82%);
+      mix-blend-mode: screen;
+      transition: opacity 160ms ease;
     }
 
-    /* ── Stage: the canvas where the cat lives ──────────────── */
-    .stage {
+    a {
+      color: inherit;
+    }
+
+    .material-symbols-outlined {
+      display: inline-block;
+      font-family: "Material Symbols Outlined";
+      font-variation-settings: "FILL" 0, "wght" 360, "GRAD" 0, "opsz" 24;
+      line-height: 1;
+    }
+
+    .shell {
       position: relative;
-      width: 440px;
-      height: 440px;
-      flex-shrink: 0;
+      z-index: 1;
+      height: 100svh;
+      min-height: 0;
+      overflow: hidden;
+      padding: clamp(1rem, 2.2vw, 1.7rem) clamp(1.25rem, 4vw, 4.75rem);
     }
 
-    /* ── Subtle cat-head SVG outline ────────────────────────── */
-    .cat-svg {
+    .site-header,
+    .site-footer {
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: visible;
-    }
-
-    /* ── Letter node ─────────────────────────────────────────
-       Each <a> is absolutely positioned within .stage.
-       Contains a .glyph (visible letter) and a .tip (tooltip).
-    ─────────────────────────────────────────────────────────── */
-    .lnode {
-      position: absolute;
+      left: clamp(1.25rem, 4vw, 4.75rem);
+      right: clamp(1.25rem, 4vw, 4.75rem);
+      z-index: 20;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .site-header {
+      top: clamp(1rem, 2.2vw, 1.7rem);
+    }
+
+    .site-footer {
+      bottom: clamp(1rem, 2.2vw, 1.7rem);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
       text-decoration: none;
-      color: inherit;
-      outline: none;
+    }
+
+    .brand-mark {
+      display: inline-grid;
+      width: 2.4rem;
+      height: 2.4rem;
+      place-items: center;
+      border: 1px solid rgba(var(--glow-rgb), 0.32);
+      border-radius: 0.45rem;
+      background: rgba(7, 11, 18, 0.72);
+      color: var(--green);
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700;
+      box-shadow: 0 0 24px rgba(var(--glow-rgb), 0.08);
+    }
+
+    .brand-text {
+      color: rgba(219, 255, 212, 0.78);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .footer-code {
+      color: rgba(219, 255, 212, 0.78);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .top-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .top-link,
+    .social-link {
+      color: rgba(191, 202, 186, 0.74);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 180ms ease, transform 180ms ease;
+    }
+
+    .top-link:hover,
+    .top-link:focus-visible,
+    .social-link:hover,
+    .social-link:focus-visible {
+      color: var(--green);
+      outline: 0;
+      transform: translateY(-1px);
+    }
+
+    .home {
+      display: grid;
+      grid-template-columns: minmax(14rem, 1fr) minmax(18rem, min(52vmin, 34rem)) minmax(14rem, 1fr);
+      align-items: center;
+      gap: clamp(1.5rem, 3.6vw, 4.5rem);
+      width: min(100%, 82rem);
+      height: 100%;
+      min-height: 0;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    .intro {
+      align-self: center;
+      justify-self: start;
+      text-align: left;
+    }
+
+    .eyebrow {
+      margin: 0 0 1.1rem;
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin: 0;
+      color: var(--text);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(2.2rem, 4.2vw, 4.4rem);
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.0;
+    }
+
+    .intro-copy {
+      max-width: 27rem;
+      margin: 1.2rem 0 0;
+      color: rgba(191, 202, 186, 0.86);
+      font-size: clamp(1rem, 1.25vw, 1.18rem);
+      line-height: 1.75;
+    }
+
+    .intro-copy strong {
+      color: var(--green-soft);
+      font-weight: 600;
+    }
+
+    .portal {
+      position: relative;
+      width: min(100%, 34rem);
+      aspect-ratio: 1;
+      margin: 0 auto;
+      isolation: isolate;
+    }
+
+    .portal::before {
+      content: none;
+    }
+
+    .portal::after {
+      content: none;
+    }
+
+    .samold-logo {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      object-fit: cover;
+      box-shadow: none;
+      filter: none;
+      mix-blend-mode: normal;
+      opacity: 1;
+      -webkit-mask-image:
+        linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-image:
+        linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
+      mask-composite: intersect;
+      transition: filter 180ms ease;
+      user-select: none;
+    }
+
+    .portal:hover .samold-logo,
+    .portal:focus-within .samold-logo {
+      filter: none;
+    }
+
+    .letter-hotspot {
+      position: absolute;
+      z-index: 3;
+      display: block;
+      text-decoration: none;
+      outline: 0;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .glyph {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.78);
-      line-height: 1;
-      user-select: none;
-      transition: color 240ms ease, text-shadow 240ms ease;
+    .letter-hotspot::before {
+      content: none;
     }
 
-    /* O is the cat eye — always glowing green */
-    .lnode.eye .glyph {
-      color: rgb(var(--glow));
-      text-shadow:
-        0 0 16px rgba(var(--glow), 0.62),
-        0 0 48px rgba(var(--glow), 0.24);
-      animation: eye-breathe 3.2s ease-in-out infinite;
+    .letter-hotspot:focus-visible {
+      outline: 1px solid rgba(var(--glow-rgb), 0.82);
+      outline-offset: 4px;
     }
 
-    @keyframes eye-breathe {
-      0%, 100% {
-        text-shadow:
-          0 0 16px rgba(var(--glow), 0.62),
-          0 0 48px rgba(var(--glow), 0.24);
-      }
-      50% {
-        text-shadow:
-          0 0 26px rgba(var(--glow), 0.85),
-          0 0 68px rgba(var(--glow), 0.38);
-      }
+    .letter-s {
+      left: 8%;
+      top: 30%;
+      width: 48%;
+      height: 57%;
+      border-radius: 42% 56% 50% 46% / 40% 52% 48% 55%;
     }
 
-    /* All letters: green on hover / focus */
-    .lnode:is(:hover, :focus-visible) .glyph {
-      color: rgb(var(--glow));
-      text-shadow:
-        0 0 18px rgba(var(--glow), 0.58),
-        0 0 52px rgba(var(--glow), 0.20);
+    .letter-a {
+      left: 49%;
+      top: 35%;
+      width: 24%;
+      height: 25%;
+      z-index: 5;
+      border-radius: 44% 50% 42% 42% / 40% 52% 46% 48%;
     }
 
-    /* ── Tooltip card ───────────────────────────────────────── */
-    .tip {
+    .letter-m {
+      left: 52%;
+      top: 12%;
+      width: 34%;
+      height: 24%;
+      border-radius: 24% 24% 36% 36% / 20% 20% 54% 54%;
+    }
+
+    .letter-o {
+      left: 70%;
+      top: 33%;
+      width: 14%;
+      height: 15%;
+      z-index: 7;
+      border-radius: 999px;
+    }
+
+    .letter-l {
+      left: 58%;
+      top: 59%;
+      width: 13%;
+      height: 28%;
+      z-index: 5;
+      border-radius: 42% 42% 52% 46% / 42% 42% 52% 52%;
+    }
+
+    .letter-d {
+      left: 68%;
+      top: 58%;
+      width: 21%;
+      height: 30%;
+      z-index: 6;
+      border-radius: 45% 56% 45% 36% / 42% 48% 54% 40%;
+    }
+
+    .node-icon {
       position: absolute;
+      z-index: 12;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: max-content;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid rgba(var(--glow-rgb), 0.38);
+      border-radius: 999px;
+      background: rgba(7, 11, 18, 0.88);
+      color: var(--green-soft);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34), 0 0 26px rgba(var(--glow-rgb), 0.12);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(0.5rem) scale(0.96);
+      transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+    }
+
+    .node-icon .material-symbols-outlined {
+      color: var(--green);
+      font-size: 1.2rem;
+    }
+
+    .node-icon strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.82rem;
+      line-height: 1;
+    }
+
+    .node-icon span:last-child {
+      display: block;
+      margin-top: 0.14rem;
+      color: rgba(144, 238, 144, 0.72);
+      font-size: 0.68rem;
+      line-height: 1;
+    }
+
+    .letter-hotspot:hover .node-icon,
+    .letter-hotspot:focus-visible .node-icon {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      border-color: rgba(var(--glow-rgb), 0.78);
+    }
+
+    .node-icon.top {
+      bottom: calc(100% + 0.65rem);
+      left: 50%;
+      transform: translate(-50%, 0.5rem) scale(0.96);
+    }
+
+    .letter-hotspot:hover .node-icon.top,
+    .letter-hotspot:focus-visible .node-icon.top {
+      transform: translate(-50%, 0) scale(1);
+    }
+
+    .node-icon.right {
+      left: calc(100% + 0.65rem);
+      top: 50%;
+      transform: translate(-0.5rem, -50%) scale(0.96);
+    }
+
+    .letter-hotspot:hover .node-icon.right,
+    .letter-hotspot:focus-visible .node-icon.right {
+      transform: translate(0, -50%) scale(1);
+    }
+
+    .node-icon.left {
+      right: calc(100% + 0.65rem);
+      top: 50%;
+      transform: translate(0.5rem, -50%) scale(0.96);
+    }
+
+    .letter-hotspot:hover .node-icon.left,
+    .letter-hotspot:focus-visible .node-icon.left {
+      transform: translate(0, -50%) scale(1);
+    }
+
+    .node-icon.bottom {
+      top: calc(100% + 0.65rem);
+      left: 50%;
+      transform: translate(-50%, -0.5rem) scale(0.96);
+    }
+
+    .letter-hotspot:hover .node-icon.bottom,
+    .letter-hotspot:focus-visible .node-icon.bottom {
+      transform: translate(-50%, 0) scale(1);
+    }
+
+    .section-panel {
+      align-self: center;
+      min-height: 18rem;
+      padding-left: clamp(0rem, 2vw, 1.4rem);
+    }
+
+    .panel-kicker {
       display: flex;
       align-items: center;
-      gap: 9px;
-      padding: 8px 13px 8px 11px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 30;
-      transition: opacity 180ms ease, translate 180ms ease;
-    }
-
-    /* Direction variants — initial (hidden) offset then hover snap */
-    .tip-below {
-      top: calc(100% + 10px);
-      left: 50%;
-      translate: -50% 7px;
-    }
-    .lnode:is(:hover, :focus-visible) .tip-below {
-      opacity: 1;
-      translate: -50% 0;
-    }
-
-    .tip-above {
-      bottom: calc(100% + 10px);
-      left: 50%;
-      translate: -50% -7px;
-    }
-    .lnode:is(:hover, :focus-visible) .tip-above {
-      opacity: 1;
-      translate: -50% 0;
-    }
-
-    .tip-right {
-      left: calc(100% + 10px);
-      top: 50%;
-      translate: -7px -50%;
-    }
-    .lnode:is(:hover, :focus-visible) .tip-right {
-      opacity: 1;
-      translate: 0 -50%;
-    }
-
-    .tip-left {
-      right: calc(100% + 10px);
-      top: 50%;
-      translate: 7px -50%;
-    }
-    .lnode:is(:hover, :focus-visible) .tip-left {
-      opacity: 1;
-      translate: 0 -50%;
-    }
-
-    /* Tooltip internals */
-    .tip-ico {
-      color: rgb(var(--glow));
-      font-size: 17px;
-      flex-shrink: 0;
-    }
-
-    .tip-body {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .tip-en {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .tip-cn {
-      font-size: 11px;
-      color: rgba(var(--glow), 0.5);
-      line-height: 1;
-    }
-
-    /* ── Footer ─────────────────────────────────────────────── */
-    footer {
-      position: fixed;
-      bottom: max(1.75rem, env(safe-area-inset-bottom));
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    footer span {
-      font-size: 10.5px;
-      letter-spacing: 0.18em;
+      gap: 0.85rem;
+      margin: 0 0 1.2rem;
+      color: rgba(144, 238, 144, 0.8);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
     }
 
-    /* ── Mobile scale ───────────────────────────────────────── */
-    @media (max-width: 500px) {
-      .stage {
-        width: 320px;
-        height: 320px;
-        transform: scale(0.88);
-        transform-origin: center center;
+    .panel-kicker::before {
+      content: "";
+      display: block;
+      width: 2.8rem;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.78;
+    }
+
+    .panel-title {
+      margin: 0;
+      color: var(--text);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.6rem, 2.6vw, 2.9rem);
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.08;
+    }
+
+    .panel-cn {
+      margin: 0.45rem 0 1.1rem;
+      color: var(--green);
+      font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+      font-weight: 700;
+    }
+
+    .panel-copy {
+      max-width: 26rem;
+      margin: 0;
+      color: rgba(191, 202, 186, 0.88);
+      font-size: 0.96rem;
+      line-height: 1.78;
+    }
+
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.3rem;
+    }
+
+    .panel-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-height: 2.7rem;
+      padding: 0 1rem;
+      border: 1px solid rgba(var(--glow-rgb), 0.34);
+      border-radius: 999px;
+      background: rgba(7, 11, 18, 0.52);
+      color: var(--green-soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .panel-link:hover,
+    .panel-link:focus-visible {
+      border-color: rgba(var(--glow-rgb), 0.82);
+      background: rgba(var(--glow-rgb), 0.1);
+      color: var(--green);
+      outline: 0;
+      transform: translateY(-2px);
+    }
+
+    .route-list {
+      display: grid;
+      gap: 0.3rem;
+      margin-top: 1.6rem;
+    }
+
+    .route-list a {
+      display: grid;
+      grid-template-columns: 2.2rem 1fr;
+      align-items: center;
+      width: fit-content;
+      color: rgba(191, 202, 186, 0.55);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      line-height: 1.7;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 180ms ease, transform 180ms ease;
+    }
+
+    .route-list a::before {
+      content: "";
+      width: 0.7rem;
+      height: 1px;
+      background: currentColor;
+      transition: width 180ms ease;
+    }
+
+    .route-list a:hover,
+    .route-list a:focus-visible,
+    .route-list a.is-active {
+      color: var(--green-soft);
+      outline: 0;
+      transform: translateX(0.35rem);
+    }
+
+    .route-list a:hover::before,
+    .route-list a:focus-visible::before,
+    .route-list a.is-active::before {
+      width: 1.5rem;
+    }
+
+    .site-footer {
+      color: var(--dim);
+    }
+
+    .socials {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+    }
+
+    @media (max-width: 1080px) {
+      .home {
+        position: relative;
+        grid-template-columns: 1fr;
+        place-items: center;
+        width: min(100%, 44rem);
+      }
+
+      .intro {
+        position: absolute;
+        top: clamp(4.2rem, 8vh, 5.5rem);
+        left: 0;
+        max-width: 24rem;
+        text-align: left;
+      }
+
+      h1 {
+        max-width: 100%;
+        font-size: clamp(2rem, 4.8vw, 3.4rem);
+      }
+
+      .portal {
+        width: min(70vmin, 32rem);
+      }
+
+      .section-panel {
+        position: absolute;
+        right: 0;
+        bottom: clamp(3.8rem, 8vh, 5.2rem);
+        max-width: 24rem;
+        min-height: auto;
+        padding-left: 0;
+      }
+
+      .route-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    /* ── Touch: show tip on active (tap) ─────────────────────── */
-    @media (hover: none) {
-      .lnode:active .tip {
-        opacity: 1;
+    @media (max-width: 640px) {
+      .shell {
+        padding: 1rem 1.1rem 1.2rem;
+      }
+
+      .site-header,
+      .site-footer {
+        left: 1.1rem;
+        right: 1.1rem;
+        align-items: flex-start;
+      }
+
+      .top-links {
+        display: none;
+      }
+
+      .brand-mark {
+        width: 2.1rem;
+        height: 2.1rem;
+      }
+
+      .home {
+        gap: 0;
+      }
+
+      .intro-copy,
+      .panel-copy {
+        font-size: 0.96rem;
+        line-height: 1.72;
+      }
+
+      .intro {
+        top: 4.2rem;
+        max-width: 16rem;
+      }
+
+      .intro-copy {
+        display: none;
+      }
+
+      .portal {
+        width: min(82vmin, 24rem);
+      }
+
+      .node-icon {
+        display: none;
+      }
+
+      .panel-actions {
+        margin-top: 1.35rem;
+      }
+
+      .route-list {
+        grid-template-columns: 1fr;
+      }
+
+      .site-footer {
+        flex-direction: column;
+      }
+
+      .section-panel {
+        right: auto;
+        left: 0;
+        bottom: 4.6rem;
+        max-width: 18rem;
+      }
+
+      .panel-copy,
+      .route-list {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
 <body>
+  <div class="shell">
+    <main class="home">
+      <section class="intro" aria-labelledby="home-title">
+        <p class="eyebrow">Zhou Yongyu / SAMOLD</p>
+        <h1 id="home-title">Same old, six variations.</h1>
+        <p class="intro-copy">
+          Samold's a joke I made about routine days — same old, same old. Turns out I love the routine <em>and</em> the things that break it. The mark stays. The rooms don't. Six letters, six ways in.
+        </p>
+      </section>
 
-  <div class="stage" role="navigation" aria-label="Site sections">
+      <nav class="portal" aria-label="SAMOLD site sections">
+        <img class="samold-logo" src="assets/samold.webp" alt="SAMOLD logo composed from the letters S, a, M, o, l, and d">
 
-    <!--
-      Cat head SVG outline — very subtle, just shapes the space.
-      Coordinate system: 440×440.
-      Head ellipse centered at (220, 255), rx:155 ry:158.
-      Left ear: peak (122,44). Right ear: peak (318,44).
-      M letter at the top naturally echoes the two ear peaks.
-    -->
-    <svg class="cat-svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
-      <g fill="none" stroke="rgba(255,255,255,0.048)" stroke-width="1.3">
-        <!-- Head body -->
-        <ellipse cx="220" cy="258" rx="155" ry="158"/>
-        <!-- Left ear -->
-        <polygon points="76,132 122,44 164,124"/>
-        <!-- Right ear -->
-        <polygon points="276,124 318,44 364,132"/>
-      </g>
-      <!-- Eye socket glow ring (behind O letter) -->
-      <circle cx="320" cy="158" r="28"
-        fill="none"
-        stroke="rgba(128,255,40,0.10)"
-        stroke-width="1"/>
-    </svg>
+        <a class="letter-hotspot letter-m" data-key="moments" href="moments.html" aria-label="M - Moments">
+          <span class="node-icon bottom">
+            <span class="material-symbols-outlined">photo_camera</span>
+            <span><strong>Moments</strong><span>瞬间 · 动态</span></span>
+          </span>
+        </a>
 
-    <!-- ── M · Moments ── top center, forms the cat ears ─────── -->
-    <a class="lnode" href="moments.html" aria-label="Moments"
-       style="top:4px; left:136px; width:168px; height:76px;">
-      <span class="glyph" style="font-size:4.8rem;">M</span>
-      <span class="tip tip-below">
-        <span class="tip-ico material-symbols-outlined">photo_camera</span>
-        <span class="tip-body">
-          <span class="tip-en">Moments</span>
-          <span class="tip-cn">瞬间 · 动态</span>
-        </span>
-      </span>
-    </a>
+        <a class="letter-hotspot letter-s" data-key="showcase" href="showcase.html" aria-label="S - Showcase">
+          <span class="node-icon right">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span><strong>Showcase</strong><span>作品集 · 展示</span></span>
+          </span>
+        </a>
 
-    <!-- ── S · Showcase ── left body ─────────────────────────── -->
-    <a class="lnode" href="showcase.html" aria-label="Showcase"
-       style="top:124px; left:18px; width:96px; height:108px;">
-      <span class="glyph" style="font-size:4.2rem;">S</span>
-      <span class="tip tip-right">
-        <span class="tip-ico material-symbols-outlined">dashboard</span>
-        <span class="tip-body">
-          <span class="tip-en">Showcase</span>
-          <span class="tip-cn">作品 · 展示</span>
-        </span>
-      </span>
-    </a>
+        <a class="letter-hotspot letter-a" data-key="articles" href="articles.html" aria-label="a - Articles">
+          <span class="node-icon top">
+            <span class="material-symbols-outlined">edit_note</span>
+            <span><strong>Articles</strong><span>文章 · 洞察</span></span>
+          </span>
+        </a>
 
-    <!-- ── O · Overview ── right eye, always glowing green ────── -->
-    <a class="lnode eye" href="resume.html" aria-label="Overview / Resume"
-       style="top:116px; right:24px; width:90px; height:90px;">
-      <span class="glyph" style="font-size:4rem;">O</span>
-      <span class="tip tip-left">
-        <span class="tip-ico material-symbols-outlined">person</span>
-        <span class="tip-body">
-          <span class="tip-en">Overview</span>
-          <span class="tip-cn">关于我 · 简历</span>
-        </span>
-      </span>
-    </a>
+        <a class="letter-hotspot letter-o is-active" data-key="overview" href="resume.html" aria-label="o - Overview and resume">
+          <span class="node-icon left">
+            <span class="material-symbols-outlined">person</span>
+            <span><strong>Overview</strong><span>概览 · 简历</span></span>
+          </span>
+        </a>
 
-    <!-- ── A · Articles ── center face ───────────────────────── -->
-    <a class="lnode" href="articles.html" aria-label="Articles"
-       style="top:258px; left:172px; width:96px; height:94px;">
-      <span class="glyph" style="font-size:4.4rem;">A</span>
-      <span class="tip tip-above">
-        <span class="tip-ico material-symbols-outlined">edit_note</span>
-        <span class="tip-body">
-          <span class="tip-en">Articles</span>
-          <span class="tip-cn">文章 · 思考</span>
-        </span>
-      </span>
-    </a>
+        <a class="letter-hotspot letter-l" data-key="labs" href="labs.html" aria-label="l - Labs">
+          <span class="node-icon right">
+            <span class="material-symbols-outlined">science</span>
+            <span><strong>Labs</strong><span>实验室</span></span>
+          </span>
+        </a>
 
-    <!-- ── L · Labs ── lower left ────────────────────────────── -->
-    <a class="lnode" href="labs.html" aria-label="Labs"
-       style="bottom:38px; left:64px; width:84px; height:86px;">
-      <span class="glyph" style="font-size:4rem;">L</span>
-      <span class="tip tip-right">
-        <span class="tip-ico material-symbols-outlined">biotech</span>
-        <span class="tip-body">
-          <span class="tip-en">Labs</span>
-          <span class="tip-cn">实验室</span>
-        </span>
-      </span>
-    </a>
+        <a class="letter-hotspot letter-d" data-key="discoveries" href="discoveries.html" aria-label="d - Discoveries">
+          <span class="node-icon left">
+            <span class="material-symbols-outlined">explore</span>
+            <span><strong>Discoveries</strong><span>发现 · 收藏</span></span>
+          </span>
+        </a>
+      </nav>
 
-    <!-- ── D · Discoveries ── lower right ────────────────────── -->
-    <a class="lnode" href="discoveries.html" aria-label="Discoveries"
-       style="bottom:38px; right:56px; width:84px; height:86px;">
-      <span class="glyph" style="font-size:4rem;">D</span>
-      <span class="tip tip-left">
-        <span class="tip-ico material-symbols-outlined">explore</span>
-        <span class="tip-body">
-          <span class="tip-en">Discoveries</span>
-          <span class="tip-cn">发现 · 收藏</span>
-        </span>
-      </span>
-    </a>
+      <aside class="section-panel" aria-live="polite">
+        <p class="panel-kicker" id="panel-kicker">O / Overview</p>
+        <h2 class="panel-title" id="panel-title">The version that fits a page.</h2>
+        <p class="panel-cn" id="panel-cn">概览 · 简历入口</p>
+        <p class="panel-copy" id="panel-copy">
+          Background, contact, and the finished resume page live here. Open it when you want the shortest route to my professional snapshot.
+        </p>
+        <div class="panel-actions">
+          <a class="panel-link" id="panel-link" href="resume.html">
+            <span id="panel-link-label">Open Resume</span>
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          </a>
+        </div>
+        <div class="route-list" aria-label="All sections">
+          <a data-route="showcase" href="showcase.html">S · Showcase</a>
+          <a data-route="articles" href="articles.html">A · Articles</a>
+          <a data-route="moments" href="moments.html">M · Moments</a>
+          <a class="is-active" data-route="overview" href="resume.html">O · Overview</a>
+          <a data-route="labs" href="labs.html">L · Labs</a>
+          <a data-route="discoveries" href="discoveries.html">D · Discoveries</a>
+        </div>
+      </aside>
+    </main>
 
+    <footer class="site-footer">
+      <span class="footer-code">Probably ain't same old.</span>
+      <div class="socials" aria-label="External links">
+        <a class="social-link" href="https://github.com/samoldsamold" rel="noreferrer" target="_blank">GitHub</a>
+        <a class="social-link" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer" target="_blank">LinkedIn</a>
+        <a class="social-link" href="mailto:samoldzhou@163.com">Email</a>
+      </div>
+    </footer>
   </div>
 
-  <footer>
-    <span>samoldsamold</span>
-  </footer>
+  <script>
+    const sections = {
+      showcase: {
+        kicker: "S / Showcase",
+        title: "What survived the drafts.",
+        cn: "作品集 · 展示",
+        copy: "Selected projects, design visuals, photography, and open-source work. This room is for finished pieces that deserve a proper stage.",
+        href: "showcase.html",
+        action: "Enter Showcase"
+      },
+      articles: {
+        kicker: "A / Articles",
+        title: "What I had to think through.",
+        cn: "文章 · 深度思考",
+        copy: "Long-form technical notes, engineering reflections, and industry observations. Slower writing for ideas that need more room.",
+        href: "articles.html",
+        action: "Read Articles"
+      },
+      moments: {
+        kicker: "M / Moments",
+        title: "Days that broke the routine.",
+        cn: "瞬间 · 动态",
+        copy: "Short updates, daily fragments, check-ins, photos, and passing thoughts. A lighter stream beside the more formal work.",
+        href: "moments.html",
+        action: "View Moments"
+      },
+      overview: {
+        kicker: "O / Overview",
+        title: "The version that fits a page.",
+        cn: "概览 · 简历入口",
+        copy: "Background, contact, and the finished resume page live here. Open it when you want the shortest route to my professional snapshot.",
+        href: "resume.html",
+        action: "Open Resume"
+      },
+      labs: {
+        kicker: "L / Labs",
+        title: "Curious on purpose.",
+        cn: "实验室 · 原型",
+        copy: "Side projects, prototypes, half-finished tests, and playful technical ideas. This room stays curious on purpose.",
+        href: "labs.html",
+        action: "Open Labs"
+      },
+      discoveries: {
+        kicker: "D / Discoveries",
+        title: "Things other people thought of first.",
+        cn: "发现 · 收藏",
+        copy: "Tools, books, films, links, references, and small finds from the web. A public shelf for useful and beautiful things.",
+        href: "discoveries.html",
+        action: "Browse Discoveries"
+      }
+    };
 
+    const root = document.documentElement;
+    const nodes = [...document.querySelectorAll(".letter-hotspot")];
+    const routes = [...document.querySelectorAll("[data-route]")];
+    const kicker = document.getElementById("panel-kicker");
+    const title = document.getElementById("panel-title");
+    const cn = document.getElementById("panel-cn");
+    const copy = document.getElementById("panel-copy");
+    const panelLink = document.getElementById("panel-link");
+    const panelLinkLabel = document.getElementById("panel-link-label");
+
+    function setActive(key) {
+      const item = sections[key] || sections.overview;
+      kicker.textContent = item.kicker;
+      title.textContent = item.title;
+      cn.textContent = item.cn;
+      copy.textContent = item.copy;
+      panelLink.href = item.href;
+      panelLinkLabel.textContent = item.action;
+
+      nodes.forEach(node => {
+        node.classList.toggle("is-active", node.dataset.key === key);
+      });
+
+      routes.forEach(route => {
+        route.classList.toggle("is-active", route.dataset.route === key);
+      });
+    }
+
+    nodes.forEach(node => {
+      node.addEventListener("mouseenter", () => setActive(node.dataset.key));
+      node.addEventListener("focus", () => setActive(node.dataset.key));
+    });
+
+    routes.forEach(route => {
+      route.addEventListener("mouseenter", () => setActive(route.dataset.route));
+      route.addEventListener("focus", () => setActive(route.dataset.route));
+    });
+
+    window.addEventListener("pointermove", event => {
+      root.style.setProperty("--cursor-x", `${event.clientX}px`);
+      root.style.setProperty("--cursor-y", `${event.clientY}px`);
+    }, { passive: true });
+
+    setActive("overview");
+  </script>
 </body>
 </html>
