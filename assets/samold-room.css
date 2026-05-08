@@ -72,17 +72,17 @@ strong {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.25rem;
-  min-height: 3rem;
+  gap: 1.5rem;
+  min-height: 3.55rem;
   margin-bottom: 0;
 }
 
 .brand-home {
   display: inline-flex;
   align-items: center;
-  gap: 0.72rem;
+  gap: 0.88rem;
   color: var(--green-soft);
-  font-size: 0.78rem;
+  font-size: clamp(0.84rem, 0.95vw, 0.92rem);
   font-weight: 800;
   letter-spacing: 0.16em;
   text-decoration: none;
@@ -91,8 +91,8 @@ strong {
 }
 
 .brand-home img {
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.9rem;
+  height: 2.9rem;
   border-radius: 0;
   object-fit: cover;
   box-shadow: none;
@@ -114,35 +114,47 @@ strong {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: clamp(0.65rem, 1.6vw, 1.2rem);
+  gap: clamp(0.42rem, 1vw, 0.78rem);
   color: rgba(191, 202, 186, 0.56);
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
 .room-nav a {
+  display: inline-flex;
+  min-width: 2.35rem;
+  min-height: 2.35rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.44rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
   text-decoration: none;
   touch-action: manipulation;
-  transition: color 180ms ease, transform 180ms ease;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 .room-nav a:hover,
 .room-nav a:focus-visible,
 .room-nav a.is-active {
+  border-color: rgba(var(--glow-rgb), 0.42);
+  background: rgba(var(--glow-rgb), 0.075);
   color: var(--green-soft);
   outline: 0;
-  transform: translateY(-1px);
+  transform: translateY(-1px) scale(1.04);
 }
 
 .room-hero {
   position: relative;
   display: grid;
   grid-template-columns: minmax(14rem, 0.82fr) minmax(0, 1.18fr);
+  grid-template-rows: minmax(0, 1fr);
   gap: clamp(2rem, 6vw, 7rem);
   align-content: start;
   align-items: start;
+  height: calc(100svh - clamp(5rem, 9vh, 6.8rem));
   min-height: calc(100svh - clamp(5rem, 9vh, 6.8rem));
   margin-bottom: clamp(4rem, 8vw, 7rem);
   padding-block: clamp(5.25rem, 12vh, 8.5rem) clamp(2rem, 5vh, 4.2rem);
@@ -150,6 +162,14 @@ strong {
 
 .room-hero > div {
   min-width: 0;
+}
+
+.room-hero > div:first-child {
+  align-self: start;
+}
+
+.room-hero > div:last-child {
+  align-self: center;
 }
 
 .room-hero::after {
@@ -509,6 +529,7 @@ strong {
 
   .room-header {
     align-items: center;
+    min-height: 3.2rem;
     margin-bottom: 0;
   }
 
@@ -519,10 +540,16 @@ strong {
 
   .room-hero {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
     align-content: start;
     gap: clamp(1.35rem, 4vh, 2.4rem);
+    height: auto;
     min-height: calc(100svh - 4.6rem);
     padding-block: clamp(4rem, 10vh, 6rem) clamp(1.6rem, 5vh, 3.2rem);
+  }
+
+  .room-hero > div:last-child {
+    align-self: start;
   }
 
   .room-title {
@@ -578,8 +605,8 @@ strong {
   }
 
   .brand-home img {
-    width: 2.15rem;
-    height: 2.15rem;
+    width: 2.32rem;
+    height: 2.32rem;
   }
 
   .brand-home span {
@@ -589,14 +616,15 @@ strong {
   .room-nav {
     justify-content: flex-end;
     gap: 0.35rem;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     letter-spacing: 0.08em;
   }
 
   .room-nav a {
     display: grid;
-    min-width: 2rem;
-    min-height: 2rem;
+    min-width: 2.14rem;
+    min-height: 2.14rem;
+    padding: 0 0.24rem;
     place-items: center;
     border: 1px solid transparent;
     border-radius: 999px;
