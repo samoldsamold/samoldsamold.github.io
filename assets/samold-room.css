@@ -147,7 +147,7 @@ strong {
 }
 
 .room-hero {
-  --hero-copy-shift: clamp(2rem, 6.8vh, 4.75rem);
+  --hero-copy-shift: clamp(1.2rem, 4.2vh, 3rem);
   position: relative;
   display: grid;
   grid-template-columns: minmax(14rem, 0.82fr) minmax(0, 1.18fr);
