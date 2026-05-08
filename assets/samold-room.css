@@ -80,6 +80,38 @@ strong {
   margin-bottom: 0;
 }
 
+/* Language toggle wrapper (injected by samold-room.js) */
+.brand-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.38rem;
+  flex-shrink: 0;
+}
+
+.room-lang-btn {
+  padding: 0.16rem 0.52rem;
+  border: 1px solid rgba(var(--glow-rgb), 0.26);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(219, 255, 212, 0.44);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.room-lang-btn:hover,
+.room-lang-btn:focus-visible {
+  color: var(--green);
+  border-color: rgba(var(--glow-rgb), 0.68);
+  outline: 0;
+}
+
 .brand-home {
   display: inline-flex;
   align-items: center;
