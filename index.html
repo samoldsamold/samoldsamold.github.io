@@ -175,6 +175,11 @@
       transform: translateY(-1px);
     }
 
+    .social-link.is-copied {
+      color: var(--green);
+      transform: translateY(-1px);
+    }
+
     .home {
       --content-lift: clamp(3.45rem, 7.5vh, 4.95rem);
       display: grid;
@@ -1018,6 +1023,17 @@
           window.location.href = emailLink.href;
           return;
         }
+
+        // is-copied state on the link itself (matches resume.html icon behavior)
+        emailLink.classList.add('is-copied');
+        const orig = emailLink.textContent;
+        emailLink.textContent = 'Copied';
+        setTimeout(() => {
+          emailLink.classList.remove('is-copied');
+          emailLink.textContent = orig;
+        }, 1200);
+
+        // bilingual toast
         toast.classList.add('is-visible');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2400);

@@ -178,6 +178,36 @@
         user-select: none;
     }
 
+    .sidebar-back-link {
+        display: block;
+        position: relative;
+        text-decoration: none;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+
+    .sidebar-back-link::after {
+        content: "←";
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(3, 7, 10, 0.62);
+        color: #dbffd4;
+        font-size: 1.6rem;
+        font-family: Inter, sans-serif;
+        border-radius: 0.25rem;
+        opacity: 0;
+        transition: opacity 200ms ease;
+        z-index: 10;
+    }
+
+    .sidebar-back-link:hover::after,
+    .sidebar-back-link:focus-visible::after {
+        opacity: 1;
+    }
+
     .sidebar-link .indicator {
         width: 0.85rem !important;
         flex: 0 0 auto;
@@ -1918,6 +1948,23 @@
                         window.location.href = `mailto:${email}`;
                     }
                 });
+            });
+        }
+
+        // Wrap sidebar avatar in a back-navigation link
+        const avatarDiv = document.querySelector('.sidebar-avatar');
+        if (avatarDiv && avatarDiv.parentElement && !avatarDiv.parentElement.classList.contains('sidebar-back-link')) {
+            const backLink = document.createElement('a');
+            backLink.className = 'sidebar-back-link';
+            backLink.href = 'overview.html';
+            backLink.setAttribute('aria-label', 'Back to Overview');
+            avatarDiv.parentNode.insertBefore(backLink, avatarDiv);
+            backLink.appendChild(avatarDiv);
+            backLink.addEventListener('click', e => {
+                if (history.length > 1) {
+                    e.preventDefault();
+                    history.back();
+                }
             });
         }
 
