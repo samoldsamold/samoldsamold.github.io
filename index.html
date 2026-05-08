@@ -278,6 +278,7 @@
         linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
       mask-composite: intersect;
       transition: filter 180ms ease;
+      -webkit-user-select: none;
       user-select: none;
     }
 
@@ -795,8 +796,8 @@
       font-weight: 600;
       letter-spacing: 0.06em;
       white-space: nowrap;
-      backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
       box-shadow: 0 0 24px rgba(var(--glow-rgb), 0.1), 0 8px 24px rgba(0,0,0,0.3);
       opacity: 0;
       pointer-events: none;
@@ -900,8 +901,8 @@
       <div class="footer-inner">
         <span class="footer-code">Probably ain't same old.</span>
         <div class="socials" aria-label="External links">
-          <a class="social-link" href="https://github.com/samoldsamold" rel="noreferrer" target="_blank">GitHub</a>
-          <a class="social-link" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer" target="_blank">LinkedIn</a>
+          <a class="social-link" href="https://github.com/samoldsamold" rel="noreferrer noopener" target="_blank">GitHub</a>
+          <a class="social-link" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer noopener" target="_blank">LinkedIn</a>
           <a class="social-link" href="mailto:samoldzhou@163.com">Email</a>
         </div>
       </div>

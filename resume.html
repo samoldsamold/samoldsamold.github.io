@@ -175,6 +175,7 @@
             linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
         mask-composite: intersect;
         transition: filter 180ms ease;
+        -webkit-user-select: none;
         user-select: none;
     }
 
@@ -194,8 +195,8 @@
         color: #dbffd4;
         font-family: Inter, ui-sans-serif, sans-serif;
         box-shadow: 0 0 20px rgba(128, 255, 40, 0.12), 0 10px 28px rgba(0, 0, 0, 0.32);
-        backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
         text-decoration: none;
         transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
     }
@@ -247,6 +248,12 @@
         .back-bubble > span:not(.back-icon) {
             display: none;
         }
+    }
+
+    /* Mobile scroll-based section heading highlight */
+    .is-section-active {
+        color: #90ee90 !important;
+        transition: color 260ms ease;
     }
 
     .sidebar-link .indicator {
@@ -625,8 +632,8 @@
             background: rgba(7, 11, 18, 0.86);
             color: #d9e4d6;
             box-shadow: 0 0 0 1px rgba(var(--glow-rgb), 0.08), 0 12px 28px rgba(0, 0, 0, 0.34);
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             cursor: pointer;
             transition: color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
         }
@@ -680,8 +687,8 @@
             border-radius: 999px;
             background: rgba(7, 11, 18, 0.9);
             box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             opacity: 0;
             transform: translateX(0.75rem) scale(0.96);
             pointer-events: none;
@@ -799,8 +806,8 @@
             background: rgba(7, 11, 18, 0.86);
             color: #d9e4d6;
             box-shadow: 0 0 0 1px rgba(var(--glow-rgb), 0.08), 0 12px 28px rgba(0, 0, 0, 0.34);
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             cursor: pointer;
             transition: color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
         }
@@ -853,8 +860,8 @@
             border-radius: 999px;
             background: rgba(7, 11, 18, 0.9);
             box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             opacity: 0;
             transform: translateX(0.75rem) scale(0.96);
             pointer-events: none;
@@ -895,8 +902,8 @@
         font-weight: 600;
         letter-spacing: 0.06em;
         white-space: nowrap;
-        backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
         box-shadow: 0 0 24px rgba(128, 255, 40, 0.1), 0 8px 24px rgba(0,0,0,0.3);
         opacity: 0;
         pointer-events: none;
@@ -997,14 +1004,14 @@
 <button class="language-action" data-lang-button="cn" type="button">中文</button>
 </div><ul class="social-links flex items-center">
 <li>
-<a aria-label="LinkedIn" class="social-action" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer" target="_blank">
+<a aria-label="LinkedIn" class="social-action" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer noopener" target="_blank">
 <svg aria-hidden="true" class="social-icon" fill="currentColor" viewBox="0 0 24 24">
 <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.44-2.13 2.94v5.67H9.35V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.29ZM5.33 7.42a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.03H3.55V8.98h3.56v11.47ZM22.23 0H1.76C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.76 24h20.47c.97 0 1.77-.77 1.77-1.73V1.73C24 .77 23.2 0 22.23 0Z"></path>
 </svg>
 </a>
 </li>
 <li>
-<a aria-label="GitHub" class="social-action" href="https://github.com/samoldsamold" rel="noreferrer" target="_blank">
+<a aria-label="GitHub" class="social-action" href="https://github.com/samoldsamold" rel="noreferrer noopener" target="_blank">
 <svg aria-hidden="true" class="social-icon" fill="currentColor" viewBox="0 0 24 24">
 <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.92.58.11.79-.25.79-.56v-2.12c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.24 3.34.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.03 0 0 .96-.31 3.15 1.17A10.9 10.9 0 0 1 12 6.12c.98 0 1.96.13 2.88.39 2.18-1.48 3.14-1.17 3.14-1.17.63 1.57.24 2.74.12 3.03.73.8 1.17 1.82 1.17 3.07 0 4.4-2.69 5.37-5.25 5.65.41.36.78 1.06.78 2.14v3.13c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"></path>
 </svg>
@@ -1032,12 +1039,12 @@
 </button>
 <div class="contact-cluster">
 <div aria-hidden="true" class="contact-dock" id="floating-contact-dock">
-<a aria-label="LinkedIn" class="social-action" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer" target="_blank">
+<a aria-label="LinkedIn" class="social-action" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer noopener" target="_blank">
 <svg aria-hidden="true" class="social-icon" fill="currentColor" viewBox="0 0 24 24">
 <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.44-2.13 2.94v5.67H9.35V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.29ZM5.33 7.42a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.03H3.55V8.98h3.56v11.47ZM22.23 0H1.76C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.76 24h20.47c.97 0 1.77-.77 1.77-1.73V1.73C24 .77 23.2 0 22.23 0Z"></path>
 </svg>
 </a>
-<a aria-label="GitHub" class="social-action" href="https://github.com/samoldsamold" rel="noreferrer" target="_blank">
+<a aria-label="GitHub" class="social-action" href="https://github.com/samoldsamold" rel="noreferrer noopener" target="_blank">
 <svg aria-hidden="true" class="social-icon" fill="currentColor" viewBox="0 0 24 24">
 <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.92.58.11.79-.25.79-.56v-2.12c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.24 3.34.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.27-5.23-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.03 0 0 .96-.31 3.15 1.17A10.9 10.9 0 0 1 12 6.12c.98 0 1.96.13 2.88.39 2.18-1.48 3.14-1.17 3.14-1.17.63 1.57.24 2.74.12 3.03.73.8 1.17 1.82 1.17 3.07 0 4.4-2.69 5.37-5.25 5.65.41.36.78 1.06.78 2.14v3.13c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"></path>
 </svg>
@@ -1106,7 +1113,7 @@
 <h3 class="card-title font-h3 text-h3 text-on-surface group-hover:text-primary-container transition-colors font-medium leading-tight">
                                 Software Test Engineer Intern
                             </h3>
-<a class="inline-block text-on-surface-variant hover:text-primary transition-colors mb-4 font-body-md mt-1" href="https://www.meditrusthealth.com/en" rel="noreferrer" target="_blank">Shanghai Meixin Health Technology Group Co., Ltd. / Xuhui District, Shanghai</a>
+<a class="inline-block text-on-surface-variant hover:text-primary transition-colors mb-4 font-body-md mt-1" href="https://www.meditrusthealth.com/en" rel="noreferrer noopener" target="_blank">Shanghai Meixin Health Technology Group Co., Ltd. / Xuhui District, Shanghai</a>
 <ul class="font-body-md text-on-surface-variant list-disc list-inside space-y-2 mb-6">
 <li><span class="key-text text-on-surface">Requirement Analysis &amp; Design:</span> Participated in requirement reviews and developed comprehensive test cases to ensure 100% functional coverage.</li>
 <li><span class="key-text text-on-surface">Cross-functional Collaboration:</span> Partnered with cross-functional teams and product managers to clarify issue details and ensure consistent business logic.</li>
@@ -1138,7 +1145,7 @@
 <h3 class="card-title font-h3 text-h3 text-on-surface group-hover:text-primary-container transition-colors font-medium leading-tight">
                                 Year 3 Undergraduate, Computer Science and Technology
                             </h3>
-<a class="inline-block text-on-surface-variant hover:text-primary transition-colors mb-2 font-body-md mt-1" href="https://www.xmu.edu.my/" rel="noreferrer" target="_blank">Xiamen University Malaysia / Sepang, Selangor, Malaysia</a>
+<a class="inline-block text-on-surface-variant hover:text-primary transition-colors mb-2 font-body-md mt-1" href="https://www.xmu.edu.my/" rel="noreferrer noopener" target="_blank">Xiamen University Malaysia / Sepang, Selangor, Malaysia</a>
 <p class="font-body-md text-on-surface-variant"><span class="key-text text-on-surface">3.47/4.00 CGPA</span></p>
 <div class="mt-4">
 <span class="key-text font-mono-label text-primary-container text-[12px] uppercase">Relevant Coursework:</span>
@@ -1249,7 +1256,7 @@
 </div>
 <div>
 <h3 class="card-title text-lg font-semibold leading-6 text-on-surface group-hover:text-primary-container transition-colors">
-<a href="https://www.gov.cn/yaowen/liebiao/202406/content_6957991.htm" rel="noreferrer" target="_blank">
+<a href="https://www.gov.cn/yaowen/liebiao/202406/content_6957991.htm" rel="noreferrer noopener" target="_blank">
                                     Event Participant
                                 </a>
 </h3>
@@ -1375,7 +1382,7 @@
                     tags: ['Community Service', 'Special Experience'],
                     titles: [
                         'Financial Leader &amp; Event Planner',
-                        '<a href="https://www.gov.cn/yaowen/liebiao/202406/content_6957991.htm" rel="noreferrer" target="_blank">Event Participant</a>'
+                        '<a href="https://www.gov.cn/yaowen/liebiao/202406/content_6957991.htm" rel="noreferrer noopener" target="_blank">Event Participant</a>'
                     ],
                     meta: [
                         'Community Service Group',
@@ -1473,7 +1480,7 @@
                     tags: ['社区服务', '特殊经历'],
                     titles: [
                         '财务负责人 &amp; 活动策划',
-                        '<a href="https://www.gov.cn/yaowen/liebiao/202406/content_6957991.htm" rel="noreferrer" target="_blank">活动参与者</a>'
+                        '<a href="https://www.gov.cn/yaowen/liebiao/202406/content_6957991.htm" rel="noreferrer noopener" target="_blank">活动参与者</a>'
                     ],
                     meta: [
                         '社区服务小组',
@@ -1732,6 +1739,14 @@
             }
 
             setActiveLink(current);
+
+            // On mobile, also visually highlight the current section's h2 heading
+            if (!desktopSidebarQuery.matches) {
+                sections.forEach(section => {
+                    const h2 = section.querySelector('h2');
+                    if (h2) h2.classList.toggle('is-section-active', section.getAttribute('id') === current);
+                });
+            }
         };
 
         if (!reduceMotion) {
