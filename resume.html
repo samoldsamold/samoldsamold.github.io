@@ -128,7 +128,7 @@
         --cursor-y: 50vh;
         --resume-sidebar-width: clamp(24rem, 20vw, 28rem);
         --resume-content-width: clamp(45rem, 44vw, 64rem);
-        --resume-main-x: clamp(5rem, 7vw, 9rem);
+        --resume-main-x: clamp(7rem, 10vw, 13rem);
         --resume-main-right: clamp(2rem, 5vw, 7rem);
     }
 
@@ -191,14 +191,14 @@
 
     .back-bubble {
         position: fixed;
-        left: 0.45rem;
-        top: 0.45rem;
+        left: clamp(0.85rem, 2vw, 1.75rem);
+        top: clamp(0.85rem, 2vh, 1.75rem);
         z-index: 200;
         display: inline-flex;
         align-items: center;
-        gap: 0.42rem;
-        min-height: 2.1rem;
-        padding: 0 0.6rem;
+        gap: clamp(0.42rem, 0.6vw, 0.65rem);
+        min-height: clamp(2.1rem, 3.2vh, 3rem);
+        padding: 0 clamp(0.6rem, 1vw, 1rem);
         border: 1px solid rgba(128, 255, 40, 0.56);
         border-radius: 999px;
         background: rgba(3, 7, 10, 0.82);
@@ -223,14 +223,14 @@
     .back-bubble .back-icon {
         font-family: "Material Symbols Outlined";
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        font-size: 1rem;
+        font-size: clamp(1rem, 1.4vw, 1.35rem);
         line-height: 1;
         color: #90ee90;
     }
 
     .back-bubble strong {
         display: block;
-        font-size: 0.66rem;
+        font-size: clamp(0.66rem, 0.9vw, 0.82rem);
         font-weight: 700;
         letter-spacing: 0.1em;
         line-height: 1;
@@ -242,16 +242,16 @@
         display: block;
         margin-top: 0.15rem;
         color: rgba(191, 202, 186, 0.74);
-        font-size: 0.6rem;
+        font-size: clamp(0.6rem, 0.75vw, 0.72rem);
         line-height: 1;
     }
 
     @media (max-width: 640px) {
         .back-bubble {
-            left: 0.45rem;
-            top: 0.45rem;
-            width: 2.1rem;
-            min-height: 2.1rem;
+            left: 0.75rem;
+            top: 0.75rem;
+            width: 2.3rem;
+            min-height: 2.3rem;
             justify-content: center;
             padding: 0;
         }
