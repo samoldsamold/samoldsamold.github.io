@@ -772,6 +772,42 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    .copy-toast {
+      position: fixed;
+      bottom: calc(clamp(3rem, 7vh, 5rem) + 2.8rem);
+      left: 50%;
+      transform: translate(-50%, 6px);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.1rem;
+      background: rgba(7, 11, 18, 0.92);
+      border: 1px solid rgba(var(--glow-rgb), 0.55);
+      border-radius: 999px;
+      color: var(--green-soft);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 0 24px rgba(var(--glow-rgb), 0.1), 0 8px 24px rgba(0,0,0,0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease;
+      z-index: 200;
+    }
+
+    .copy-toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .copy-toast .material-symbols-outlined {
+      color: var(--green);
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -865,6 +901,11 @@
         </div>
       </div>
     </footer>
+
+    <div class="copy-toast" id="copy-toast" role="status" aria-live="polite" aria-atomic="true">
+      <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
+      <span>Email copied&thinsp;·&thinsp;邮箱已复制</span>
+    </div>
   </div>
 
   <script>
@@ -961,6 +1002,27 @@
       root.style.setProperty("--cursor-x", `${event.clientX}px`);
       root.style.setProperty("--cursor-y", `${event.clientY}px`);
     }, { passive: true });
+
+    // Email → copy to clipboard, bilingual toast
+    const emailLink = document.querySelector('a[href^="mailto:"]');
+    const toast = document.getElementById('copy-toast');
+    let toastTimer = null;
+
+    if (emailLink && toast) {
+      emailLink.addEventListener('click', async e => {
+        e.preventDefault();
+        const email = emailLink.href.replace('mailto:', '');
+        try {
+          await navigator.clipboard.writeText(email);
+        } catch {
+          window.location.href = emailLink.href;
+          return;
+        }
+        toast.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2400);
+      });
+    }
 
     setActive("overview");
   </script>

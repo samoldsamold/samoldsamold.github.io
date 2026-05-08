@@ -806,6 +806,45 @@
             height: 1.45rem;
         }
     }
+
+    .copy-toast {
+        position: fixed;
+        bottom: 5rem;
+        left: 50%;
+        transform: translate(-50%, 6px);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.1rem;
+        background: rgba(7, 11, 18, 0.92);
+        border: 1px solid rgba(128, 255, 40, 0.55);
+        border-radius: 999px;
+        color: #dbffd4;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 0 24px rgba(128, 255, 40, 0.1), 0 8px 24px rgba(0,0,0,0.3);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms ease, transform 220ms ease;
+        z-index: 200;
+    }
+
+    .copy-toast.is-visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    .copy-toast .toast-icon {
+        font-family: "Material Symbols Outlined";
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        font-size: 1rem;
+        color: #7edb7f;
+        line-height: 1;
+    }
 </style></head>
 <body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
 <div class="mx-auto min-h-screen max-w-screen-xl relative">
@@ -1179,6 +1218,10 @@
 </div>
 </section>
 </main>
+</div>
+<div class="copy-toast" id="copy-toast" role="status" aria-live="polite" aria-atomic="true">
+  <span class="toast-icon" aria-hidden="true">check_circle</span>
+  <span id="copy-toast-text">Email copied</span>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -1826,6 +1869,18 @@
         }
 
         if (copyEmailButtons.length) {
+            const toastEl = document.getElementById('copy-toast');
+            const toastText = document.getElementById('copy-toast-text');
+            let toastTimer = null;
+
+            const showToast = () => {
+                if (!toastEl) return;
+                toastText.textContent = translations[currentLang].emailCopied;
+                toastEl.classList.add('is-visible');
+                clearTimeout(toastTimer);
+                toastTimer = window.setTimeout(() => toastEl.classList.remove('is-visible'), 2400);
+            };
+
             const copyText = async (text) => {
                 if (navigator.clipboard?.writeText) {
                     await navigator.clipboard.writeText(text);
@@ -1854,6 +1909,7 @@
                         await copyText(email);
                         button.classList.add('is-copied');
                         button.setAttribute('aria-label', translations[currentLang].emailCopied);
+                        showToast();
                         window.setTimeout(() => {
                             button.classList.remove('is-copied');
                             button.setAttribute('aria-label', translations[currentLang].copyEmail);
