@@ -1542,6 +1542,9 @@
         const backToTopButton = document.querySelector('[data-back-to-top]');
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const desktopSidebarQuery = window.matchMedia('(min-width: 1024px)');
+        const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+        let isFinePointer = finePointerQuery.matches;
+        finePointerQuery.addEventListener('change', e => { isFinePointer = e.matches; });
         let cursorFrame = null;
         let hoveredNavLink = null;
 
@@ -1700,7 +1703,6 @@
         const updateActiveNav = () => {
             let current = sections[0]?.getAttribute('id') || '';
             const lastSection = sections[sections.length - 1];
-            const activationLine = window.scrollY + Math.min(window.innerHeight * 0.4, 320);
             const isAtPageBottom = Math.ceil(window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight - 2;
 
             if (isAtPageBottom && lastSection) {
@@ -1708,12 +1710,25 @@
                 return;
             }
 
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (activationLine >= sectionTop) {
-                    current = section.getAttribute('id');
-                }
-            });
+            if (isFinePointer) {
+                // Desktop: activate when section top crosses 40% of viewport
+                const activationLine = window.scrollY + Math.min(window.innerHeight * 0.4, 320);
+                sections.forEach(section => {
+                    if (activationLine >= section.offsetTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+            } else {
+                // Mobile/touch: activate when viewport center reaches the section h2 title
+                const vcenter = window.scrollY + window.innerHeight * 0.5;
+                sections.forEach(section => {
+                    const h2 = section.querySelector('h2');
+                    const titleTop = h2 ? section.offsetTop + h2.offsetTop : section.offsetTop;
+                    if (vcenter >= titleTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+            }
 
             setActiveLink(current);
         };
