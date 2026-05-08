@@ -250,6 +250,24 @@
         }
     }
 
+    main > section > h2 {
+        transition: color 260ms ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        main > section > h2:hover,
+        main > section > h2:focus-visible {
+            color: #90ee90 !important;
+        }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+        main > section > h2:not(.is-section-active):hover,
+        main > section > h2:not(.is-section-active):focus {
+            color: #e2e2e2 !important;
+        }
+    }
+
     /* Mobile scroll-based section heading highlight */
     .is-section-active {
         color: #90ee90 !important;
@@ -1712,11 +1730,6 @@
             const lastSection = sections[sections.length - 1];
             const isAtPageBottom = Math.ceil(window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight - 2;
 
-            if (isAtPageBottom && lastSection) {
-                setActiveLink(lastSection.getAttribute('id'));
-                return;
-            }
-
             if (desktopSidebarQuery.matches) {
                 // Desktop sidebar: activate when section top crosses 40% of viewport
                 const activationLine = window.scrollY + Math.min(window.innerHeight * 0.4, 320);
@@ -1726,27 +1739,30 @@
                     }
                 });
             } else {
-                // Mobile (sidebar collapsed to top): activate when viewport center
-                // reaches the section h2 title
-                const vcenter = window.innerHeight * 0.5;
+                // Mobile (sidebar collapsed to top): activate when the section
+                // title reaches the upper-middle reading line.
+                const activationLine = window.innerHeight * 0.45;
                 sections.forEach(section => {
                     const h2 = section.querySelector('h2');
                     const titleRect = (h2 || section).getBoundingClientRect();
-                    if (titleRect.top <= vcenter) {
+                    if (titleRect.top <= activationLine) {
                         current = section.getAttribute('id');
                     }
                 });
             }
 
+            if (isAtPageBottom && lastSection) {
+                current = lastSection.getAttribute('id');
+            }
+
             setActiveLink(current);
 
-            // On mobile, also visually highlight the current section's h2 heading
-            if (!desktopSidebarQuery.matches) {
-                sections.forEach(section => {
-                    const h2 = section.querySelector('h2');
-                    if (h2) h2.classList.toggle('is-section-active', section.getAttribute('id') === current);
-                });
-            }
+            sections.forEach(section => {
+                const h2 = section.querySelector('h2');
+                if (h2) {
+                    h2.classList.toggle('is-section-active', !desktopSidebarQuery.matches && section.getAttribute('id') === current);
+                }
+            });
         };
 
         if (!reduceMotion) {
