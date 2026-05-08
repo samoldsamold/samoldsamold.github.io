@@ -27,6 +27,16 @@
       --glow-rgb: 128, 255, 40;
       --cursor-x: 50vw;
       --cursor-y: 50vh;
+      --page-x: clamp(1.25rem, 4vw, 4.75rem);
+      --stage-width: 82rem;
+      --stage-gap: clamp(1.5rem, 3.6vw, 4.5rem);
+      --logo-size: min(52vmin, 34rem);
+      --panel-width: 26rem;
+      --intro-title-max: 4.4rem;
+      --panel-title-max: 2.9rem;
+      --language-reveal: 0;
+      --language-shift: 0.35rem;
+      --language-glow: 0px;
     }
 
     html {
@@ -70,7 +80,6 @@
     }
 
     .shell {
-      --page-x: clamp(1.25rem, 4vw, 4.75rem);
       position: relative;
       z-index: 1;
       height: 100svh;
@@ -84,8 +93,8 @@
 
     .site-header {
       position: absolute;
-      left: clamp(1.25rem, 4vw, 4.75rem);
-      right: clamp(1.25rem, 4vw, 4.75rem);
+      left: var(--page-x);
+      right: var(--page-x);
       top: clamp(1rem, 2.2vw, 1.7rem);
       z-index: 20;
       display: flex;
@@ -104,13 +113,21 @@
 
     .footer-inner {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
       gap: 1rem;
-      width: min(100%, 82rem);
+      width: min(100%, var(--stage-width));
       margin: 0 auto;
       padding: 0;
       text-align: left;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.62rem;
+      min-width: 0;
     }
 
     .brand {
@@ -149,6 +166,52 @@
       letter-spacing: 0.08em;
     }
 
+    .home-language {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.74rem;
+      color: rgba(191, 202, 186, 0.54);
+      opacity: var(--language-reveal);
+      pointer-events: none;
+      transform: translateY(var(--language-shift));
+      filter: drop-shadow(0 0 var(--language-glow) rgba(var(--glow-rgb), 0.38));
+      transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
+    }
+
+    .home-language.is-visible,
+    .home-language:focus-within {
+      pointer-events: auto;
+    }
+
+    .home-language:focus-within {
+      opacity: 1;
+      transform: translateY(0);
+      filter: drop-shadow(0 0 20px rgba(var(--glow-rgb), 0.34));
+    }
+
+    .home-language button {
+      appearance: none;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: rgba(191, 202, 186, 0.72);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 180ms ease, transform 180ms ease;
+    }
+
+    .home-language button:hover,
+    .home-language button:focus-visible,
+    .home-language button.is-active {
+      color: var(--green);
+      outline: 0;
+      transform: translateY(-1px);
+    }
+
     .top-links {
       display: flex;
       align-items: center;
@@ -183,10 +246,10 @@
     .home {
       --content-lift: clamp(3.45rem, 7.5vh, 4.95rem);
       display: grid;
-      grid-template-columns: minmax(14rem, 1fr) minmax(18rem, min(52vmin, 34rem)) minmax(14rem, 1fr);
+      grid-template-columns: minmax(14rem, 1fr) minmax(18rem, var(--logo-size)) minmax(14rem, 1fr);
       align-items: start;
-      gap: clamp(1.5rem, 3.6vw, 4.5rem);
-      width: min(100%, 82rem);
+      gap: var(--stage-gap);
+      width: min(100%, var(--stage-width));
       margin: 0 auto;
       padding: 0;
     }
@@ -217,7 +280,7 @@
       margin: 0;
       color: var(--text);
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(2.2rem, 4.2vw, 4.4rem);
+      font-size: clamp(2.2rem, 4.2vw, var(--intro-title-max));
       font-weight: 700;
       letter-spacing: 0;
       line-height: 1.0;
@@ -243,7 +306,7 @@
 
     .portal {
       position: relative;
-      width: min(100%, 34rem);
+      width: min(100%, var(--logo-size));
       aspect-ratio: 1;
       margin: 0 auto;
       isolation: isolate;
@@ -451,7 +514,7 @@
     .section-panel {
       align-self: start;
       justify-self: end;
-      width: min(100%, 26rem);
+      width: min(100%, var(--panel-width));
       height: 18rem;
       padding-left: 0;
       position: relative;
@@ -491,7 +554,7 @@
       margin: 0;
       color: var(--text);
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(1.6rem, 2.6vw, 2.9rem);
+      font-size: clamp(1.6rem, 2.6vw, var(--panel-title-max));
       font-weight: 700;
       letter-spacing: 0;
       line-height: 1.08;
@@ -514,7 +577,7 @@
       left: 0;
       top: calc(12.3rem - var(--content-lift));
       width: 100%;
-      max-width: 26rem;
+      max-width: var(--panel-width);
       height: 7.8rem;
       margin: 0;
       color: rgba(191, 202, 186, 0.88);
@@ -624,6 +687,89 @@
       display: flex;
       align-items: center;
       gap: 1.1rem;
+    }
+
+    .mobile-lang-toggle,
+    .mobile-carousel-dots {
+      display: none;
+    }
+
+    .mobile-lang-toggle {
+      position: fixed;
+      top: clamp(0.9rem, 3.5vw, 1.35rem);
+      right: clamp(0.9rem, 3.5vw, 1.35rem);
+      z-index: 80;
+      width: 3.2rem;
+      height: 3.2rem;
+      place-items: center;
+      border: 1px solid rgba(var(--glow-rgb), 0.76);
+      border-radius: 999px;
+      background: rgba(7, 11, 18, 0.76);
+      color: var(--green-soft);
+      cursor: pointer;
+      box-shadow: 0 0 28px rgba(var(--glow-rgb), 0.14), 0 14px 28px rgba(0, 0, 0, 0.34);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      transition: color 180ms ease, border-color 180ms ease, transform 180ms ease;
+    }
+
+    .mobile-lang-toggle:hover,
+    .mobile-lang-toggle:focus-visible {
+      border-color: rgba(var(--glow-rgb), 0.95);
+      color: var(--green);
+      outline: 0;
+      transform: translateY(-1px) scale(1.04);
+    }
+
+    .mobile-lang-toggle .material-symbols-outlined {
+      font-size: 1.7rem;
+    }
+
+    @media (min-width: 1440px) and (min-height: 820px) {
+      :root {
+        --page-x: clamp(2rem, 4.4vw, 6rem);
+        --stage-width: clamp(86rem, 74vw, 104rem);
+        --stage-gap: clamp(3rem, 4.2vw, 5.8rem);
+        --logo-size: clamp(34rem, 42vmin, 42rem);
+        --panel-width: clamp(27rem, 22vw, 29rem);
+        --intro-title-max: 5.2rem;
+        --panel-title-max: 3.25rem;
+      }
+
+      .home {
+        --content-lift: clamp(4.2rem, 8vh, 5.8rem);
+      }
+
+      .intro-copy {
+        max-width: 30rem;
+        font-size: clamp(1.08rem, 1.05vw, 1.28rem);
+      }
+
+      .panel-copy {
+        font-size: clamp(1rem, 0.96vw, 1.08rem);
+      }
+
+      .footer-code,
+      .home-language button,
+      .social-link {
+        font-size: 0.9rem;
+      }
+
+      .route-list a {
+        font-size: 0.83rem;
+      }
+    }
+
+    @media (min-width: 2100px) and (min-height: 1100px) {
+      :root {
+        --page-x: clamp(3rem, 5vw, 7.5rem);
+        --stage-width: clamp(100rem, 70vw, 112rem);
+        --stage-gap: clamp(4rem, 4vw, 6.2rem);
+        --logo-size: clamp(40rem, 40vmin, 46rem);
+        --panel-width: clamp(29rem, 20vw, 31rem);
+        --intro-title-max: 5.6rem;
+        --panel-title-max: 3.45rem;
+      }
     }
 
     @media (max-width: 1080px) {
@@ -762,10 +908,6 @@
         display: none;
       }
 
-      .panel-actions {
-        margin-top: 0.2rem;
-      }
-
       .footer-inner {
         flex-direction: row;
         align-items: center;
@@ -814,6 +956,10 @@
         font-size: 0.84rem;
       }
 
+      .panel-actions {
+        display: none;
+      }
+
       .panel-link {
         width: min(100%, 13.5rem);
         min-height: 2.35rem;
@@ -824,26 +970,32 @@
       .route-list {
         position: static;
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 0.38rem;
-        width: 100%;
-        margin-top: 0.55rem;
+        grid-template-columns: 1fr;
+        width: min(100%, 15rem);
+        margin-top: 0.72rem;
       }
 
       .route-list a {
-        display: grid;
-        grid-template-columns: 1fr;
-        place-items: center;
-        width: auto;
-        min-height: 2.35rem;
+        grid-area: 1 / 1;
+        display: inline-flex;
+        grid-template-columns: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.55rem;
+        width: 100%;
+        min-height: 2.42rem;
+        padding: 0 0.88rem;
         border: 1px solid rgba(var(--glow-rgb), 0.22);
         border-radius: 999px;
         background: rgba(7, 11, 18, 0.45);
         color: rgba(191, 202, 186, 0.72);
-        font-size: 0;
-        letter-spacing: 0;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
         line-height: 1;
-        transform: none;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(0.45rem) scale(0.96);
+        transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1), transform 420ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease, background 180ms ease, color 180ms ease;
       }
 
       .route-list a::before {
@@ -851,11 +1003,14 @@
       }
 
       .route-list a::after {
-        content: attr(data-short);
+        content: "arrow_forward";
+        display: inline-block;
         color: currentColor;
-        font-size: 0.78rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
+        font-family: "Material Symbols Outlined";
+        font-size: 1rem;
+        font-variation-settings: "FILL" 0, "wght" 360, "GRAD" 0, "opsz" 24;
+        letter-spacing: 0;
+        line-height: 1;
       }
 
       .route-list a:hover,
@@ -864,6 +1019,41 @@
         border-color: rgba(var(--glow-rgb), 0.72);
         background: rgba(var(--glow-rgb), 0.08);
         color: var(--green-soft);
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+
+      .mobile-carousel-dots {
+        display: flex;
+        align-items: center;
+        gap: 0.42rem;
+        margin-top: 0.62rem;
+      }
+
+      .mobile-carousel-dots button {
+        appearance: none;
+        display: inline-grid;
+        width: 1.72rem;
+        height: 1.72rem;
+        place-items: center;
+        border: 1px solid rgba(var(--glow-rgb), 0.22);
+        border-radius: 999px;
+        background: rgba(7, 11, 18, 0.34);
+        color: rgba(191, 202, 186, 0.62);
+        cursor: pointer;
+        font-size: 0.68rem;
+        font-weight: 800;
+        transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
+      }
+
+      .mobile-carousel-dots button:hover,
+      .mobile-carousel-dots button:focus-visible,
+      .mobile-carousel-dots button.is-active {
+        border-color: rgba(var(--glow-rgb), 0.74);
+        background: rgba(var(--glow-rgb), 0.08);
+        color: var(--green-soft);
+        outline: 0;
         transform: translateY(-1px);
       }
 
@@ -881,6 +1071,16 @@
       .copy-toast {
         bottom: 4.2rem;
         max-width: calc(100vw - 2rem);
+      }
+    }
+
+    @media (max-width: 640px), (hover: none) {
+      .mobile-lang-toggle {
+        display: inline-grid;
+      }
+
+      .home-language {
+        display: none;
       }
     }
 
@@ -1041,12 +1241,27 @@
           <a data-route="labs" data-short="L" href="labs.html">L · Labs</a>
           <a data-route="discoveries" data-short="D" href="discoveries.html">D · Discoveries</a>
         </div>
+        <div class="mobile-carousel-dots" aria-label="Room carousel">
+          <button data-carousel-dot="showcase" type="button">S</button>
+          <button data-carousel-dot="articles" type="button">A</button>
+          <button data-carousel-dot="moments" type="button">M</button>
+          <button data-carousel-dot="overview" type="button">O</button>
+          <button data-carousel-dot="labs" type="button">L</button>
+          <button data-carousel-dot="discoveries" type="button">D</button>
+        </div>
       </aside>
     </main>
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <span class="footer-code">Probably ain't same old.</span>
+        <div class="footer-left">
+          <div class="home-language" aria-label="Language selector">
+            <button data-home-lang="en" type="button">EN</button>
+            <span aria-hidden="true">/</span>
+            <button data-home-lang="cn" type="button">中文</button>
+          </div>
+          <span class="footer-code">Probably ain't same old.</span>
+        </div>
         <div class="socials" aria-label="External links">
           <a class="social-link" href="https://github.com/samoldsamold" rel="noreferrer noopener" target="_blank">GitHub</a>
           <a class="social-link" href="https://www.linkedin.com/in/yongyuzhou/" rel="noreferrer noopener" target="_blank">LinkedIn</a>
@@ -1055,76 +1270,265 @@
       </div>
     </footer>
 
+    <button class="mobile-lang-toggle" data-mobile-lang-toggle type="button" aria-label="Switch language">
+      <span class="material-symbols-outlined" aria-hidden="true">translate</span>
+    </button>
+
     <div class="copy-toast" id="copy-toast" role="status" aria-live="polite" aria-atomic="true">
       <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
-      <span>Email copied&thinsp;·&thinsp;邮箱已复制</span>
+      <span id="toast-text">Email copied&thinsp;·&thinsp;邮箱已复制</span>
     </div>
   </div>
 
   <script>
-    const sections = {
-      showcase: {
-        kicker: "S / Showcase",
-        title: "What survived the drafts.",
-        cn: "作品集 · 展示",
-        copy: "Selected <strong>projects</strong>, design visuals, photography, and <strong>open-source work</strong>. This room is for finished pieces that deserve a proper stage.",
-        href: "showcase.html",
-        action: "Enter Showcase"
+    const translations = {
+      en: {
+        htmlLang: "en",
+        title: "SAMOLD | Zhou Yongyu",
+        meta: "SAMOLD, the personal website of Zhou Yongyu. Showcase, Articles, Moments, Overview, Labs, and Discoveries.",
+        intro: {
+          eyebrow: "Zhou Yongyu / SAMOLD",
+          headline: 'Same old,<br><span class="nowrap">six variations.</span>',
+          copy: "Samold's a joke I made about <strong>routine days</strong> — <strong>same old, same old</strong>. Turns out I love the <strong>routine</strong> and the things that <strong>break it</strong>. The <strong>mark stays</strong>. The rooms don't. <strong>Six letters</strong>, six ways in."
+        },
+        footer: "Probably ain't same old.",
+        languageLabel: "Switch language",
+        routeLabel: "All sections",
+        carouselLabel: "Room carousel",
+        toast: "Email copied&thinsp;·&thinsp;邮箱已复制",
+        copied: "Copied",
+        rooms: {
+          showcase: {
+            short: "S",
+            kicker: "S / Showcase",
+            title: "What survived the drafts.",
+            cn: "作品集 · 展示",
+            copy: "Selected <strong>projects</strong>, design visuals, photography, and <strong>open-source work</strong>. This room is for finished pieces that deserve a proper stage.",
+            href: "showcase.html",
+            action: "Enter Showcase",
+            route: "S · Showcase",
+            nodeTitle: "Showcase",
+            nodeSubtitle: "作品集 · 展示"
+          },
+          articles: {
+            short: "A",
+            kicker: "A / Articles",
+            title: "What I had to think through.",
+            cn: "文章 · 深度思考",
+            copy: "<strong>Long-form technical notes</strong>, engineering reflections, and industry observations. Slower writing for ideas that need more room.",
+            href: "articles.html",
+            action: "Read Articles",
+            route: "A · Articles",
+            nodeTitle: "Articles",
+            nodeSubtitle: "文章 · 洞察"
+          },
+          moments: {
+            short: "M",
+            kicker: "M / Moments",
+            title: "Days that broke the routine.",
+            cn: "瞬间 · 动态",
+            copy: "<strong>Short updates</strong>, daily fragments, check-ins, photos, and passing thoughts. A lighter stream beside the more formal work.",
+            href: "moments.html",
+            action: "View Moments",
+            route: "M · Moments",
+            nodeTitle: "Moments",
+            nodeSubtitle: "瞬间 · 动态"
+          },
+          overview: {
+            short: "O",
+            kicker: "O / Overview",
+            title: "The version that fits a page.",
+            cn: "概览 · 关于我",
+            copy: "<strong>Background</strong>, <strong>contact</strong>, and the finished <strong>resume page</strong> sit inside the Overview room. Enter O first, then use the floating resume bubble when you want the formal document.",
+            href: "overview.html",
+            action: "Enter Overview",
+            route: "O · Overview",
+            nodeTitle: "Overview",
+            nodeSubtitle: "概览 · 简历"
+          },
+          labs: {
+            short: "L",
+            kicker: "L / Labs",
+            title: "Curious on purpose.",
+            cn: "实验室 · 原型",
+            copy: "<strong>Side projects</strong>, prototypes, half-finished tests, and playful technical ideas. This room stays <strong>curious</strong> on purpose.",
+            href: "labs.html",
+            action: "Open Labs",
+            route: "L · Labs",
+            nodeTitle: "Labs",
+            nodeSubtitle: "实验室"
+          },
+          discoveries: {
+            short: "D",
+            kicker: "D / Discoveries",
+            title: "Things other people thought of first.",
+            cn: "发现 · 收藏",
+            copy: "<strong>Tools</strong>, books, films, links, references, and small finds from the web. A public shelf for <strong>useful</strong> and beautiful things.",
+            href: "discoveries.html",
+            action: "Browse Discoveries",
+            route: "D · Discoveries",
+            nodeTitle: "Discoveries",
+            nodeSubtitle: "发现 · 收藏"
+          }
+        }
       },
-      articles: {
-        kicker: "A / Articles",
-        title: "What I had to think through.",
-        cn: "文章 · 深度思考",
-        copy: "<strong>Long-form technical notes</strong>, engineering reflections, and industry observations. Slower writing for ideas that need more room.",
-        href: "articles.html",
-        action: "Read Articles"
-      },
-      moments: {
-        kicker: "M / Moments",
-        title: "Days that broke the routine.",
-        cn: "瞬间 · 动态",
-        copy: "<strong>Short updates</strong>, daily fragments, check-ins, photos, and passing thoughts. A lighter stream beside the more formal work.",
-        href: "moments.html",
-        action: "View Moments"
-      },
-      overview: {
-        kicker: "O / Overview",
-        title: "The version that fits a page.",
-        cn: "概览 · 关于我",
-        copy: "<strong>Background</strong>, <strong>contact</strong>, and the finished <strong>resume page</strong> sit inside the Overview room. Enter O first, then use the floating resume bubble when you want the formal document.",
-        href: "overview.html",
-        action: "Enter Overview"
-      },
-      labs: {
-        kicker: "L / Labs",
-        title: "Curious on purpose.",
-        cn: "实验室 · 原型",
-        copy: "<strong>Side projects</strong>, prototypes, half-finished tests, and playful technical ideas. This room stays <strong>curious</strong> on purpose.",
-        href: "labs.html",
-        action: "Open Labs"
-      },
-      discoveries: {
-        kicker: "D / Discoveries",
-        title: "Things other people thought of first.",
-        cn: "发现 · 收藏",
-        copy: "<strong>Tools</strong>, books, films, links, references, and small finds from the web. A public shelf for <strong>useful</strong> and beautiful things.",
-        href: "discoveries.html",
-        action: "Browse Discoveries"
+      cn: {
+        htmlLang: "zh-CN",
+        title: "SAMOLD | 周涌煜",
+        meta: "SAMOLD 是周涌煜的个人网站，包含作品集、文章、瞬间、概览、实验室和发现收藏。",
+        intro: {
+          eyebrow: "周 涌煜 / SAMOLD",
+          headline: '日常如旧，<br><span class="nowrap">六种变奏。</span>',
+          copy: "Samold 源自一句关于<strong>日常</strong>的玩笑：<strong>same old, same old</strong>。后来我发现，我既喜欢那些稳定的<strong>重复</strong>，也喜欢突然把它打破的<strong>变量</strong>。<strong>标记不变</strong>，房间会变。<strong>六个字母</strong>，六种入口。"
+        },
+        footer: "也许并不只是老样子。",
+        languageLabel: "切换语言",
+        routeLabel: "所有房间",
+        carouselLabel: "房间轮播",
+        toast: "邮箱已复制&thinsp;·&thinsp;Email copied",
+        copied: "已复制",
+        rooms: {
+          showcase: {
+            short: "S",
+            kicker: "S / 作品集",
+            title: "留过草稿之后的东西。",
+            cn: "作品集 · 展示",
+            copy: "这里放精选的<strong>项目</strong>、设计图、摄影作品和<strong>开源代码</strong>。它们已经越过草稿阶段，值得拥有一个完整舞台。",
+            href: "showcase.html",
+            action: "进入作品集",
+            route: "S · 作品集",
+            nodeTitle: "作品集",
+            nodeSubtitle: "Showcase"
+          },
+          articles: {
+            short: "A",
+            kicker: "A / 文章",
+            title: "那些我必须想清楚的事。",
+            cn: "文章 · 深度思考",
+            copy: "<strong>技术长文</strong>、工程复盘和行业观察。比动态更慢一点，给需要展开的想法留出空间。",
+            href: "articles.html",
+            action: "阅读文章",
+            route: "A · 文章",
+            nodeTitle: "文章",
+            nodeSubtitle: "Articles"
+          },
+          moments: {
+            short: "M",
+            kicker: "M / 瞬间",
+            title: "打破日常的那些天。",
+            cn: "瞬间 · 动态",
+            copy: "<strong>短更新</strong>、生活碎片、打卡照片和路过的想法。它比正式作品轻一点，也更接近日常本身。",
+            href: "moments.html",
+            action: "查看瞬间",
+            route: "M · 瞬间",
+            nodeTitle: "瞬间",
+            nodeSubtitle: "Moments"
+          },
+          overview: {
+            short: "O",
+            kicker: "O / 概览",
+            title: "能放进一页里的版本。",
+            cn: "概览 · 关于我",
+            copy: "<strong>背景</strong>、<strong>联系方式</strong>和完整<strong>简历页面</strong>都在 Overview 房间。先进入 O，再用右下角悬浮泡打开正式简历。",
+            href: "overview.html",
+            action: "进入概览",
+            route: "O · 概览",
+            nodeTitle: "概览",
+            nodeSubtitle: "Overview"
+          },
+          labs: {
+            short: "L",
+            kicker: "L / 实验室",
+            title: "有意保持好奇。",
+            cn: "实验室 · 原型",
+            copy: "<strong>业余项目</strong>、原型、半成品测试和一些好玩的技术想法。这个房间会有意保留<strong>好奇心</strong>。",
+            href: "labs.html",
+            action: "打开实验室",
+            route: "L · 实验室",
+            nodeTitle: "实验室",
+            nodeSubtitle: "Labs"
+          },
+          discoveries: {
+            short: "D",
+            kicker: "D / 发现",
+            title: "别人先想到的好东西。",
+            cn: "发现 · 收藏",
+            copy: "<strong>工具</strong>、书、电影、链接、资料和网页上偶然遇见的小东西。它像一层公开书架，存放<strong>有用</strong>也好看的发现。",
+            href: "discoveries.html",
+            action: "浏览发现",
+            route: "D · 发现",
+            nodeTitle: "发现",
+            nodeSubtitle: "Discoveries"
+          }
+        }
       }
     };
 
+    const roomOrder = ["showcase", "articles", "moments", "overview", "labs", "discoveries"];
+    const storageKey = "portfolio-lang";
     const root = document.documentElement;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    const introEyebrow = document.querySelector(".eyebrow");
+    const homeTitle = document.getElementById("home-title");
+    const introCopy = document.querySelector(".intro-copy");
+    const footerCode = document.querySelector(".footer-code");
     const nodes = [...document.querySelectorAll(".letter-hotspot")];
     const routes = [...document.querySelectorAll("[data-route]")];
+    const carouselDots = [...document.querySelectorAll("[data-carousel-dot]")];
+    const langButtons = [...document.querySelectorAll("[data-home-lang]")];
+    const homeLanguage = document.querySelector(".home-language");
+    const mobileLangToggle = document.querySelector("[data-mobile-lang-toggle]");
+    const routeList = document.querySelector(".route-list");
+    const dotsGroup = document.querySelector(".mobile-carousel-dots");
     const kicker = document.getElementById("panel-kicker");
     const title = document.getElementById("panel-title");
     const cn = document.getElementById("panel-cn");
     const copy = document.getElementById("panel-copy");
     const panelLink = document.getElementById("panel-link");
     const panelLinkLabel = document.getElementById("panel-link-label");
+    const emailLink = document.querySelector('a[href^="mailto:"]');
+    const toast = document.getElementById("copy-toast");
+    const toastText = document.getElementById("toast-text");
+    const mobileCarouselQuery = window.matchMedia("(max-width: 640px)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let currentLang = getStoredLang();
+    let activeKey = mobileCarouselQuery.matches ? "showcase" : "overview";
+    let carouselIndex = roomOrder.indexOf(activeKey);
+    let carouselTimer = null;
+    let toastTimer = null;
+    let pointerFrame = null;
+    let pointerX = window.innerWidth / 2;
+    let pointerY = window.innerHeight / 2;
+
+    function getStoredLang() {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        return translations[stored] ? stored : "en";
+      } catch {
+        return "en";
+      }
+    }
+
+    function storeLang(lang) {
+      try {
+        localStorage.setItem(storageKey, lang);
+      } catch {
+        // Local storage can be unavailable in strict privacy modes.
+      }
+    }
+
+    function t() {
+      return translations[currentLang] || translations.en;
+    }
+
+    function isMobileCarouselMode() {
+      return mobileCarouselQuery.matches;
+    }
 
     function setActive(key) {
-      const item = sections[key] || sections.overview;
+      activeKey = roomOrder.includes(key) ? key : "overview";
+      const item = t().rooms[activeKey] || t().rooms.overview;
       kicker.textContent = item.kicker;
       title.textContent = item.title;
       cn.textContent = item.cn;
@@ -1133,38 +1537,204 @@
       panelLinkLabel.textContent = item.action;
 
       nodes.forEach(node => {
-        node.classList.toggle("is-active", node.dataset.key === key);
+        node.classList.toggle("is-active", node.dataset.key === activeKey);
       });
 
       routes.forEach(route => {
-        route.classList.toggle("is-active", route.dataset.route === key);
+        const isActive = route.dataset.route === activeKey;
+        route.classList.toggle("is-active", isActive);
+        if (isMobileCarouselMode()) {
+          route.tabIndex = isActive ? 0 : -1;
+          route.setAttribute("aria-hidden", String(!isActive));
+        } else {
+          route.removeAttribute("tabindex");
+          route.removeAttribute("aria-hidden");
+        }
       });
+
+      carouselDots.forEach(dot => {
+        dot.classList.toggle("is-active", dot.dataset.carouselDot === activeKey);
+      });
+
+      carouselIndex = Math.max(0, roomOrder.indexOf(activeKey));
+    }
+
+    function applyLanguage(lang) {
+      currentLang = translations[lang] ? lang : "en";
+      const data = t();
+      document.documentElement.lang = data.htmlLang;
+      document.title = data.title;
+      if (metaDescription) metaDescription.setAttribute("content", data.meta);
+      if (introEyebrow) introEyebrow.textContent = data.intro.eyebrow;
+      if (homeTitle) homeTitle.innerHTML = data.intro.headline;
+      if (introCopy) introCopy.innerHTML = data.intro.copy;
+      if (footerCode) footerCode.textContent = data.footer;
+      if (toastText) toastText.innerHTML = data.toast;
+      if (routeList) routeList.setAttribute("aria-label", data.routeLabel);
+      if (dotsGroup) dotsGroup.setAttribute("aria-label", data.carouselLabel);
+      if (mobileLangToggle) {
+        mobileLangToggle.setAttribute("aria-label", currentLang === "en" ? "切换到中文" : "Switch to English");
+        mobileLangToggle.title = data.languageLabel;
+      }
+
+      langButtons.forEach(button => {
+        const isActive = button.dataset.homeLang === currentLang;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      nodes.forEach(node => {
+        const item = data.rooms[node.dataset.key];
+        if (!item) return;
+        node.setAttribute("aria-label", `${item.short} - ${item.nodeTitle}`);
+        const strong = node.querySelector(".node-icon strong");
+        const subtitle = node.querySelector(".node-icon span span");
+        if (strong) strong.textContent = item.nodeTitle;
+        if (subtitle) subtitle.textContent = item.nodeSubtitle;
+      });
+
+      routes.forEach(route => {
+        const item = data.rooms[route.dataset.route];
+        if (!item) return;
+        route.textContent = item.route;
+        route.setAttribute("aria-label", item.action);
+      });
+
+      carouselDots.forEach(dot => {
+        const item = data.rooms[dot.dataset.carouselDot];
+        if (!item) return;
+        dot.setAttribute("aria-label", item.action);
+      });
+
+      setActive(activeKey);
+      storeLang(currentLang);
+    }
+
+    function changeLanguage(lang) {
+      if (!translations[lang] || lang === currentLang) return;
+      applyLanguage(lang);
+    }
+
+    function stopCarousel() {
+      clearInterval(carouselTimer);
+      carouselTimer = null;
+    }
+
+    function startCarousel() {
+      stopCarousel();
+      if (!isMobileCarouselMode() || reducedMotionQuery.matches) return;
+      carouselTimer = setInterval(() => {
+        carouselIndex = (carouselIndex + 1) % roomOrder.length;
+        setActive(roomOrder[carouselIndex]);
+      }, 2800);
+    }
+
+    function restartCarousel() {
+      if (isMobileCarouselMode()) startCarousel();
+    }
+
+    function handleCarouselModeChange() {
+      if (isMobileCarouselMode()) {
+        activeKey = roomOrder[0];
+        setActive(activeKey);
+        startCarousel();
+      } else {
+        stopCarousel();
+        activeKey = "overview";
+        setActive(activeKey);
+      }
+    }
+
+    function watchMedia(query, handler) {
+      if (query.addEventListener) {
+        query.addEventListener("change", handler);
+      } else if (query.addListener) {
+        query.addListener(handler);
+      }
     }
 
     nodes.forEach(node => {
-      node.addEventListener("mouseenter", () => setActive(node.dataset.key));
-      node.addEventListener("focus", () => setActive(node.dataset.key));
+      node.addEventListener("mouseenter", () => {
+        if (!isMobileCarouselMode()) setActive(node.dataset.key);
+      });
+      node.addEventListener("focus", () => {
+        if (!isMobileCarouselMode()) setActive(node.dataset.key);
+      });
     });
 
     routes.forEach(route => {
-      route.addEventListener("mouseenter", () => setActive(route.dataset.route));
-      route.addEventListener("focus", () => setActive(route.dataset.route));
+      route.addEventListener("mouseenter", () => {
+        if (!isMobileCarouselMode()) setActive(route.dataset.route);
+      });
+      route.addEventListener("focus", () => {
+        if (!isMobileCarouselMode()) setActive(route.dataset.route);
+      });
     });
 
+    carouselDots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        setActive(dot.dataset.carouselDot);
+        restartCarousel();
+      });
+    });
+
+    langButtons.forEach(button => {
+      button.addEventListener("click", () => changeLanguage(button.dataset.homeLang));
+    });
+
+    if (mobileLangToggle) {
+      mobileLangToggle.addEventListener("click", () => {
+        changeLanguage(currentLang === "en" ? "cn" : "en");
+      });
+    }
+
+    function updateLanguageReveal() {
+      if (!homeLanguage || getComputedStyle(homeLanguage).display === "none") {
+        root.style.setProperty("--language-reveal", "0");
+        root.style.setProperty("--language-shift", "0.35rem");
+        root.style.setProperty("--language-glow", "0px");
+        homeLanguage?.classList.remove("is-visible");
+        return;
+      }
+
+      const rect = homeLanguage.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.hypot(pointerX - centerX, pointerY - centerY);
+      const start = 460;
+      const full = 95;
+      const raw = Math.max(0, Math.min(1, (start - distance) / (start - full)));
+      const reveal = raw * raw * (3 - 2 * raw);
+      root.style.setProperty("--language-reveal", reveal.toFixed(3));
+      root.style.setProperty("--language-shift", `${((1 - reveal) * 0.35).toFixed(3)}rem`);
+      root.style.setProperty("--language-glow", `${Math.round(reveal * 28)}px`);
+      homeLanguage.classList.toggle("is-visible", reveal > 0.08);
+    }
+
+    function syncPointerEffects() {
+      pointerFrame = null;
+      root.style.setProperty("--cursor-x", `${pointerX}px`);
+      root.style.setProperty("--cursor-y", `${pointerY}px`);
+      updateLanguageReveal();
+    }
+
     window.addEventListener("pointermove", event => {
-      root.style.setProperty("--cursor-x", `${event.clientX}px`);
-      root.style.setProperty("--cursor-y", `${event.clientY}px`);
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (!pointerFrame) {
+        pointerFrame = requestAnimationFrame(syncPointerEffects);
+      }
     }, { passive: true });
 
-    // Email → copy to clipboard, bilingual toast
-    const emailLink = document.querySelector('a[href^="mailto:"]');
-    const toast = document.getElementById('copy-toast');
-    let toastTimer = null;
+    window.addEventListener("resize", updateLanguageReveal, { passive: true });
+    watchMedia(mobileCarouselQuery, handleCarouselModeChange);
+    watchMedia(reducedMotionQuery, startCarousel);
 
+    // Email -> copy to clipboard, then show a localized toast.
     if (emailLink && toast) {
-      emailLink.addEventListener('click', async e => {
+      emailLink.addEventListener("click", async e => {
         e.preventDefault();
-        const email = emailLink.href.replace('mailto:', '');
+        const email = emailLink.href.replace("mailto:", "");
         try {
           await navigator.clipboard.writeText(email);
         } catch {
@@ -1172,23 +1742,24 @@
           return;
         }
 
-        // is-copied state on the link itself (matches resume.html icon behavior)
-        emailLink.classList.add('is-copied');
+        emailLink.classList.add("is-copied");
         const orig = emailLink.textContent;
-        emailLink.textContent = 'Copied';
+        emailLink.textContent = t().copied;
         setTimeout(() => {
-          emailLink.classList.remove('is-copied');
+          emailLink.classList.remove("is-copied");
           emailLink.textContent = orig;
         }, 1200);
 
-        // bilingual toast
-        toast.classList.add('is-visible');
+        toast.classList.add("is-visible");
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2400);
+        toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2400);
       });
     }
 
-    setActive("overview");
+    applyLanguage(currentLang);
+    setActive(activeKey);
+    updateLanguageReveal();
+    startCarousel();
   </script>
 </body>
 </html>
