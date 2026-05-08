@@ -1,8 +1,31 @@
 const root = document.documentElement;
 
+// Track cursor for global glow and lang-button proximity reveal
+let _langBtn = null;
+
 window.addEventListener("pointermove", event => {
   root.style.setProperty("--cursor-x", `${event.clientX}px`);
   root.style.setProperty("--cursor-y", `${event.clientY}px`);
+
+  // Proximity-based reveal for the language toggle button
+  if (!_langBtn) _langBtn = document.querySelector('.room-lang-btn');
+  if (_langBtn) {
+    const r = _langBtn.getBoundingClientRect();
+    const cx = r.left + r.width  / 2;
+    const cy = r.top  + r.height / 2;
+    const dx = event.clientX - cx;
+    const dy = event.clientY - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    // Full glow radius of the page is ~460px; start appearing at 320px
+    const raw  = Math.max(0, 1 - dist / 320);
+    const prox = +(raw * raw).toFixed(3); // square for steeper falloff near zero
+
+    _langBtn.style.setProperty('--lang-opacity', prox);
+    _langBtn.style.setProperty('--lang-border',  (0.15 + prox * 0.55).toFixed(3));
+    _langBtn.style.setProperty('--lang-color',   (0.12 + prox * 0.78).toFixed(3));
+    // Enable pointer-events only when visible enough to be found
+    _langBtn.classList.toggle('is-reachable', prox > 0.08);
+  }
 }, { passive: true });
 
 // ── Language system ────────────────────────────────────────────────────────

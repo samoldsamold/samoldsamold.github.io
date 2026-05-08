@@ -90,26 +90,34 @@ strong {
 }
 
 .room-lang-btn {
-  padding: 0.16rem 0.52rem;
-  border: 1px solid rgba(var(--glow-rgb), 0.26);
+  /* Fixed width so "中文" and "EN" occupy identical space */
+  width: 2.8rem;
+  padding: 0.18rem 0;
+  text-align: center;
+  border: 1px solid rgba(var(--glow-rgb), var(--lang-border, 0));
   border-radius: 999px;
   background: transparent;
-  color: rgba(219, 255, 212, 0.44);
+  color: rgba(219, 255, 212, var(--lang-color, 0));
   font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1;
   cursor: pointer;
   font-family: inherit;
-  transition: color 180ms ease, border-color 180ms ease;
+  /* Opacity drives the glow-proximity reveal */
+  opacity: var(--lang-opacity, 0);
+  transition: color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+  pointer-events: none; /* only clickable when opacity > 0 via JS */
 }
 
-.room-lang-btn:hover,
+.room-lang-btn.is-reachable {
+  pointer-events: auto;
+}
+
 .room-lang-btn:focus-visible {
-  color: var(--green);
-  border-color: rgba(var(--glow-rgb), 0.68);
-  outline: 0;
+  outline: 1px solid rgba(var(--glow-rgb), 0.8);
+  outline-offset: 3px;
 }
 
 .brand-home {
