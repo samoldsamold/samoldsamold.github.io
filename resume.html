@@ -1710,8 +1710,8 @@
                 return;
             }
 
-            if (isFinePointer) {
-                // Desktop: activate when section top crosses 40% of viewport
+            if (desktopSidebarQuery.matches) {
+                // Desktop sidebar: activate when section top crosses 40% of viewport
                 const activationLine = window.scrollY + Math.min(window.innerHeight * 0.4, 320);
                 sections.forEach(section => {
                     if (activationLine >= section.offsetTop) {
@@ -1719,7 +1719,8 @@
                     }
                 });
             } else {
-                // Mobile/touch: activate when viewport center reaches the section h2 title
+                // Mobile (sidebar collapsed to top): activate when viewport center
+                // reaches the section h2 title
                 const vcenter = window.innerHeight * 0.5;
                 sections.forEach(section => {
                     const h2 = section.querySelector('h2');
