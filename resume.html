@@ -1720,11 +1720,11 @@
                 });
             } else {
                 // Mobile/touch: activate when viewport center reaches the section h2 title
-                const vcenter = window.scrollY + window.innerHeight * 0.5;
+                const vcenter = window.innerHeight * 0.5;
                 sections.forEach(section => {
                     const h2 = section.querySelector('h2');
-                    const titleTop = h2 ? section.offsetTop + h2.offsetTop : section.offsetTop;
-                    if (vcenter >= titleTop) {
+                    const titleRect = (h2 || section).getBoundingClientRect();
+                    if (titleRect.top <= vcenter) {
                         current = section.getAttribute('id');
                     }
                 });
