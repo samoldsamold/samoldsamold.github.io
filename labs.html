@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Labs room of SAMOLD, collecting experiments and prototypes by Zhou Yongyu.">
+  <title>Labs | SAMOLD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/samold-room.css">
+</head>
+<body>
+  <div class="room-page">
+    <header class="room-header">
+      <a class="brand-home" href="index.html" aria-label="Back to SAMOLD home">
+        <img src="assets/samold.webp" alt="">
+        <span>SAMOLD</span>
+      </a>
+      <nav class="room-nav" aria-label="SAMOLD rooms">
+        <a href="showcase.html">S</a>
+        <a href="articles.html">A</a>
+        <a href="moments.html">M</a>
+        <a href="overview.html">O</a>
+        <a class="is-active" href="labs.html">L</a>
+        <a href="discoveries.html">D</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="room-hero">
+        <div>
+          <p class="room-kicker">L / Labs</p>
+          <h1 class="room-title">Curious on purpose.</h1>
+        </div>
+        <div>
+          <p class="room-subtitle">
+            Experiments, half-built tools, study notes, and small prototypes. Labs is where the work can stay <strong>unfinished</strong> long enough to teach something.
+          </p>
+          <p class="room-note">
+            <span class="material-symbols-outlined" aria-hidden="true">science</span>
+            <span>Some entries will eventually graduate to Showcase. Others are useful because they stayed messy.</span>
+          </p>
+        </div>
+      </section>
+
+      <p class="section-label">Workbench</p>
+      <section class="content-grid" aria-label="Lab experiments">
+        <article class="room-card wide">
+          <div class="card-meta"><span class="pill">Active</span><span>Interface experiment</span></div>
+          <h3>SAMOLD letter router</h3>
+          <p>Turning a personal mark into a usable navigation model: invisible hotspots, room previews, and a homepage that behaves like a map.</p>
+          <ul class="tag-list">
+            <li class="tag">Interaction</li>
+            <li class="tag">CSS</li>
+            <li class="tag">Brand System</li>
+          </ul>
+        </article>
+
+        <article class="room-card wide">
+          <div class="card-meta"><span class="pill">Prototype</span><span>Resume system</span></div>
+          <h3>Bilingual resume controls</h3>
+          <p>A no-build language switcher for a static resume page, including mobile floating controls and section-aware navigation.</p>
+          <ul class="tag-list">
+            <li class="tag">i18n</li>
+            <li class="tag">Vanilla JS</li>
+            <li class="tag">Responsive</li>
+          </ul>
+        </article>
+
+        <article class="room-card">
+          <div class="card-meta"><span class="pill">Notes</span><span>Testing</span></div>
+          <h3>API test notebook</h3>
+          <p>A structured place for Postman cases, Swagger UI checks, request patterns, and common data-integrity traps.</p>
+        </article>
+
+        <article class="room-card">
+          <div class="card-meta"><span class="pill">Study</span><span>Systems</span></div>
+          <h3>Linux command drills</h3>
+          <p>Small exercises for shell scripting, process inspection, navigation, and the commands that become muscle memory.</p>
+        </article>
+
+        <article class="room-card">
+          <div class="card-meta"><span class="pill">Play</span><span>Strategy</span></div>
+          <h3>Deck idea sandbox</h3>
+          <p>A future space for tracking Hearthstone deck combinations, matchups, and the small hypotheses behind each build.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="room-footer">
+      <span>Probably ain't same old.</span>
+      <a href="discoveries.html">Next room: Discoveries</a>
+    </footer>
+  </div>
+  <script src="assets/samold-room.js"></script>
+</body>
+</html>
