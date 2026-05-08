@@ -126,9 +126,10 @@
         --glow-rgb: 128, 255, 40;
         --cursor-x: 50vw;
         --cursor-y: 50vh;
-        --resume-sidebar-width: clamp(23rem, 23vw, 31rem);
-        --resume-content-width: clamp(44rem, 48vw, 61rem);
-        --resume-main-x: clamp(3rem, 6vw, 10rem);
+        --resume-sidebar-width: clamp(24rem, 20vw, 28rem);
+        --resume-content-width: clamp(45rem, 44vw, 64rem);
+        --resume-main-x: clamp(5rem, 7vw, 9rem);
+        --resume-main-right: clamp(2rem, 5vw, 7rem);
     }
 
     body {
@@ -478,6 +479,12 @@
             overflow-x: hidden;
         }
 
+        body > .mx-auto {
+            width: 100% !important;
+            max-width: none !important;
+            margin-inline: 0 !important;
+        }
+
         #profile-sidebar {
             width: var(--resume-sidebar-width) !important;
             height: 100vh;
@@ -560,18 +567,20 @@
         }
 
         main {
-            width: calc(100% - var(--resume-sidebar-width)) !important;
+            width: calc(100vw - var(--resume-sidebar-width)) !important;
             max-width: none !important;
             margin-left: var(--resume-sidebar-width) !important;
-            padding-inline: var(--resume-main-x) !important;
-            padding-top: clamp(5rem, 9vh, 7rem) !important;
-            gap: clamp(5.5rem, 8vh, 7.5rem) !important;
+            padding-left: var(--resume-main-x) !important;
+            padding-right: var(--resume-main-right) !important;
+            padding-top: clamp(5rem, 8.5vh, 6.5rem) !important;
+            gap: clamp(5rem, 7vh, 7rem) !important;
         }
 
         main > section {
             width: 100%;
             max-width: var(--resume-content-width);
-            margin-inline: auto;
+            margin-left: 0;
+            margin-right: auto;
         }
 
         main > section > h2 {
@@ -590,6 +599,40 @@
 
         .section-card .card-title {
             font-size: clamp(1.15rem, 1.05vw, 1.35rem);
+        }
+    }
+
+    @media (min-width: 1800px) and (min-height: 900px) {
+        :root {
+            --resume-sidebar-width: clamp(25rem, 18vw, 32rem);
+            --resume-content-width: clamp(55rem, 50vw, 82rem);
+            --resume-main-x: clamp(6.5rem, 5.5vw, 11rem);
+            --resume-main-right: clamp(3rem, 4.5vw, 9rem);
+        }
+
+        #profile-sidebar .sidebar-avatar {
+            width: clamp(5.2rem, 3.8vw, 6.6rem);
+            height: clamp(5.2rem, 3.8vw, 6.6rem);
+        }
+
+        #profile-sidebar .sidebar-name {
+            font-size: clamp(2.45rem, 1.75vw, 3rem);
+        }
+
+        #profile-sidebar .sidebar-role {
+            font-size: clamp(1.05rem, 0.78vw, 1.2rem);
+        }
+
+        #profile-sidebar .sidebar-summary {
+            font-size: clamp(0.9rem, 0.65vw, 1rem);
+        }
+    }
+
+    /* 27-inch and ultra-wide: center content within the main area */
+    @media (min-width: 2000px) and (min-height: 1000px) {
+        main > section {
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 
@@ -643,9 +686,10 @@
         }
 
         #profile-sidebar .sidebar-intro {
-            width: min(100%, calc(100vw - 3rem));
-            max-width: 38rem;
+            width: 100%;
+            max-width: min(38rem, 100%);
             margin: 0 auto;
+            overflow: hidden;
         }
 
         #profile-sidebar .sidebar-identity {
@@ -685,6 +729,7 @@
         #profile-sidebar .sidebar-role,
         #profile-sidebar .sidebar-summary {
             overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         main {
@@ -697,8 +742,8 @@
         }
 
         main > section {
-            width: min(100%, calc(100vw - 2.5rem));
-            max-width: calc(100vw - 2.5rem);
+            width: 100%;
+            max-width: 100%;
             min-width: 0;
             margin-inline: auto;
         }

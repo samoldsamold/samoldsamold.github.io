@@ -244,9 +244,10 @@
     }
 
     .home {
+      --content-lift: clamp(3.45rem, 7.5vh, 4.95rem);
       display: grid;
       grid-template-columns: minmax(14rem, 1fr) minmax(18rem, var(--logo-size)) minmax(14rem, 1fr);
-      align-items: center;
+      align-items: start;
       gap: var(--stage-gap);
       width: min(100%, var(--stage-width));
       margin: 0 auto;
@@ -254,10 +255,11 @@
     }
 
     .intro {
-      align-self: center;
+      align-self: start;
       justify-self: start;
       width: 100%;
       text-align: left;
+      transform: translateY(calc(-1 * var(--content-lift)));
     }
 
     .intro > * {
@@ -510,19 +512,21 @@
     }
 
     .section-panel {
-      display: flex;
-      flex-direction: column;
-      align-self: center;
+      align-self: start;
       justify-self: end;
-      gap: clamp(0.82rem, 1.55vh, 1.05rem);
       width: min(100%, var(--panel-width));
+      height: 31.5rem;
       padding-left: 0;
+      position: relative;
     }
 
     .panel-kicker {
       display: flex;
       align-items: center;
       gap: 0.85rem;
+      position: absolute;
+      left: 0;
+      top: calc(0rem - var(--content-lift));
       width: 100%;
       margin: 0;
       color: rgba(144, 238, 144, 0.8);
@@ -542,7 +546,11 @@
     }
 
     .panel-title {
+      position: absolute;
+      left: 0;
+      top: calc(2.55rem - var(--content-lift));
       width: 100%;
+      min-height: 9.55rem;
       margin: 0;
       color: var(--text);
       font-family: "Space Grotesk", sans-serif;
@@ -553,7 +561,11 @@
     }
 
     .panel-cn {
+      position: absolute;
+      left: 0;
+      top: calc(12.95rem - var(--content-lift));
       width: 100%;
+      min-height: 1.45rem;
       margin: 0;
       color: var(--green);
       font-size: clamp(0.95rem, 1.2vw, 1.1rem);
@@ -561,8 +573,12 @@
     }
 
     .panel-copy {
+      position: absolute;
+      left: 0;
+      top: calc(15.35rem - var(--content-lift));
       width: 100%;
       max-width: var(--panel-width);
+      min-height: 6.7rem;
       margin: 0;
       color: rgba(191, 202, 186, 0.88);
       font-size: 0.96rem;
@@ -574,8 +590,12 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.8rem;
+      position: absolute;
+      left: 0;
+      top: calc(23.25rem - var(--content-lift));
       width: 100%;
-      margin-top: clamp(0.34rem, 0.8vh, 0.55rem);
+      height: 3rem;
+      margin-top: 0;
     }
 
     .panel-link {
@@ -610,7 +630,10 @@
     .route-list {
       display: grid;
       gap: 0.3rem;
-      margin-top: clamp(0.5rem, 1vh, 0.8rem);
+      position: absolute;
+      left: 0;
+      top: calc(27.35rem - var(--content-lift));
+      margin-top: 0;
     }
 
     .route-list a {
@@ -708,9 +731,13 @@
         --stage-width: clamp(88rem, 76vw, 108rem);
         --stage-gap: clamp(3rem, 4.2vw, 5.8rem);
         --logo-size: clamp(34rem, 42vmin, 42rem);
-        --panel-width: clamp(29rem, 24vw, 32rem);
+        --panel-width: clamp(30rem, 24vw, 34rem);
         --intro-title-max: 5.2rem;
-        --panel-title-max: 3.55rem;
+        --panel-title-max: 3.28rem;
+      }
+
+      .home {
+        --content-lift: clamp(4.2rem, 8vh, 5.8rem);
       }
 
       .intro-copy {
@@ -746,6 +773,33 @@
         font-size: 0.9rem;
         line-height: 1.85;
       }
+
+      /* Recalculate absolute panel positions for the larger title font.
+         At 3.28rem, the longest title wraps to ~3 lines (~10.6rem).
+         All subsequent tops shift +1.45rem from the base values. */
+      .section-panel {
+        height: 35rem;
+      }
+
+      .panel-title {
+        min-height: 11rem;
+      }
+
+      .panel-cn {
+        top: calc(14.4rem - var(--content-lift));
+      }
+
+      .panel-copy {
+        top: calc(16.85rem - var(--content-lift));
+      }
+
+      .panel-actions {
+        top: calc(24.7rem - var(--content-lift));
+      }
+
+      .route-list {
+        top: calc(28.8rem - var(--content-lift));
+      }
     }
 
     @media (min-width: 2100px) and (min-height: 1100px) {
@@ -754,31 +808,34 @@
         --stage-width: clamp(100rem, 70vw, 112rem);
         --stage-gap: clamp(4rem, 4vw, 6.2rem);
         --logo-size: clamp(40rem, 40vmin, 46rem);
-        --panel-width: clamp(31rem, 20vw, 34rem);
+        --panel-width: clamp(32rem, 20vw, 35rem);
         --intro-title-max: 5.6rem;
-        --panel-title-max: 3.45rem;
+        --panel-title-max: 3.36rem;
       }
     }
 
     @media (max-width: 1080px) {
       .shell {
-        padding-top: clamp(1.5rem, 4vw, 3rem);
-        padding-bottom: clamp(4rem, 8vh, 5.5rem);
+        display: block;
+        padding-top: 0;
+        padding-bottom: 0;
       }
 
       .home {
-        grid-template-columns: minmax(0, 1fr) minmax(16rem, min(42vw, 31rem));
-        grid-template-areas:
-          "intro portal"
-          "panel portal";
-        align-items: center;
-        width: min(100%, 56rem);
+        --content-lift: clamp(1.6rem, 4.2vh, 2.55rem);
+        position: relative;
+        grid-template-columns: 1fr;
+        place-items: center;
+        width: min(100%, 48rem);
+        height: 100svh;
         min-height: 0;
       }
 
       .intro {
-        grid-area: intro;
-        max-width: min(29rem, 100%);
+        position: absolute;
+        top: clamp(3.2rem, 7vh, 5rem);
+        left: 0;
+        max-width: min(29rem, 58vw);
         text-align: left;
       }
 
@@ -794,16 +851,25 @@
       }
 
       .portal {
-        grid-area: portal;
         width: min(62vmin, 31rem);
       }
 
       .section-panel {
-        grid-area: panel;
-        align-self: start;
-        max-width: min(25rem, 100%);
+        position: absolute;
+        right: 0;
+        bottom: clamp(3.4rem, 7vh, 5rem);
+        height: 35rem;
+        max-width: min(25rem, 48vw);
         min-height: 0;
         padding-left: 0;
+      }
+
+      .panel-title {
+        min-height: 8.2rem;
+      }
+
+      .panel-copy {
+        min-height: 8.2rem;
       }
 
       .route-list {
@@ -843,12 +909,12 @@
       .home {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-rows: clamp(8.1rem, 23svh, 11.5rem) minmax(13rem, 1fr) clamp(12.3rem, 31svh, 15.2rem);
         grid-template-areas:
           "intro"
           "portal"
           "panel";
-        gap: clamp(0.7rem, 2vh, 1.1rem);
+        gap: clamp(0.55rem, 1.6vh, 0.95rem);
         align-items: center;
         width: 100%;
         height: 100%;
@@ -859,6 +925,8 @@
         position: static;
         align-self: start;
         max-width: 100%;
+        min-height: 100%;
+        padding-right: clamp(4.7rem, 18vw, 5.7rem);
         transform: none;
       }
 
@@ -869,9 +937,15 @@
       }
 
       h1 {
-        max-width: 9.5ch;
-        font-size: clamp(2.18rem, 11vw, 3.28rem);
+        max-width: 9.2ch;
+        font-size: clamp(2.05rem, 10.2vw, 3.05rem);
         line-height: 0.96;
+      }
+
+      html[lang="zh-CN"] h1 {
+        max-width: 6.6ch;
+        font-size: clamp(2.22rem, 12.5vw, 3.38rem);
+        line-height: 0.94;
       }
 
       .intro-copy,
@@ -880,7 +954,7 @@
       }
 
       .portal {
-        width: min(76vmin, 21.5rem);
+        width: min(70vmin, 20.25rem);
         align-self: center;
       }
 
@@ -897,10 +971,11 @@
 
       .section-panel {
         position: static;
-        align-self: end;
+        align-self: start;
         height: auto;
         width: 100%;
         max-width: 100%;
+        min-height: 100%;
       }
 
       .panel-kicker,
@@ -918,6 +993,14 @@
         gap: 0.55rem;
         font-size: 0.66rem;
         letter-spacing: 0.14em;
+        max-width: 100%;
+        overflow: visible;
+        white-space: normal;
+      }
+
+      .panel-kicker span {
+        display: inline-block;
+        min-width: 0;
       }
 
       .panel-kicker::before {
@@ -927,8 +1010,15 @@
       .panel-title {
         max-width: 12ch;
         margin-top: 0.48rem;
-        font-size: clamp(1.28rem, 6vw, 1.72rem);
+        min-height: 3.8rem;
+        font-size: clamp(1.24rem, 5.5vw, 1.62rem);
         line-height: 1.06;
+      }
+
+      html[lang="zh-CN"] .panel-title {
+        max-width: 9ch;
+        font-size: clamp(1.38rem, 6.8vw, 1.95rem);
+        line-height: 1.05;
       }
 
       .panel-cn {
@@ -1056,7 +1146,9 @@
 
     @media (max-width: 640px), (hover: none) {
       .mobile-lang-toggle {
-        display: inline-grid;
+        display: inline-grid !important;
+        opacity: 1;
+        visibility: visible;
       }
 
       .home-language {
@@ -1068,14 +1160,19 @@
       .home {
         gap: 0.55rem;
         padding-bottom: 4.75rem;
+        grid-template-rows: 7.75rem minmax(12.2rem, 1fr) 11.9rem;
       }
 
       .portal {
-        width: min(70vmin, 19rem);
+        width: min(66vmin, 18.2rem);
       }
 
       h1 {
-        font-size: clamp(2rem, 10vw, 2.75rem);
+        font-size: clamp(1.92rem, 9.5vw, 2.6rem);
+      }
+
+      html[lang="zh-CN"] h1 {
+        font-size: clamp(2.05rem, 11.6vw, 3.05rem);
       }
 
       .panel-title {
@@ -1371,7 +1468,7 @@
           showcase: {
             short: "S",
             kicker: "S / 作品集",
-            title: "留过草稿之后的东西。",
+            title: "捱过草稿后，留下的那些。",
             cn: "作品集 · 展示",
             copy: "这里放精选的<strong>项目</strong>、设计图、摄影作品和<strong>开源代码</strong>。它们已经越过草稿阶段，值得拥有一个完整舞台。",
             href: "showcase.html",
@@ -1409,7 +1506,7 @@
             kicker: "O / 概览",
             title: "能放进一页里的版本。",
             cn: "概览 · 关于我",
-            copy: "<strong>背景</strong>、<strong>联系方式</strong>和完整<strong>简历页面</strong>都在 Overview 房间。先进入 O，再用右下角悬浮泡打开正式简历。",
+            copy: "<strong>背景</strong>、<strong>联系方式</strong>和完整<strong>简历页面</strong>都在 Overview 房间里。进入 O 之后，用右下角的按钮打开正式简历。",
             href: "overview.html",
             action: "进入概览",
             route: "O · 概览",
@@ -1433,7 +1530,7 @@
             kicker: "D / 发现",
             title: "别人先想到的好东西。",
             cn: "发现 · 收藏",
-            copy: "<strong>工具</strong>、书、电影、链接、资料和网页上偶然遇见的小东西。它像一层公开书架，存放<strong>有用</strong>也好看的发现。",
+            copy: "<strong>工具</strong>、书、电影、链接、资料和网络上偶然遇见的小东西。这里像一个公开书架，存放<strong>有用</strong>也好看的发现。",
             href: "discoveries.html",
             action: "浏览发现",
             route: "D · 发现",
