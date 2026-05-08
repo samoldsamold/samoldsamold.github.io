@@ -17,7 +17,7 @@
   --cursor-y: 50vh;
   --page-x: clamp(1.25rem, 5vw, 5rem);
   --room-stage: 92rem;
-  --room-title-max: 7.4rem;
+  --room-title-max: 6.05rem;
   --room-copy-max: 42rem;
 }
 
@@ -68,16 +68,54 @@ strong {
   width: min(100%, var(--room-stage));
   min-height: 100svh;
   margin: 0 auto;
-  padding: clamp(1.1rem, 2.4vw, 2rem) var(--page-x) clamp(4rem, 8vw, 7rem);
+  padding: 0 var(--page-x) clamp(4rem, 8vw, 7rem);
 }
 
 .room-header {
+  position: fixed;
+  top: clamp(1rem, 2.4vw, 2rem);
+  left: 50%;
+  z-index: 40;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
+  width: min(calc(100vw - (2 * var(--page-x))), var(--room-stage));
   min-height: 3.55rem;
   margin-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -1rem);
+  transition: opacity 340ms cubic-bezier(0.22, 1, 0.36, 1), transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.room-header::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: clamp(7.2rem, 13vh, 10.5rem);
+  background: linear-gradient(to bottom, rgba(3, 7, 10, 0.98), rgba(3, 7, 10, 0.78) 56%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transform: scaleY(0.7);
+  transform-origin: top;
+  transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.room-page.is-room-scrolled .room-header,
+.room-header:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.room-page.is-room-scrolled .room-header::before,
+.room-header:focus-within::before {
+  opacity: 1;
+  transform: scaleY(1);
 }
 
 /* Language toggle wrapper (injected by samold-room.js) */
@@ -191,18 +229,27 @@ strong {
 
 .room-hero {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(18rem, 0.9fr) minmax(22rem, 1.1fr);
-  gap: clamp(2.5rem, 6vw, 8rem);
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
   align-content: center;
   align-items: center;
-  min-height: calc(100svh - clamp(4.75rem, 8vh, 6.5rem));
+  gap: clamp(1.55rem, 4.4vh, 3.2rem);
+  width: 100vw;
+  min-height: 100svh;
+  margin-left: calc(50% - 50vw);
   margin-bottom: clamp(4rem, 8vw, 7rem);
-  padding-block: clamp(2.8rem, 6vh, 5rem);
+  padding: clamp(4rem, 8vh, 6.5rem) var(--page-x) clamp(2.8rem, 6vh, 5rem);
+  text-align: center;
 }
 
 .room-hero > div {
+  position: relative;
+  z-index: 2;
   min-width: 0;
+  width: min(100%, var(--room-copy-max));
 }
 
 .room-hero > div:first-child {
@@ -216,17 +263,80 @@ strong {
 .room-hero::after {
   content: "";
   position: absolute;
-  left: 0;
+  left: 50%;
   bottom: clamp(0.6rem, 1.8vh, 1.2rem);
+  z-index: 5;
   width: min(8.5rem, 30vw);
   height: 1px;
   background: linear-gradient(90deg, rgba(var(--glow-rgb), 0.68), transparent);
   opacity: 0.55;
+  transform: translateX(-50%);
+}
+
+.room-wordfield,
+.room-reveal-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.room-wordfield {
+  z-index: 0;
+}
+
+.room-reveal-svg {
+  z-index: 4;
+}
+
+.room-wordfield text,
+.room-reveal-pattern text {
+  font-family: "Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  dominant-baseline: middle;
+  user-select: none;
+}
+
+.room-wordfield text {
+  fill: rgba(144, 238, 144, 0.055);
+}
+
+.room-reveal-bg {
+  fill: #dfffd8;
+}
+
+.room-reveal-pattern text {
+  fill: rgba(3, 7, 10, 0.11);
+}
+
+.room-reveal-copy {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  color: #031008 !important;
+  text-shadow: none;
+}
+
+.room-reveal-copy strong {
+  color: #086a18;
+  font-weight: 800;
+}
+
+.room-reveal-copy.kicker {
+  color: rgba(3, 16, 8, 0.74) !important;
+}
+
+.room-reveal-copy.note {
+  color: rgba(3, 16, 8, 0.68) !important;
 }
 
 .room-kicker {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.85rem;
   margin: 0 0 1.15rem;
   color: rgba(144, 238, 144, 0.82);
@@ -244,19 +354,29 @@ strong {
 }
 
 .room-title {
-  max-width: 11ch;
-  margin: 0;
+  max-width: 13.5ch;
+  margin: 0 auto;
   color: var(--text);
+  display: grid;
+  min-height: var(--room-title-slot, auto);
+  place-items: center;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(3.1rem, 7.5vw, var(--room-title-max));
+  font-size: clamp(2.85rem, 6vw, var(--room-title-max));
   font-weight: 700;
   letter-spacing: 0;
-  line-height: 0.92;
+  line-height: 0.95;
+}
+
+html[lang="zh-CN"] .room-title {
+  max-width: min(100%, 18em);
+  font-size: clamp(2.35rem, 5.1vw, 4.65rem);
+  line-height: 1.06;
+  white-space: nowrap;
 }
 
 .room-subtitle {
   max-width: var(--room-copy-max);
-  margin: 0;
+  margin: 0 auto;
   color: rgba(191, 202, 186, 0.88);
   font-size: clamp(1.03rem, 1.32vw, 1.36rem);
   line-height: 1.8;
@@ -265,8 +385,10 @@ strong {
 .room-note {
   display: flex;
   gap: 0.8rem;
-  align-items: flex-start;
-  margin-top: 1.8rem;
+  align-items: center;
+  justify-content: center;
+  max-width: min(100%, 42rem);
+  margin: 1.8rem auto 0;
   color: rgba(191, 202, 186, 0.68);
   font-size: clamp(0.92rem, 0.9vw, 1.02rem);
   line-height: 1.7;
@@ -567,13 +689,12 @@ strong {
   :root {
     --page-x: clamp(2rem, 4.4vw, 6rem);
     --room-stage: clamp(96rem, 76vw, 112rem);
-    --room-title-max: 8.6rem;
+    --room-title-max: 6.75rem;
     --room-copy-max: 48rem;
   }
 
   .room-hero {
-    grid-template-columns: minmax(22rem, 0.9fr) minmax(28rem, 1.1fr);
-    gap: clamp(4rem, 6vw, 8.75rem);
+    gap: clamp(1.8rem, 4.2vh, 3.75rem);
   }
 
   .room-kicker {
@@ -592,14 +713,14 @@ strong {
 @media (min-width: 2100px) and (min-height: 1100px) {
   :root {
     --room-stage: clamp(108rem, 70vw, 122rem);
-    --room-title-max: 9.2rem;
+    --room-title-max: 7.2rem;
     --room-copy-max: 52rem;
   }
 }
 
 @media (max-width: 900px) {
   .room-page {
-    padding-top: clamp(1rem, 2.8vw, 1.6rem);
+    padding-top: 0;
   }
 
   .room-header {
@@ -614,12 +735,12 @@ strong {
   }
 
   .room-hero {
-    grid-template-columns: 1fr;
     align-content: center;
     align-items: center;
+    justify-items: center;
     gap: clamp(1.35rem, 4vh, 2.4rem);
-    min-height: calc(100svh - 4.6rem);
-    padding-block: clamp(4rem, 10vh, 6rem) clamp(1.6rem, 5vh, 3.2rem);
+    min-height: 100svh;
+    padding-block: clamp(4.2rem, 10vh, 6rem) clamp(1.6rem, 5vh, 3.2rem);
   }
 
   .room-hero > div:last-child {
@@ -628,8 +749,8 @@ strong {
   }
 
   .room-title {
-    max-width: 12ch;
-    font-size: clamp(3.35rem, 12vw, 6rem);
+    max-width: 13ch;
+    font-size: clamp(2.82rem, 10vw, 4.9rem);
   }
 
   .room-subtitle {
@@ -670,13 +791,20 @@ strong {
   }
 
   .room-page {
-    padding-top: clamp(0.9rem, 3vw, 1.15rem);
+    padding-top: 0;
     padding-bottom: 5rem;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   .room-header {
+    top: 0.75rem;
+    justify-content: center;
     min-height: 2.8rem;
     gap: 0.75rem;
+    width: 100%;
+    min-width: 0;
   }
 
   .brand-home img {
@@ -684,22 +812,37 @@ strong {
     height: 2.32rem;
   }
 
+  .brand-block {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .brand-home {
+    position: static;
+  }
+
   .brand-home span {
     display: none;
   }
 
   .room-nav {
-    justify-content: flex-end;
-    gap: 0.35rem;
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: calc(100vw - 6rem);
+    justify-content: center;
+    overflow: hidden;
+    gap: clamp(0.16rem, 1vw, 0.32rem);
+    font-size: clamp(0.66rem, 3vw, 0.76rem);
+    letter-spacing: 0.06em;
   }
 
   .room-nav a {
     display: grid;
-    min-width: 2.14rem;
-    min-height: 2.14rem;
-    padding: 0 0.24rem;
+    min-width: clamp(1.82rem, 8vw, 2.12rem);
+    min-height: clamp(1.82rem, 8vw, 2.12rem);
+    padding: 0 0.12rem;
     place-items: center;
     border: 1px solid transparent;
     border-radius: 999px;
@@ -713,9 +856,17 @@ strong {
   }
 
   .room-hero {
-    min-height: calc(100svh - 4rem);
+    width: 100%;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    min-height: 100svh;
     gap: clamp(1rem, 3.6vh, 1.7rem);
-    padding-block: clamp(2.7rem, 8vh, 4.2rem) clamp(1rem, 4vh, 2rem);
+    padding: clamp(3.8rem, 8vh, 4.8rem) var(--page-x) clamp(1rem, 4vh, 2rem);
+  }
+
+  .room-hero > div {
+    width: min(100%, calc(100vw - (2 * var(--page-x))));
+    max-width: calc(100vw - (2 * var(--page-x)));
   }
 
   .room-hero::after {
@@ -735,21 +886,35 @@ strong {
   }
 
   .room-title {
-    max-width: 10ch;
-    font-size: clamp(2.58rem, 15vw, 4rem);
+    max-width: min(8ch, 100%);
+    font-size: clamp(2.24rem, 11vw, 3.12rem);
     line-height: 0.94;
+    overflow-wrap: break-word;
+  }
+
+  html[lang="zh-CN"] .room-title {
+    max-width: min(100%, 12em);
+    font-size: clamp(1.95rem, 7.4vw, 2.6rem);
+    line-height: 1.08;
+    white-space: nowrap;
   }
 
   .room-subtitle {
+    width: 100%;
+    max-width: min(18.5rem, calc(100vw - (2 * var(--page-x))));
     font-size: 0.98rem;
     line-height: 1.62;
+    overflow-wrap: anywhere;
   }
 
   .room-note {
     gap: 0.6rem;
     margin-top: 1rem;
+    width: 100%;
+    max-width: min(18rem, calc(100vw - (2 * var(--page-x))));
     font-size: 0.84rem;
     line-height: 1.55;
+    overflow-wrap: anywhere;
   }
 
   .overview-strip {
@@ -802,7 +967,7 @@ strong {
   }
 
   .room-title {
-    font-size: clamp(2.35rem, 13vw, 3.4rem);
+    font-size: clamp(2.05rem, 10vw, 2.85rem);
   }
 
   .room-note {
