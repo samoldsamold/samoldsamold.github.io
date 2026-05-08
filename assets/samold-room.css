@@ -141,10 +141,15 @@ strong {
   display: grid;
   grid-template-columns: minmax(14rem, 0.82fr) minmax(0, 1.18fr);
   gap: clamp(2rem, 6vw, 7rem);
-  align-items: center;
+  align-content: start;
+  align-items: start;
   min-height: calc(100svh - clamp(5rem, 9vh, 6.8rem));
   margin-bottom: clamp(4rem, 8vw, 7rem);
-  padding-block: clamp(2rem, 5vh, 4.2rem);
+  padding-block: clamp(5.25rem, 12vh, 8.5rem) clamp(2rem, 5vh, 4.2rem);
+}
+
+.room-hero > div {
+  min-width: 0;
 }
 
 .room-hero::after {
@@ -514,10 +519,10 @@ strong {
 
   .room-hero {
     grid-template-columns: 1fr;
-    align-content: center;
+    align-content: start;
     gap: clamp(1.35rem, 4vh, 2.4rem);
     min-height: calc(100svh - 4.6rem);
-    padding-block: clamp(1.6rem, 5vh, 3.2rem);
+    padding-block: clamp(4rem, 10vh, 6rem) clamp(1.6rem, 5vh, 3.2rem);
   }
 
   .room-title {
@@ -607,7 +612,7 @@ strong {
   .room-hero {
     min-height: calc(100svh - 4rem);
     gap: clamp(1rem, 3.6vh, 1.7rem);
-    padding-block: clamp(1rem, 4vh, 2rem);
+    padding-block: clamp(2.7rem, 8vh, 4.2rem) clamp(1rem, 4vh, 2rem);
   }
 
   .room-hero::after {
@@ -689,6 +694,10 @@ strong {
 }
 
 @media (max-width: 560px) and (max-height: 720px) {
+  .room-hero {
+    padding-top: clamp(2rem, 6vh, 3rem);
+  }
+
   .room-title {
     font-size: clamp(2.35rem, 13vw, 3.4rem);
   }
