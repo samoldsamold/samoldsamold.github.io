@@ -16,6 +16,9 @@
   --cursor-x: 50vw;
   --cursor-y: 50vh;
   --page-x: clamp(1.25rem, 5vw, 5rem);
+  --room-stage: 92rem;
+  --room-title-max: 7.4rem;
+  --room-copy-max: 42rem;
 }
 
 html {
@@ -62,7 +65,7 @@ strong {
 .room-page {
   position: relative;
   z-index: 1;
-  width: min(100%, 84rem);
+  width: min(100%, var(--room-stage));
   min-height: 100svh;
   margin: 0 auto;
   padding: clamp(1.1rem, 2.4vw, 2rem) var(--page-x) clamp(4rem, 8vw, 7rem);
@@ -82,7 +85,7 @@ strong {
   align-items: center;
   gap: 0.88rem;
   color: var(--green-soft);
-  font-size: clamp(0.84rem, 0.95vw, 0.92rem);
+  font-size: clamp(0.84rem, 0.86vw, 1.04rem);
   font-weight: 800;
   letter-spacing: 0.16em;
   text-decoration: none;
@@ -91,8 +94,8 @@ strong {
 }
 
 .brand-home img {
-  width: 2.9rem;
-  height: 2.9rem;
+  width: clamp(2.9rem, 2.2vw, 3.55rem);
+  height: clamp(2.9rem, 2.2vw, 3.55rem);
   border-radius: 0;
   object-fit: cover;
   box-shadow: none;
@@ -114,9 +117,9 @@ strong {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: clamp(0.42rem, 1vw, 0.78rem);
+  gap: clamp(0.42rem, 1vw, 0.95rem);
   color: rgba(191, 202, 186, 0.56);
-  font-size: 0.86rem;
+  font-size: clamp(0.86rem, 0.78vw, 1rem);
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -124,8 +127,8 @@ strong {
 
 .room-nav a {
   display: inline-flex;
-  min-width: 2.35rem;
-  min-height: 2.35rem;
+  min-width: clamp(2.35rem, 2vw, 2.95rem);
+  min-height: clamp(2.35rem, 2vw, 2.95rem);
   align-items: center;
   justify-content: center;
   padding: 0 0.44rem;
@@ -147,18 +150,15 @@ strong {
 }
 
 .room-hero {
-  --hero-copy-shift: clamp(6.25rem, 10vh, 8rem);
   position: relative;
   display: grid;
-  grid-template-columns: minmax(14rem, 0.82fr) minmax(0, 1.18fr);
-  grid-template-rows: minmax(0, 1fr);
-  gap: clamp(2rem, 6vw, 7rem);
-  align-content: start;
-  align-items: start;
-  height: calc(100svh - clamp(5rem, 9vh, 6.8rem));
-  min-height: calc(100svh - clamp(5rem, 9vh, 6.8rem));
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(22rem, 1.1fr);
+  gap: clamp(2.5rem, 6vw, 8rem);
+  align-content: center;
+  align-items: center;
+  min-height: calc(100svh - clamp(4.75rem, 8vh, 6.5rem));
   margin-bottom: clamp(4rem, 8vw, 7rem);
-  padding-block: clamp(5.25rem, 12vh, 8.5rem) clamp(2rem, 5vh, 4.2rem);
+  padding-block: clamp(2.8rem, 6vh, 5rem);
 }
 
 .room-hero > div {
@@ -166,12 +166,11 @@ strong {
 }
 
 .room-hero > div:first-child {
-  align-self: start;
+  align-self: center;
 }
 
 .room-hero > div:last-child {
-  align-self: start;
-  transform: translateY(var(--hero-copy-shift));
+  align-self: center;
 }
 
 .room-hero::after {
@@ -209,17 +208,17 @@ strong {
   margin: 0;
   color: var(--text);
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(3.1rem, 8vw, 7rem);
+  font-size: clamp(3.1rem, 7.5vw, var(--room-title-max));
   font-weight: 700;
   letter-spacing: 0;
   line-height: 0.92;
 }
 
 .room-subtitle {
-  max-width: 38rem;
+  max-width: var(--room-copy-max);
   margin: 0;
   color: rgba(191, 202, 186, 0.88);
-  font-size: clamp(1.03rem, 1.5vw, 1.24rem);
+  font-size: clamp(1.03rem, 1.32vw, 1.36rem);
   line-height: 1.8;
 }
 
@@ -229,7 +228,7 @@ strong {
   align-items: flex-start;
   margin-top: 1.8rem;
   color: rgba(191, 202, 186, 0.68);
-  font-size: 0.92rem;
+  font-size: clamp(0.92rem, 0.9vw, 1.02rem);
   line-height: 1.7;
 }
 
@@ -524,6 +523,40 @@ strong {
   line-height: 1;
 }
 
+@media (min-width: 1440px) and (min-height: 820px) {
+  :root {
+    --page-x: clamp(2rem, 4.4vw, 6rem);
+    --room-stage: clamp(96rem, 76vw, 112rem);
+    --room-title-max: 8.6rem;
+    --room-copy-max: 48rem;
+  }
+
+  .room-hero {
+    grid-template-columns: minmax(22rem, 0.9fr) minmax(28rem, 1.1fr);
+    gap: clamp(4rem, 6vw, 8.75rem);
+  }
+
+  .room-kicker {
+    font-size: clamp(0.9rem, 0.75vw, 1.05rem);
+  }
+
+  .room-subtitle {
+    font-size: clamp(1.18rem, 1.12vw, 1.45rem);
+  }
+
+  .room-note {
+    font-size: clamp(1rem, 0.88vw, 1.12rem);
+  }
+}
+
+@media (min-width: 2100px) and (min-height: 1100px) {
+  :root {
+    --room-stage: clamp(108rem, 70vw, 122rem);
+    --room-title-max: 9.2rem;
+    --room-copy-max: 52rem;
+  }
+}
+
 @media (max-width: 900px) {
   .room-page {
     padding-top: clamp(1rem, 2.8vw, 1.6rem);
@@ -542,16 +575,15 @@ strong {
 
   .room-hero {
     grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    align-content: start;
+    align-content: center;
+    align-items: center;
     gap: clamp(1.35rem, 4vh, 2.4rem);
-    height: auto;
     min-height: calc(100svh - 4.6rem);
     padding-block: clamp(4rem, 10vh, 6rem) clamp(1.6rem, 5vh, 3.2rem);
   }
 
   .room-hero > div:last-child {
-    align-self: start;
+    align-self: center;
     transform: none;
   }
 

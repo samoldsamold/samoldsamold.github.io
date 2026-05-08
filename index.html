@@ -244,10 +244,9 @@
     }
 
     .home {
-      --content-lift: clamp(3.45rem, 7.5vh, 4.95rem);
       display: grid;
       grid-template-columns: minmax(14rem, 1fr) minmax(18rem, var(--logo-size)) minmax(14rem, 1fr);
-      align-items: start;
+      align-items: center;
       gap: var(--stage-gap);
       width: min(100%, var(--stage-width));
       margin: 0 auto;
@@ -255,11 +254,10 @@
     }
 
     .intro {
-      align-self: start;
+      align-self: center;
       justify-self: start;
       width: 100%;
       text-align: left;
-      transform: translateY(calc(-1 * var(--content-lift)));
     }
 
     .intro > * {
@@ -426,9 +424,9 @@
       z-index: 12;
       display: inline-flex;
       align-items: center;
-      gap: 0.55rem;
+      gap: clamp(0.55rem, 0.7vw, 0.8rem);
       min-width: max-content;
-      padding: 0.55rem 0.7rem;
+      padding: clamp(0.55rem, 0.7vw, 0.72rem) clamp(0.7rem, 0.9vw, 0.95rem);
       border: 1px solid rgba(var(--glow-rgb), 0.38);
       border-radius: 999px;
       background: rgba(7, 11, 18, 0.88);
@@ -442,13 +440,13 @@
 
     .node-icon .material-symbols-outlined {
       color: var(--green);
-      font-size: 1.2rem;
+      font-size: clamp(1.2rem, 1.1vw, 1.45rem);
     }
 
     .node-icon strong {
       display: block;
       color: var(--text);
-      font-size: 0.82rem;
+      font-size: clamp(0.82rem, 0.82vw, 0.98rem);
       line-height: 1;
     }
 
@@ -456,7 +454,7 @@
       display: block;
       margin-top: 0.14rem;
       color: rgba(144, 238, 144, 0.72);
-      font-size: 0.68rem;
+      font-size: clamp(0.68rem, 0.68vw, 0.8rem);
       line-height: 1;
     }
 
@@ -512,21 +510,19 @@
     }
 
     .section-panel {
-      align-self: start;
+      display: flex;
+      flex-direction: column;
+      align-self: center;
       justify-self: end;
+      gap: clamp(0.82rem, 1.55vh, 1.05rem);
       width: min(100%, var(--panel-width));
-      height: 18rem;
       padding-left: 0;
-      position: relative;
     }
 
     .panel-kicker {
       display: flex;
       align-items: center;
       gap: 0.85rem;
-      position: absolute;
-      left: 0;
-      top: calc(0rem - var(--content-lift));
       width: 100%;
       margin: 0;
       color: rgba(144, 238, 144, 0.8);
@@ -546,11 +542,7 @@
     }
 
     .panel-title {
-      position: absolute;
-      left: 0;
-      top: calc(2.55rem - var(--content-lift));
       width: 100%;
-      height: 6.55rem;
       margin: 0;
       color: var(--text);
       font-family: "Space Grotesk", sans-serif;
@@ -561,11 +553,7 @@
     }
 
     .panel-cn {
-      position: absolute;
-      left: 0;
-      top: calc(9.75rem - var(--content-lift));
       width: 100%;
-      height: 1.45rem;
       margin: 0;
       color: var(--green);
       font-size: clamp(0.95rem, 1.2vw, 1.1rem);
@@ -573,12 +561,8 @@
     }
 
     .panel-copy {
-      position: absolute;
-      left: 0;
-      top: calc(12.3rem - var(--content-lift));
       width: 100%;
       max-width: var(--panel-width);
-      height: 7.8rem;
       margin: 0;
       color: rgba(191, 202, 186, 0.88);
       font-size: 0.96rem;
@@ -590,12 +574,8 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.8rem;
-      position: absolute;
-      left: 0;
-      top: calc(21.15rem - var(--content-lift));
       width: 100%;
-      height: 2.7rem;
-      margin-top: 0;
+      margin-top: clamp(0.34rem, 0.8vh, 0.55rem);
     }
 
     .panel-link {
@@ -630,10 +610,7 @@
     .route-list {
       display: grid;
       gap: 0.3rem;
-      position: absolute;
-      left: 0;
-      top: calc(25.55rem - var(--content-lift));
-      margin-top: 0;
+      margin-top: clamp(0.5rem, 1vh, 0.8rem);
     }
 
     .route-list a {
@@ -728,16 +705,12 @@
     @media (min-width: 1440px) and (min-height: 820px) {
       :root {
         --page-x: clamp(2rem, 4.4vw, 6rem);
-        --stage-width: clamp(86rem, 74vw, 104rem);
+        --stage-width: clamp(88rem, 76vw, 108rem);
         --stage-gap: clamp(3rem, 4.2vw, 5.8rem);
         --logo-size: clamp(34rem, 42vmin, 42rem);
-        --panel-width: clamp(27rem, 22vw, 29rem);
+        --panel-width: clamp(29rem, 24vw, 32rem);
         --intro-title-max: 5.2rem;
-        --panel-title-max: 3.25rem;
-      }
-
-      .home {
-        --content-lift: clamp(4.2rem, 8vh, 5.8rem);
+        --panel-title-max: 3.55rem;
       }
 
       .intro-copy {
@@ -749,6 +722,20 @@
         font-size: clamp(1rem, 0.96vw, 1.08rem);
       }
 
+      .panel-kicker {
+        font-size: 0.88rem;
+      }
+
+      .panel-cn {
+        font-size: clamp(1.05rem, 1vw, 1.2rem);
+      }
+
+      .panel-link {
+        width: 16.5rem;
+        min-height: 3rem;
+        font-size: 0.9rem;
+      }
+
       .footer-code,
       .home-language button,
       .social-link {
@@ -756,7 +743,8 @@
       }
 
       .route-list a {
-        font-size: 0.83rem;
+        font-size: 0.9rem;
+        line-height: 1.85;
       }
     }
 
@@ -766,7 +754,7 @@
         --stage-width: clamp(100rem, 70vw, 112rem);
         --stage-gap: clamp(4rem, 4vw, 6.2rem);
         --logo-size: clamp(40rem, 40vmin, 46rem);
-        --panel-width: clamp(29rem, 20vw, 31rem);
+        --panel-width: clamp(31rem, 20vw, 34rem);
         --intro-title-max: 5.6rem;
         --panel-title-max: 3.45rem;
       }
@@ -774,26 +762,23 @@
 
     @media (max-width: 1080px) {
       .shell {
-        display: block;
-        padding-top: 0;
-        padding-bottom: 0;
+        padding-top: clamp(1.5rem, 4vw, 3rem);
+        padding-bottom: clamp(4rem, 8vh, 5.5rem);
       }
 
       .home {
-        --content-lift: clamp(1.6rem, 4.2vh, 2.55rem);
-        position: relative;
-        grid-template-columns: 1fr;
-        place-items: center;
-        width: min(100%, 48rem);
-        height: 100svh;
+        grid-template-columns: minmax(0, 1fr) minmax(16rem, min(42vw, 31rem));
+        grid-template-areas:
+          "intro portal"
+          "panel portal";
+        align-items: center;
+        width: min(100%, 56rem);
         min-height: 0;
       }
 
       .intro {
-        position: absolute;
-        top: clamp(3.2rem, 7vh, 5rem);
-        left: 0;
-        max-width: min(29rem, 58vw);
+        grid-area: intro;
+        max-width: min(29rem, 100%);
         text-align: left;
       }
 
@@ -809,25 +794,16 @@
       }
 
       .portal {
+        grid-area: portal;
         width: min(62vmin, 31rem);
       }
 
       .section-panel {
-        position: absolute;
-        right: 0;
-        bottom: clamp(3.4rem, 7vh, 5rem);
-        height: 35rem;
-        max-width: min(25rem, 48vw);
+        grid-area: panel;
+        align-self: start;
+        max-width: min(25rem, 100%);
         min-height: 0;
         padding-left: 0;
-      }
-
-      .panel-title {
-        height: 6.6rem;
-      }
-
-      .panel-copy {
-        height: 8.2rem;
       }
 
       .route-list {
@@ -865,9 +841,13 @@
       }
 
       .home {
-        --content-lift: 0rem;
         display: grid;
+        grid-template-columns: 1fr;
         grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+          "intro"
+          "portal"
+          "panel";
         gap: clamp(0.7rem, 2vh, 1.1rem);
         align-items: center;
         width: 100%;
@@ -1059,13 +1039,13 @@
 
       .footer-code,
       .social-link {
-        font-size: 0.66rem;
-        letter-spacing: 0.06em;
+        font-size: 0.58rem;
+        letter-spacing: 0.045em;
         white-space: nowrap;
       }
 
       .socials {
-        gap: 0.62rem;
+        display: none;
       }
 
       .copy-toast {

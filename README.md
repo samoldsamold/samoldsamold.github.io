@@ -18,13 +18,13 @@ No frameworks. No build step. Pure HTML, CSS, and vanilla JavaScript hosted on G
 
 ### Landing page — frontend highlights
 
-#### Three-column CSS Grid
+#### Responsive stage grid
 
-The page uses a single CSS Grid row with three columns: intro text (left), the cat logo navigation (center), and a dynamically updating section panel (right). Both outer columns are `minmax(14rem, 1fr)` so they scale with the viewport while keeping the logo fixed.
+The page uses a three-column CSS Grid stage: intro text (left), the cat logo navigation (center), and a live room panel (right). Shared custom properties such as `--stage-width`, `--stage-gap`, `--logo-size`, and `--panel-width` keep the composition balanced from laptop screens to 27-inch displays without manually pinning text coordinates.
 
-#### Vertical alignment via `--content-lift`
+#### Flow-based panel layout
 
-Aligning the left-column eyebrow with the right-column kicker across columns of different heights is solved with a CSS custom property `--content-lift`. The intro is shifted upward with `translateY(calc(-1 * var(--content-lift)))`, and every element in the right panel is absolutely positioned with a matching `top: calc(Xrem - var(--content-lift))` offset. This lets both sides share the same visual baseline without any JavaScript measurement.
+The right panel is normal Flex/Grid flow rather than absolute-positioned text blocks. The kicker, title, Chinese label, body copy, CTA, and room list stack naturally, so larger desktop font sizes cannot overlap when the viewport grows.
 
 #### Cursor glow
 
@@ -42,13 +42,13 @@ The `samold.webp` logo uses two intersecting `mask-image` linear gradients (hori
 
 | Breakpoint | Layout |
 |---|---|
-| `> 1080px` | Three-column grid, shell flex-centers the content, equal top/bottom padding |
-| `≤ 1080px` | Single-column grid; intro and section panel absolutely positioned top/bottom |
-| `≤ 640px` | Compact layout; body copy and route list hidden, panel simplified |
+| `> 1080px` | Three-column stage, content centered in normal document flow |
+| `≤ 1080px` | Two-column tablet flow with the panel below intro, logo beside them |
+| `≤ 640px` | Compact single-column layout with mobile language bubble and room carousel |
 
-#### Equal visual margins
+#### Large-screen scaling
 
-Shell `padding-top` and `padding-bottom` are both `clamp(3rem, 7vh, 5rem)`. The footer is pinned at `bottom: clamp(3rem, 7vh, 5rem)`. This makes the distance from the top of the first text element to the viewport top equal to the distance from the footer text to the viewport bottom.
+Large desktop breakpoints increase the stage, logo, room panel, hover pills, and typography together while retaining maximum bounds. This prevents the site from looking tiny on 2560×1440 displays or stretching endlessly on 4K screens.
 
 ---
 
@@ -63,7 +63,7 @@ Shell `padding-top` and `padding-bottom` are both `clamp(3rem, 7vh, 5rem)`. The 
 | **L** | Labs | Side projects, half-finished prototypes, and playful experiments |
 | **D** | Discoveries | Tools, books, films, links, and useful finds from the web |
 
-Each room is a standalone HTML page sharing `assets/samold-room.css` and `assets/samold-room.js` for consistent chrome (header, navigation, cursor glow).
+Each room is a standalone HTML page sharing `assets/samold-room.css` and `assets/samold-room.js` for consistent chrome (header, navigation, cursor glow). Room home sections use a full-viewport hero grid with centered copy, then reveal the room content on scroll.
 
 ---
 
@@ -118,13 +118,13 @@ No build step — any modern browser works.
 
 ### 落地页前端实现要点
 
-#### 三列 CSS Grid
+#### 响应式 Stage Grid
 
-页面由一行三列 Grid 构成：左列介绍文字、中列猫咪 Logo 导航、右列动态面板。两侧列为 `minmax(14rem, 1fr)`，随视口等比缩放，Logo 列保持固定尺寸。
+落地页使用三列 CSS Grid：左列介绍文字、中列猫咪 Logo 导航、右列动态房间面板。`--stage-width`、`--stage-gap`、`--logo-size`、`--panel-width` 等变量统一控制整体舞台比例，让 13 寸笔记本和 27 寸显示器都保持稳定构图。
 
-#### `--content-lift` 垂直对齐技巧
+#### 文档流动态面板
 
-左右两列内容高度不同，要让两侧的第一行文字保持同一视觉基线，使用了 CSS 自定义属性 `--content-lift`：左侧 intro 用 `translateY(calc(-1 * var(--content-lift)))` 整体上移；右侧面板所有元素绝对定位，`top` 值统一为 `calc(Xrem - var(--content-lift))`。两侧同步偏移，无需 JavaScript 测量任何元素高度。
+右侧面板不再用绝对定位叠放文字，而是使用正常 Flex/Grid 文档流。kicker、标题、中文说明、正文、CTA 和房间目录自然向下排列，因此大屏字体放大后不会互相覆盖。
 
 #### 光标跟随光晕
 
@@ -142,13 +142,13 @@ Logo 上叠放六个透明 `<a>` 元素，各自使用手工调试的有机形 `
 
 | 断点 | 布局 |
 |---|---|
-| `> 1080px` | 三列 Grid，shell 用 flex 垂直居中内容，上下等距留白 |
-| `≤ 1080px` | 单列 Grid，左侧文字与右侧面板绝对定位分别锚定顶部和底部 |
-| `≤ 640px` | 紧凑布局，正文与导航列表隐藏，面板简化显示 |
+| `> 1080px` | 三列舞台布局，主内容在正常文档流中居中 |
+| `≤ 1080px` | 平板双列布局，面板位于简介下方，Logo 位于旁侧 |
+| `≤ 640px` | 手机单列布局，保留语言泡泡和房间轮播 |
 
-#### 等距上下边距
+#### 大屏缩放
 
-Shell 的 `padding-top` 和 `padding-bottom` 均为 `clamp(3rem, 7vh, 5rem)`，footer 的 `bottom` 使用同一值，确保页面顶部第一个文字元素到视口上边界的距离，等于 footer 文字到视口下边界的距离。
+大屏断点会同步放大 stage、Logo、右侧面板、hover 标签和字体，同时设置最大值，避免 2560×1440 下显得过小，也避免 4K 屏无限扩散。
 
 ---
 
@@ -163,7 +163,7 @@ Shell 的 `padding-top` 和 `padding-bottom` 均为 `clamp(3rem, 7vh, 5rem)`，f
 | **L** | Labs 实验室 | 业余项目、半成品原型、技术实验 |
 | **D** | Discoveries 发现 | 工具、书影、好链接、网络淘到的好东西 |
 
-每个房间是独立 HTML 页面，共享 `assets/samold-room.css` 和 `assets/samold-room.js` 提供一致的顶部导航与光晕效果。
+每个房间是独立 HTML 页面，共享 `assets/samold-room.css` 和 `assets/samold-room.js` 提供一致的顶部导航与光晕效果。房间首页使用占满首屏的居中 hero，向下滚动后展示具体内容。
 
 ---
 

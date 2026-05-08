@@ -112,6 +112,12 @@
         }
     </script>
 <style>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
     :root {
         --page-bg: #070b12;
         --page-surface: #0b1017;
@@ -120,6 +126,9 @@
         --glow-rgb: 128, 255, 40;
         --cursor-x: 50vw;
         --cursor-y: 50vh;
+        --resume-sidebar-width: clamp(23rem, 23vw, 31rem);
+        --resume-content-width: clamp(44rem, 48vw, 61rem);
+        --resume-main-x: clamp(3rem, 6vw, 10rem);
     }
 
     body {
@@ -465,28 +474,37 @@
     }
 
     @media (min-width: 1024px) {
+        body {
+            overflow-x: hidden;
+        }
+
         #profile-sidebar {
+            width: var(--resume-sidebar-width) !important;
             height: 100vh;
             max-height: 100vh;
             overflow: hidden;
-            padding: 108px 28px 92px 112px;
+            padding:
+                clamp(4.5rem, 9vh, 7.25rem)
+                clamp(1.75rem, 2.4vw, 3.25rem)
+                clamp(4rem, 7vh, 6.25rem)
+                clamp(4.25rem, 7vw, 8rem);
         }
 
         #profile-sidebar .sidebar-main {
             min-height: 0;
-            padding-bottom: 28px;
+            padding-bottom: clamp(1.25rem, 2.4vh, 2rem);
             justify-content: flex-start;
-            gap: 42px;
+            gap: clamp(2rem, 4.2vh, 3.25rem);
         }
 
         #profile-sidebar .sidebar-identity {
-            gap: 18px;
-            margin-bottom: 18px;
+            gap: clamp(1rem, 1.35vw, 1.4rem);
+            margin-bottom: clamp(0.95rem, 1.8vh, 1.35rem);
         }
 
         #profile-sidebar .sidebar-avatar {
-            width: 74px;
-            height: 74px;
+            width: clamp(4.6rem, 4.1vw, 6.4rem);
+            height: clamp(4.6rem, 4.1vw, 6.4rem);
             flex: 0 0 auto;
             margin-bottom: 0;
             border: 0;
@@ -494,55 +512,102 @@
         }
 
         #profile-sidebar .sidebar-name {
-            font-size: 34px;
+            font-size: clamp(2.1rem, 2.05vw, 3rem);
             line-height: 1;
             letter-spacing: 0;
             margin-bottom: 0;
         }
 
         #profile-sidebar .sidebar-role {
-            font-size: 15px;
+            font-size: clamp(0.95rem, 0.95vw, 1.18rem);
             line-height: 1.35;
             letter-spacing: 0;
         }
 
         #profile-sidebar .sidebar-summary {
-            max-width: 250px;
-            margin-top: 16px;
-            font-size: 13px;
-            line-height: 1.55;
+            max-width: clamp(16rem, 17vw, 22rem);
+            margin-top: clamp(0.95rem, 2vh, 1.35rem);
+            font-size: clamp(0.84rem, 0.78vw, 1rem);
+            line-height: 1.6;
         }
 
         #profile-sidebar .sidebar-nav-list {
-            gap: 15px;
-            padding-block: 8px;
+            gap: clamp(0.8rem, 1.65vh, 1.15rem);
+            padding-block: clamp(0.35rem, 0.9vh, 0.65rem);
         }
 
         #profile-sidebar .sidebar-link {
-            font-size: 13px;
+            font-size: clamp(0.84rem, 0.76vw, 0.98rem);
             line-height: 1;
             letter-spacing: 0;
             transition: color 260ms ease, opacity 260ms ease, transform 260ms ease;
         }
 
         #profile-sidebar .sidebar-footer {
-            gap: 22px;
+            gap: clamp(1.1rem, 2.3vh, 1.65rem);
         }
 
         #profile-sidebar .sidebar-language {
             margin-bottom: 0;
-            font-size: 13px;
+            font-size: clamp(0.84rem, 0.76vw, 0.98rem);
             letter-spacing: 0;
         }
 
         #profile-sidebar .social-links {
             margin-top: 0;
             margin-left: -6px;
-            gap: 22px;
+            gap: clamp(1.1rem, 1.5vw, 1.6rem);
+        }
+
+        main {
+            width: calc(100% - var(--resume-sidebar-width)) !important;
+            max-width: none !important;
+            margin-left: var(--resume-sidebar-width) !important;
+            padding-inline: var(--resume-main-x) !important;
+            padding-top: clamp(5rem, 9vh, 7rem) !important;
+            gap: clamp(5.5rem, 8vh, 7.5rem) !important;
+        }
+
+        main > section {
+            width: 100%;
+            max-width: var(--resume-content-width);
+            margin-inline: auto;
+        }
+
+        main > section > h2 {
+            font-size: clamp(1.6rem, 1.35vw, 2rem) !important;
+        }
+
+        .section-card {
+            padding: clamp(1.45rem, 1.65vw, 2rem);
+        }
+
+        .section-card p,
+        .section-card li,
+        .section-card a {
+            font-size: clamp(1rem, 0.92vw, 1.12rem);
+        }
+
+        .section-card .card-title {
+            font-size: clamp(1.15rem, 1.05vw, 1.35rem);
         }
     }
 
     @media (max-width: 1023px) {
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body > .mx-auto {
+            width: auto !important;
+            max-width: 100% !important;
+            margin-inline: 0 !important;
+            overflow-x: hidden;
+        }
+
         body::before {
             background: radial-gradient(circle 340px at var(--cursor-x) var(--cursor-y), rgba(var(--glow-rgb), 0.18), rgba(var(--glow-rgb), 0.08) 36%, rgba(var(--glow-rgb), 0) 76%);
         }
@@ -554,12 +619,17 @@
             width: auto;
             height: auto;
             max-height: none;
-            margin: 0 calc(50% - 50vw) 3rem;
+            margin: 0 0 3rem;
             padding: clamp(2.75rem, 8vw, 4.25rem) clamp(1.5rem, 7vw, 3.25rem) clamp(2.4rem, 7vw, 3.5rem);
             background:
                 radial-gradient(circle at 82% 8%, rgba(var(--glow-rgb), 0.14), rgba(var(--glow-rgb), 0) 38%),
                 linear-gradient(to bottom, rgba(8, 14, 20, 0.98) 55%, rgba(8, 14, 20, 0) 100%);
             overflow: visible;
+        }
+
+        #profile-sidebar,
+        #profile-sidebar * {
+            min-width: 0;
         }
 
         #profile-sidebar .sidebar-main {
@@ -573,6 +643,7 @@
         }
 
         #profile-sidebar .sidebar-intro {
+            width: min(100%, calc(100vw - 3rem));
             max-width: 38rem;
             margin: 0 auto;
         }
@@ -611,8 +682,37 @@
             line-height: 1.62;
         }
 
+        #profile-sidebar .sidebar-role,
+        #profile-sidebar .sidebar-summary {
+            overflow-wrap: anywhere;
+        }
+
+        main {
+            display: block !important;
+            width: auto !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            padding-inline: clamp(1.25rem, 6vw, 2rem) !important;
+            overflow-x: hidden;
+        }
+
+        main > section {
+            width: min(100%, calc(100vw - 2.5rem));
+            max-width: calc(100vw - 2.5rem);
+            min-width: 0;
+            margin-inline: auto;
+        }
+
         .section-card {
             padding: 1.25rem;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .section-card,
+        .section-card * {
+            overflow-wrap: anywhere;
         }
 
         main > section > h2 {
