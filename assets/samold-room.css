@@ -44,6 +44,11 @@ body::before {
   pointer-events: none;
   background: radial-gradient(circle 460px at var(--cursor-x) var(--cursor-y), rgba(var(--glow-rgb), 0.2), rgba(var(--glow-rgb), 0.09) 34%, rgba(var(--glow-rgb), 0.026) 62%, transparent 82%);
   mix-blend-mode: screen;
+  transition: opacity 160ms ease;
+}
+
+body.cursor-in-room-card::before {
+  opacity: 0;
 }
 
 a {
@@ -90,32 +95,35 @@ strong {
 }
 
 .room-header::before {
-  content: "";
+  content: none;
+}
+
+.room-top-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100vw;
+  inset: 0 0 auto 0;
+  z-index: 35;
+  width: 100%;
   height: clamp(7.2rem, 13vh, 10.5rem);
   background: linear-gradient(to bottom, rgba(3, 7, 10, 0.98), rgba(3, 7, 10, 0.78) 56%, transparent);
   opacity: 0;
   pointer-events: none;
-  transform: scaleY(0.7);
+  transform: translateY(-100%);
   transform-origin: top;
   transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .room-page.is-room-scrolled .room-header,
+body.is-room-scrolled .room-header,
 .room-header:focus-within {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);
 }
 
-.room-page.is-room-scrolled .room-header::before,
-.room-header:focus-within::before {
+body.is-room-scrolled .room-top-backdrop,
+.room-header:focus-within ~ .room-top-backdrop {
   opacity: 1;
-  transform: scaleY(1);
+  transform: translateY(0);
 }
 
 /* Language toggle wrapper (injected by samold-room.js) */
@@ -320,6 +328,19 @@ strong {
   text-shadow: none;
 }
 
+.room-reveal-copy.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+.room-reveal-copy.title.is-cn {
+  white-space: nowrap;
+  line-height: 1.06;
+}
+
 .room-reveal-copy strong {
   color: #086a18;
   font-weight: 800;
@@ -451,10 +472,12 @@ html[lang="zh-CN"] .room-title {
   grid-column: span 4;
   min-height: 16rem;
   padding: clamp(1.2rem, 2vw, 1.55rem);
-  border: 1px solid rgba(63, 73, 61, 0.96);
+  border: 1px solid #3f493d;
   border-radius: 0.5rem;
-  background: rgba(11, 16, 23, 0.78);
-  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+  background:
+    radial-gradient(circle 520px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0), rgba(var(--glow-rgb), 0) 70%),
+    rgba(11, 16, 23, 0.82);
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
 .room-card.featured {
@@ -473,8 +496,19 @@ html[lang="zh-CN"] .room-title {
 .room-card:hover,
 .room-card:focus-within {
   border-color: rgba(var(--glow-rgb), 0.72);
-  background: linear-gradient(135deg, rgba(var(--glow-rgb), 0.13), rgba(11, 16, 23, 0.82) 42%);
-  transform: translateY(-3px);
+  background:
+    radial-gradient(circle 520px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0.13), rgba(var(--glow-rgb), 0.04) 38%, rgba(11, 16, 23, 0.84) 72%),
+    rgba(11, 16, 23, 0.88);
+}
+
+.room-card.is-card-lit {
+  border-color: rgb(var(--glow-rgb));
+  background:
+    radial-gradient(circle 560px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0.22), rgba(var(--glow-rgb), 0.11) 32%, rgba(var(--glow-rgb), 0.03) 66%, rgba(11, 16, 23, 0.86) 100%),
+    rgba(11, 16, 23, 0.9);
+  box-shadow:
+    0 0 0 1px rgba(var(--glow-rgb), 0.12) inset,
+    0 20px 52px rgba(12, 44, 12, 0.28);
 }
 
 .card-meta {
@@ -496,10 +530,12 @@ html[lang="zh-CN"] .room-title {
   min-height: 1.8rem;
   padding: 0 0.72rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--green);
+  border: 1px solid #3f493d;
+  background: #2b2d2c;
+  color: var(--text);
   letter-spacing: 0;
   text-transform: none;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .room-card h2,
@@ -509,6 +545,7 @@ html[lang="zh-CN"] .room-title {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   letter-spacing: 0;
+  transition: color 180ms ease;
 }
 
 .room-card h2 {
@@ -530,6 +567,17 @@ html[lang="zh-CN"] .room-title {
   line-height: 1.72;
 }
 
+.room-card strong {
+  transition: color 180ms ease;
+}
+
+.room-card.is-card-lit h2,
+.room-card.is-card-lit h3,
+.room-card.is-card-lit strong,
+.room-card.is-card-lit .inline-link {
+  color: #99f899;
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;
@@ -544,10 +592,20 @@ html[lang="zh-CN"] .room-title {
   min-height: 2rem;
   align-items: center;
   padding: 0 0.8rem;
-  border-radius: 0.35rem;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--green-soft);
+  border: 1px solid #3f493d;
+  border-radius: 0.22rem;
+  background: #2b2d2c;
+  color: var(--text);
   font-size: 0.88rem;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.room-card.is-card-lit .tag,
+.room-card.is-card-lit .pill {
+  background: rgba(var(--glow-rgb), 0.12);
+  border-color: rgba(var(--glow-rgb), 0.56);
+  color: #99f899;
+  box-shadow: 0 0 18px rgba(var(--glow-rgb), 0.12) inset;
 }
 
 .article-list,
@@ -652,7 +710,26 @@ html[lang="zh-CN"] .room-title {
   box-shadow: 0 0 28px rgba(var(--glow-rgb), 0.16), 0 18px 42px rgba(0, 0, 0, 0.38);
   text-decoration: none;
   touch-action: manipulation;
-  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(1rem) scale(0.96);
+  transition:
+    opacity 260ms ease,
+    visibility 0s linear 260ms,
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease;
+}
+
+body.is-room-scrolled .resume-bubble,
+.resume-bubble:focus-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition-delay: 80ms, 0s, 80ms, 0s, 0s, 0s;
 }
 
 .resume-bubble:hover,

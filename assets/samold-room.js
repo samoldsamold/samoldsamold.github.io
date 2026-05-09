@@ -116,6 +116,64 @@ function createRoomReveal(enCache, cn) {
     revealContent.appendChild(fo);
     return { ...item, fo, div };
   });
+  const titleAnchor = {
+    ready: false,
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    style: null
+  };
+  const fitCanvas = document.createElement('canvas');
+  const fitContext = fitCanvas.getContext('2d');
+
+  function styleSnapshot(style) {
+    return {
+      fontFamily: style.fontFamily,
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight,
+      lineHeight: style.lineHeight,
+      letterSpacing: style.letterSpacing,
+      textAlign: style.textAlign,
+      textTransform: style.textTransform,
+      overflowWrap: style.overflowWrap || 'normal'
+    };
+  }
+
+  function captureTitleAnchor(rect, style, heroRect) {
+    if (rect.width <= 0 || rect.height <= 0) return;
+    titleAnchor.ready = true;
+    titleAnchor.x = rect.left - heroRect.left;
+    titleAnchor.y = rect.top - heroRect.top;
+    titleAnchor.width = rect.width;
+    titleAnchor.height = rect.height;
+    titleAnchor.style = styleSnapshot(style);
+  }
+
+  function plainText(html) {
+    const el = document.createElement('div');
+    el.innerHTML = html || '';
+    return (el.textContent || '').trim();
+  }
+
+  function fittedChineseTitleSize(text, width) {
+    const small = window.matchMedia('(max-width: 560px)').matches;
+    const min = small ? 28 : 38;
+    const max = small ? 42 : Math.min(76, state.width * 0.052);
+    const chars = Math.max(1, Array.from(text).length);
+    const estimated = (width / chars) * 0.94;
+    let size = Math.max(min, Math.min(max, estimated));
+
+    if (fitContext) {
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        fitContext.font = `700 ${size}px "Space Grotesk", Inter, sans-serif`;
+        if (fitContext.measureText(text).width <= width * 0.96 || size <= min) break;
+        size -= 2;
+      }
+    }
+
+    return `${Math.max(min, size).toFixed(2)}px`;
+  }
 
   function heroValue(lang, selector) {
     if (lang === 'cn') {
@@ -136,15 +194,13 @@ function createRoomReveal(enCache, cn) {
     const stepX = wordWidth + gapX;
     const stepY = compact ? fontSize * 1.34 : fontSize * 2.12;
     const letterSpacing = compact ? '0.06em' : '0.04em';
-    const cols = Math.max(1, Math.floor(Math.max(0, width - wordWidth) / stepX) + 1);
+    const cols = Math.max(1, Math.floor(Math.max(0, width + gapX) / stepX));
     const totalWidth = wordWidth + (cols - 1) * stepX;
     const startX = (width - totalWidth) / 2 + wordWidth / 2;
 
-    let row = 0;
-    for (let y = fontSize * 0.82; y < height - fontSize * 0.18; y += stepY) {
-      const rowShift = row % 2 ? Math.min(stepX * 0.42, Math.max(0, (width - totalWidth) * 0.5)) : 0;
+    for (let y = fontSize * 0.85; y <= height - fontSize * 0.45; y += stepY) {
       for (let col = 0; col < cols; col += 1) {
-        const x = Math.min(width - wordWidth / 2, Math.max(wordWidth / 2, startX + col * stepX + rowShift));
+        const x = startX + col * stepX;
         const text = svgEl('text', {
           x: String(x),
           y: String(y),
@@ -155,7 +211,6 @@ function createRoomReveal(enCache, cn) {
         text.textContent = 'SAMOLD';
         group.appendChild(text);
       }
-      row += 1;
     }
   }
 
@@ -187,36 +242,63 @@ function createRoomReveal(enCache, cn) {
 
   function syncCopyGeometry() {
     const heroRect = hero.getBoundingClientRect();
+    const revealLang = state.lang === 'cn' ? 'en' : 'cn';
     copies.forEach(copy => {
       const source = document.querySelector(copy.selector);
       if (!source) return;
 
       const rect = source.getBoundingClientRect();
-      const style = window.getComputedStyle(source);
-      const padY = copy.kind === 'title' ? 18 : 8;
-      const height = rect.height + padY * 2;
+      const sourceStyle = window.getComputedStyle(source);
+      if (copy.kind === 'title' && (!titleAnchor.ready || root.lang !== 'zh-CN')) {
+        captureTitleAnchor(rect, sourceStyle, heroRect);
+      }
 
-      copy.fo.setAttribute('x', String(rect.left - heroRect.left));
-      copy.fo.setAttribute('y', String(rect.top - heroRect.top - padY));
-      copy.fo.setAttribute('width', String(rect.width));
+      const anchor = copy.kind === 'title' && titleAnchor.ready
+        ? titleAnchor
+        : {
+            x: rect.left - heroRect.left,
+            y: rect.top - heroRect.top,
+            width: rect.width,
+            height: rect.height,
+            style: styleSnapshot(sourceStyle)
+          };
+
+      const padY = copy.kind === 'title' ? 0 : 8;
+      const height = copy.kind === 'title'
+        ? Math.max(anchor.height + 36, rect.height + 36)
+        : rect.height + padY * 2;
+      const y = copy.kind === 'title'
+        ? anchor.y + anchor.height / 2 - height / 2
+        : anchor.y - padY;
+      const style = copy.kind === 'title' && titleAnchor.style ? titleAnchor.style : anchor.style;
+
+      copy.fo.setAttribute('x', String(anchor.x));
+      copy.fo.setAttribute('y', String(y));
+      copy.fo.setAttribute('width', String(anchor.width));
       copy.fo.setAttribute('height', String(height));
 
+      const isTitle = copy.kind === 'title';
+      const isChineseTitle = isTitle && revealLang === 'cn';
+      const fontSize = isChineseTitle
+        ? fittedChineseTitleSize(plainText(copy.div.innerHTML), anchor.width)
+        : style.fontSize;
+
       Object.assign(copy.div.style, {
-        display: 'block',
+        display: isTitle ? 'flex' : 'block',
         width: '100%',
-        height: 'auto',
+        height: isTitle ? '100%' : 'auto',
         margin: '0',
-        padding: `${padY}px 0 0`,
+        padding: isTitle ? '0' : `${padY}px 0 0`,
         boxSizing: 'border-box',
         fontFamily: style.fontFamily,
-        fontSize: style.fontSize,
+        fontSize,
         fontWeight: style.fontWeight,
         lineHeight: style.lineHeight,
         letterSpacing: style.letterSpacing,
         textAlign: style.textAlign,
         textTransform: style.textTransform,
         overflowWrap: style.overflowWrap || 'normal',
-        whiteSpace: copy.kind === 'title' && state.lang !== 'cn' ? 'nowrap' : 'normal'
+        whiteSpace: isChineseTitle ? 'nowrap' : 'normal'
       });
     });
   }
@@ -244,6 +326,8 @@ function createRoomReveal(enCache, cn) {
     const revealLang = lang === 'cn' ? 'en' : 'cn';
     copies.forEach(copy => {
       const value = heroValue(revealLang, copy.selector);
+      copy.div.classList.toggle('is-cn', revealLang === 'cn');
+      copy.div.dataset.revealLang = revealLang;
       if (value !== undefined) copy.div.innerHTML = value;
     });
     requestAnimationFrame(layout);
@@ -394,14 +478,119 @@ function createRoomReveal(enCache, cn) {
 (function () {
   const page = document.querySelector('.room-page');
   if (!page) return;
+  let backdrop = document.querySelector('.room-top-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'room-top-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.prepend(backdrop);
+  }
 
   function updateHeaderState() {
     const threshold = Math.min(120, window.innerHeight * 0.12);
-    page.classList.toggle('is-room-scrolled', window.scrollY > threshold);
+    const scrolled = window.scrollY > threshold;
+    page.classList.toggle('is-room-scrolled', scrolled);
+    document.body.classList.toggle('is-room-scrolled', scrolled);
   }
 
   window.addEventListener('scroll', updateHeaderState, { passive: true });
   window.addEventListener('resize', updateHeaderState, { passive: true });
   document.addEventListener('DOMContentLoaded', updateHeaderState);
   updateHeaderState();
+})();
+
+// Room content cards use the same cursor-lit language as the resume cards:
+// the global glow yields to a card-local radial light and touch screens light
+// the card nearest the reading center.
+(function () {
+  const cards = [...document.querySelectorAll('.room-card')];
+  if (!cards.length) return;
+
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  let activeCard = null;
+  let raf = 0;
+
+  function setActiveCard(card) {
+    if (activeCard === card) return;
+    if (activeCard) activeCard.classList.remove('is-card-lit');
+    activeCard = card;
+    document.body.classList.toggle('cursor-in-room-card', Boolean(card && finePointer.matches));
+    if (activeCard) activeCard.classList.add('is-card-lit');
+  }
+
+  function setCardPoint(card, clientX, clientY) {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--card-x', `${clientX - rect.left}px`);
+    card.style.setProperty('--card-y', `${clientY - rect.top}px`);
+  }
+
+  function syncPointerCard(event) {
+    if (!finePointer.matches) return;
+    const target = document.elementFromPoint(event.clientX, event.clientY);
+    const card = target ? target.closest('.room-card') : null;
+    if (card) {
+      setCardPoint(card, event.clientX, event.clientY);
+      setActiveCard(card);
+    } else {
+      setActiveCard(null);
+    }
+  }
+
+  function syncScrollCard() {
+    if (finePointer.matches) return;
+    const focusY = window.innerHeight * 0.5;
+    let best = null;
+    let bestDistance = Infinity;
+
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const visible = rect.bottom > 0 && rect.top < window.innerHeight;
+      if (!visible) return;
+      const center = rect.top + rect.height / 2;
+      const distance = Math.abs(center - focusY);
+      if (distance < bestDistance) {
+        best = card;
+        bestDistance = distance;
+      }
+    });
+
+    if (best) {
+      best.style.setProperty('--card-x', '50%');
+      best.style.setProperty('--card-y', '50%');
+    }
+    setActiveCard(best);
+  }
+
+  function scheduleScrollSync() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      syncScrollCard();
+    });
+  }
+
+  cards.forEach(card => {
+    card.addEventListener('pointermove', event => {
+      if (event.pointerType === 'mouse') {
+        setCardPoint(card, event.clientX, event.clientY);
+      }
+    }, { passive: true });
+
+    card.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'mouse') {
+        setCardPoint(card, event.clientX, event.clientY);
+        setActiveCard(card);
+      }
+    }, { passive: true });
+  });
+
+  document.addEventListener('pointermove', syncPointerCard, { passive: true });
+  window.addEventListener('scroll', scheduleScrollSync, { passive: true });
+  window.addEventListener('resize', scheduleScrollSync, { passive: true });
+  finePointer.addEventListener('change', () => {
+    setActiveCard(null);
+    scheduleScrollSync();
+  });
+  document.addEventListener('DOMContentLoaded', scheduleScrollSync);
+  scheduleScrollSync();
 })();
