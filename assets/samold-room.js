@@ -55,6 +55,8 @@ function createRoomReveal(enCache, cn) {
     targetY: -600,
     lastClientX: -600,
     lastClientY: -600,
+    targetOpacity: 0,
+    revealOpacity: 0,
     width: 1,
     height: 1
   };
@@ -95,7 +97,7 @@ function createRoomReveal(enCache, cn) {
   defs.appendChild(mask);
   revealSvg.appendChild(defs);
 
-  const revealGroup = svgEl('g', { mask: `url(#${maskId})` });
+  const revealGroup = svgEl('g', { mask: `url(#${maskId})`, opacity: '0' });
   const revealBg = svgEl('rect', { class: 'room-reveal-bg' });
   const revealPattern = svgEl('g', { class: 'room-reveal-pattern' });
   const revealContent = svgEl('g', { class: 'room-reveal-content' });
@@ -214,6 +216,21 @@ function createRoomReveal(enCache, cn) {
     }
   }
 
+  function syncFollowerNodes() {
+    positions.forEach((pos, index) => {
+      followers[index].setAttribute('cx', pos.x.toFixed(2));
+      followers[index].setAttribute('cy', pos.y.toFixed(2));
+    });
+  }
+
+  function snapFollowers(x, y) {
+    positions.forEach(pos => {
+      pos.x = x;
+      pos.y = y;
+    });
+    syncFollowerNodes();
+  }
+
   function syncSvgSize() {
     const width = Math.max(1, Math.round(hero.clientWidth));
     const height = Math.max(1, Math.round(hero.clientHeight));
@@ -311,8 +328,18 @@ function createRoomReveal(enCache, cn) {
       state.lastClientY >= rect.top &&
       state.lastClientY <= rect.bottom;
 
-    state.targetX = inside ? state.lastClientX - rect.left : -600;
-    state.targetY = inside ? state.lastClientY - rect.top : -600;
+    if (!inside) {
+      state.targetOpacity = 0;
+      return;
+    }
+
+    const x = state.lastClientX - rect.left;
+    const y = state.lastClientY - rect.top;
+    const shouldSnap = reduceMotion || (state.targetOpacity === 0 && state.revealOpacity < 0.05);
+    state.targetX = x;
+    state.targetY = y;
+    state.targetOpacity = 1;
+    if (shouldSnap) snapFollowers(x, y);
   }
 
   function layout() {
@@ -339,12 +366,26 @@ function createRoomReveal(enCache, cn) {
     updateTargetFromLastPointer();
   }, { passive: true });
 
+  hero.addEventListener('pointerleave', () => {
+    state.targetOpacity = 0;
+  }, { passive: true });
+
+  window.addEventListener('blur', () => {
+    state.targetOpacity = 0;
+  });
+
   window.addEventListener('scroll', updateTargetFromLastPointer, { passive: true });
   window.addEventListener('resize', layout, { passive: true });
   if ('ResizeObserver' in window) new ResizeObserver(layout).observe(hero);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 
   function tick() {
+    const opacitySpeed = reduceMotion ? 1 : 0.16;
+    state.revealOpacity += (state.targetOpacity - state.revealOpacity) * opacitySpeed;
+    if (state.revealOpacity < 0.002) state.revealOpacity = 0;
+    if (state.revealOpacity > 0.998) state.revealOpacity = 1;
+    revealGroup.setAttribute('opacity', state.revealOpacity.toFixed(3));
+
     positions.forEach((pos, index) => {
       const speed = speeds[index] || speeds[speeds.length - 1];
       pos.x += (state.targetX - pos.x) * speed;
@@ -416,7 +457,7 @@ function createRoomReveal(enCache, cn) {
 
   function updateBrand(lang) {
     const label = document.querySelector('.brand-home span');
-    if (label) label.textContent = lang === 'cn' ? '老样子' : 'SAMOLD';
+    if (label) label.textContent = 'SAMOLD';
   }
 
   function prepareTitleSlot() {
@@ -582,9 +623,17 @@ function createRoomReveal(enCache, cn) {
         setActiveCard(card);
       }
     }, { passive: true });
+
+    card.addEventListener('pointerleave', event => {
+      if (event.pointerType === 'mouse') {
+        setActiveCard(null);
+      }
+    }, { passive: true });
   });
 
   document.addEventListener('pointermove', syncPointerCard, { passive: true });
+  document.addEventListener('pointerleave', () => setActiveCard(null), { passive: true });
+  window.addEventListener('blur', () => setActiveCard(null));
   window.addEventListener('scroll', scheduleScrollSync, { passive: true });
   window.addEventListener('resize', scheduleScrollSync, { passive: true });
   finePointer.addEventListener('change', () => {

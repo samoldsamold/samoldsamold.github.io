@@ -40,7 +40,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 8;
+  z-index: 0;
   pointer-events: none;
   background: radial-gradient(circle 460px at var(--cursor-x) var(--cursor-y), rgba(var(--glow-rgb), 0.2), rgba(var(--glow-rgb), 0.09) 34%, rgba(var(--glow-rgb), 0.026) 62%, transparent 82%);
   mix-blend-mode: screen;
@@ -69,7 +69,7 @@ strong {
 
 .room-page {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: min(100%, var(--room-stage));
   min-height: 100svh;
   margin: 0 auto;
@@ -80,7 +80,7 @@ strong {
   position: fixed;
   top: clamp(1rem, 2.4vw, 2rem);
   left: 50%;
-  z-index: 40;
+  z-index: 80;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -101,10 +101,10 @@ strong {
 .room-top-backdrop {
   position: fixed;
   inset: 0 0 auto 0;
-  z-index: 35;
+  z-index: 2;
   width: 100%;
   height: clamp(7.2rem, 13vh, 10.5rem);
-  background: linear-gradient(to bottom, rgba(3, 7, 10, 0.98), rgba(3, 7, 10, 0.78) 56%, transparent);
+  background: linear-gradient(to bottom, rgba(3, 7, 10, 0.99), rgba(3, 7, 10, 0.86) 56%, rgba(3, 7, 10, 0));
   opacity: 0;
   pointer-events: none;
   transform: translateY(-100%);
@@ -177,6 +177,7 @@ body.is-room-scrolled .room-top-backdrop,
   text-decoration: none;
   text-transform: uppercase;
   touch-action: manipulation;
+  text-shadow: 0 0 18px rgba(0, 0, 0, 0.72);
 }
 
 .brand-home img {
@@ -204,11 +205,12 @@ body.is-room-scrolled .room-top-backdrop,
   align-items: center;
   justify-content: flex-end;
   gap: clamp(0.42rem, 1vw, 0.95rem);
-  color: rgba(191, 202, 186, 0.56);
+  color: rgba(219, 255, 212, 0.66);
   font-size: clamp(0.86rem, 0.78vw, 1rem);
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(0, 0, 0, 0.72);
 }
 
 .room-nav a {
@@ -287,7 +289,7 @@ body.is-room-scrolled .room-top-backdrop,
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
+  overflow: hidden;
   pointer-events: none;
 }
 
@@ -474,9 +476,8 @@ html[lang="zh-CN"] .room-title {
   padding: clamp(1.2rem, 2vw, 1.55rem);
   border: 1px solid #3f493d;
   border-radius: 0.5rem;
-  background:
-    radial-gradient(circle 520px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0), rgba(var(--glow-rgb), 0) 70%),
-    rgba(11, 16, 23, 0.82);
+  background-color: var(--surface);
+  background-image: none;
   transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
@@ -496,16 +497,14 @@ html[lang="zh-CN"] .room-title {
 .room-card:hover,
 .room-card:focus-within {
   border-color: rgba(var(--glow-rgb), 0.72);
-  background:
-    radial-gradient(circle 520px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0.13), rgba(var(--glow-rgb), 0.04) 38%, rgba(11, 16, 23, 0.84) 72%),
-    rgba(11, 16, 23, 0.88);
+  background-color: var(--surface);
+  background-image: radial-gradient(circle 520px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0.13), rgba(var(--glow-rgb), 0.04) 38%, rgba(var(--glow-rgb), 0) 72%);
 }
 
 .room-card.is-card-lit {
   border-color: rgb(var(--glow-rgb));
-  background:
-    radial-gradient(circle 560px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0.22), rgba(var(--glow-rgb), 0.11) 32%, rgba(var(--glow-rgb), 0.03) 66%, rgba(11, 16, 23, 0.86) 100%),
-    rgba(11, 16, 23, 0.9);
+  background-color: var(--surface);
+  background-image: radial-gradient(circle 560px at var(--card-x, 50%) var(--card-y, 50%), rgba(var(--glow-rgb), 0.22), rgba(var(--glow-rgb), 0.11) 32%, rgba(var(--glow-rgb), 0.03) 66%, rgba(var(--glow-rgb), 0) 100%);
   box-shadow:
     0 0 0 1px rgba(var(--glow-rgb), 0.12) inset,
     0 20px 52px rgba(12, 44, 12, 0.28);
