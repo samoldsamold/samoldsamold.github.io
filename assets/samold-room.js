@@ -534,10 +534,10 @@ function createRoomHeroEffect(room) {
   if (reduceMotion || !finePointer || room === 'labs') return { refresh() {} };
 
   if (room === 'showcase') return createMagneticTitleEffect(hero);
-  if (room === 'articles') return createReaderLineEffect(hero);
+  if (room === 'articles') return createArticleMarginCueEffect(hero);
   if (room === 'moments') return createViewfinderEffect(hero);
-  if (room === 'overview') return createNodeLineEffect(hero);
-  if (room === 'discoveries') return createHighlighterTrailEffect(hero);
+  if (room === 'overview') return createOverviewCompassEffect(hero);
+  if (room === 'discoveries') return createDiscoveryPinEffect(hero);
   return { refresh() {} };
 }
 
@@ -554,13 +554,23 @@ function createMagneticTitleEffect(hero) {
     title.setAttribute('aria-label', text);
     title.replaceChildren();
 
-    Array.from(text).forEach(char => {
-      const span = document.createElement('span');
-      span.className = char === ' ' ? 'magnetic-letter magnetic-space' : 'magnetic-letter';
-      span.setAttribute('aria-hidden', 'true');
-      span.textContent = char === ' ' ? '\u00a0' : char;
-      title.appendChild(span);
-      letters.push({ el: span, x: 0, y: 0, s: 1, tx: 0, ty: 0, ts: 1 });
+    const isCjk = /[\u3400-\u9fff]/.test(text);
+    const tokens = isCjk ? [text] : text.split(/\s+/).filter(Boolean);
+
+    tokens.forEach(token => {
+      const word = document.createElement('span');
+      word.className = 'magnetic-word';
+      word.setAttribute('aria-hidden', 'true');
+
+      Array.from(token).forEach(char => {
+        const span = document.createElement('span');
+        span.className = 'magnetic-letter';
+        span.textContent = char;
+        word.appendChild(span);
+        letters.push({ el: span, x: 0, y: 0, s: 1, tx: 0, ty: 0, ts: 1 });
+      });
+
+      title.appendChild(word);
     });
   }
 
@@ -619,15 +629,18 @@ function createMagneticTitleEffect(hero) {
   };
 }
 
-function createReaderLineEffect(hero) {
-  const line = document.createElement('div');
-  line.className = 'room-reader-line';
-  line.setAttribute('aria-hidden', 'true');
-  hero.appendChild(line);
+function createArticleMarginCueEffect(hero) {
+  const leftCue = document.createElement('div');
+  const rightCue = document.createElement('div');
+  leftCue.className = 'room-margin-cue room-margin-cue-left';
+  rightCue.className = 'room-margin-cue room-margin-cue-right';
+  leftCue.setAttribute('aria-hidden', 'true');
+  rightCue.setAttribute('aria-hidden', 'true');
+  hero.append(leftCue, rightCue);
 
   function move(event) {
     const rect = hero.getBoundingClientRect();
-    hero.style.setProperty('--reader-y', `${event.clientY - rect.top}px`);
+    hero.style.setProperty('--cue-y', `${event.clientY - rect.top}px`);
     hero.classList.add('is-reading');
   }
 
@@ -651,15 +664,22 @@ function createViewfinderEffect(hero) {
   flash.setAttribute('aria-hidden', 'true');
   hero.append(frame, flash);
 
+  const interactiveSelector = 'a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])';
+
   function move(event) {
     const rect = hero.getBoundingClientRect();
     hero.style.setProperty('--vf-x', `${event.clientX - rect.left}px`);
     hero.style.setProperty('--vf-y', `${event.clientY - rect.top}px`);
+    const target = document.elementFromPoint(event.clientX, event.clientY);
+    const isInteractive = Boolean(target && target.closest(interactiveSelector));
     hero.classList.add('is-framing');
+    hero.classList.toggle('is-focusing', isInteractive);
   }
 
   hero.addEventListener('pointermove', move, { passive: true });
-  hero.addEventListener('pointerleave', () => hero.classList.remove('is-framing'), { passive: true });
+  hero.addEventListener('pointerleave', () => {
+    hero.classList.remove('is-framing', 'is-focusing');
+  }, { passive: true });
   hero.addEventListener('click', () => {
     flash.classList.remove('is-flashing');
     window.requestAnimationFrame(() => flash.classList.add('is-flashing'));
@@ -668,132 +688,93 @@ function createViewfinderEffect(hero) {
   return { refresh() {} };
 }
 
-function createNodeLineEffect(hero) {
-  const svg = createSvgNode('svg', { class: 'room-node-lines', 'aria-hidden': 'true' });
+function createOverviewCompassEffect(hero) {
+  const compass = document.createElement('div');
+  compass.className = 'room-compass';
+  compass.setAttribute('aria-hidden', 'true');
   const nodes = [
-    [0.18, 0.27],
-    [0.5, 0.18],
-    [0.82, 0.27],
-    [0.2, 0.72],
-    [0.5, 0.82],
-    [0.8, 0.72]
+    { letter: 'S', label: 'Showcase', x: 0.2, y: 0.34 },
+    { letter: 'A', label: 'Articles', x: 0.38, y: 0.24 },
+    { letter: 'M', label: 'Moments', x: 0.62, y: 0.24 },
+    { letter: 'O', label: 'Overview', x: 0.8, y: 0.34 },
+    { letter: 'L', label: 'Labs', x: 0.32, y: 0.74 },
+    { letter: 'D', label: 'Discoveries', x: 0.68, y: 0.74 }
   ];
-  const lines = nodes.map(() => {
-    const line = createSvgNode('line', { x1: '0', y1: '0', x2: '0', y2: '0' });
-    svg.appendChild(line);
-    return line;
-  });
-  hero.appendChild(svg);
-  let width = 1;
-  let height = 1;
 
-  function layout() {
-    width = Math.max(1, Math.round(hero.clientWidth));
-    height = Math.max(1, Math.round(hero.clientHeight));
-    svg.setAttribute('width', String(width));
-    svg.setAttribute('height', String(height));
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-  }
+  const nodeEls = nodes.map(node => {
+    const item = document.createElement('span');
+    item.className = 'room-compass-node';
+    item.style.setProperty('--node-x', `${node.x * 100}%`);
+    item.style.setProperty('--node-y', `${node.y * 100}%`);
+    item.innerHTML = `<span>${node.letter}</span><small>${node.label}</small>`;
+    compass.appendChild(item);
+    return item;
+  });
+  hero.appendChild(compass);
 
   function move(event) {
     const rect = hero.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    lines.forEach((line, index) => {
-      const [px, py] = nodes[index];
-      const nx = px * width;
-      const ny = py * height;
+    nodes.forEach((node, index) => {
+      const nx = node.x * rect.width;
+      const ny = node.y * rect.height;
       const distance = Math.hypot(x - nx, y - ny);
-      const opacity = Math.max(0, 1 - distance / 200) * 0.5;
-      line.setAttribute('x1', x.toFixed(2));
-      line.setAttribute('y1', y.toFixed(2));
-      line.setAttribute('x2', nx.toFixed(2));
-      line.setAttribute('y2', ny.toFixed(2));
-      line.style.opacity = opacity.toFixed(3);
+      const proximity = Math.max(0, 1 - distance / 200);
+      nodeEls[index].style.setProperty('--node-proximity', proximity.toFixed(3));
+      nodeEls[index].classList.toggle('is-active', proximity > 0.08);
     });
   }
 
   function hide() {
-    lines.forEach(line => {
-      line.style.opacity = '0';
+    nodeEls.forEach(node => {
+      node.style.setProperty('--node-proximity', '0');
+      node.classList.remove('is-active');
     });
   }
 
-  window.addEventListener('resize', layout, { passive: true });
-  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(hero);
   hero.addEventListener('pointermove', move, { passive: true });
   hero.addEventListener('pointerleave', hide, { passive: true });
-  layout();
-  return { refresh: layout };
+  return { refresh: hide };
 }
 
-function createHighlighterTrailEffect(hero) {
-  const canvas = document.createElement('canvas');
-  canvas.className = 'room-highlight-trail';
-  canvas.setAttribute('aria-hidden', 'true');
-  hero.appendChild(canvas);
+function createDiscoveryPinEffect(hero) {
+  const layer = document.createElement('div');
+  layer.className = 'room-discovery-pins';
+  layer.setAttribute('aria-hidden', 'true');
+  hero.appendChild(layer);
 
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return { refresh() {} };
+  let lastPin = 0;
+  let lastX = -999;
+  let lastY = -999;
 
-  const points = [];
-  let width = 1;
-  let height = 1;
-  let dpr = 1;
-  let raf = 0;
-
-  function layout() {
-    dpr = Math.max(1, window.devicePixelRatio || 1);
-    width = Math.max(1, Math.round(hero.clientWidth));
-    height = Math.max(1, Math.round(hero.clientHeight));
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function addPoint(event) {
+  function addPin(event) {
+    const now = performance.now();
     const rect = hero.getBoundingClientRect();
-    points.push({
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-      t: performance.now()
-    });
-    if (points.length > 180) points.splice(0, points.length - 180);
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    if (now - lastPin < 120 && Math.hypot(x - lastX, y - lastY) < 34) return;
+
+    lastPin = now;
+    lastX = x;
+    lastY = y;
+
+    const pin = document.createElement('span');
+    pin.className = 'room-discovery-pin material-symbols-outlined';
+    pin.textContent = 'bookmark';
+    pin.style.left = `${x}px`;
+    pin.style.top = `${y}px`;
+    layer.appendChild(pin);
+
+    while (layer.children.length > 24) layer.firstElementChild.remove();
+    window.setTimeout(() => pin.remove(), 1800);
   }
 
-  function tick(now) {
-    ctx.clearRect(0, 0, width, height);
-    while (points.length && now - points[0].t > 2000) points.shift();
-
-    for (let i = 1; i < points.length; i += 1) {
-      const a = points[i - 1];
-      const b = points[i];
-      const age = now - b.t;
-      const alpha = Math.max(0, 1 - age / 2000) * 0.34;
-      ctx.strokeStyle = `rgba(180, 255, 92, ${alpha.toFixed(3)})`;
-      ctx.lineWidth = 3;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.stroke();
-    }
-
-    raf = requestAnimationFrame(tick);
-  }
-
-  window.addEventListener('resize', layout, { passive: true });
-  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(hero);
-  hero.addEventListener('pointermove', addPoint, { passive: true });
-  layout();
-  raf = requestAnimationFrame(tick);
+  hero.addEventListener('pointermove', addPin, { passive: true });
   return {
     refresh() {
-      points.length = 0;
-      layout();
+      layer.replaceChildren();
+      lastPin = 0;
     }
   };
 }

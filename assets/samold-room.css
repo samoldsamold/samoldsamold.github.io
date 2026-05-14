@@ -421,8 +421,25 @@ body.is-room-scrolled .room-header-reveal {
   color: rgba(3, 16, 8, 0.68) !important;
 }
 
-.room-title-magnetic {
-  display: block;
+.room-title.room-title-magnetic {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  column-gap: 0.24em;
+  row-gap: 0.02em;
+  max-width: min(100%, 14.5ch);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+html[lang="zh-CN"] .room-title.room-title-magnetic {
+  max-width: min(100%, 18em);
+}
+
+.magnetic-word {
+  display: inline-flex;
+  white-space: nowrap;
 }
 
 .magnetic-letter {
@@ -432,58 +449,126 @@ body.is-room-scrolled .room-header-reveal {
   will-change: transform;
 }
 
-.magnetic-space {
-  width: 0.28em;
-}
-
-.room-reader-line,
-.room-node-lines,
-.room-highlight-trail,
+.room-margin-cue,
 .room-viewfinder,
-.room-camera-flash {
+.room-camera-flash,
+.room-compass,
+.room-discovery-pins {
   position: absolute;
   pointer-events: none;
 }
 
-.room-reader-line {
-  left: 0;
-  top: var(--reader-y, 50%);
-  z-index: 1;
-  width: 100%;
-  height: 1px;
-  background: rgba(var(--glow-rgb), 0.1);
-  box-shadow: 0 0 24px rgba(var(--glow-rgb), 0.16);
+.room-margin-cue {
+  top: var(--cue-y, 50%);
+  z-index: 3;
+  width: 1.1rem;
+  height: 2.8rem;
   opacity: 0;
-  transform: translateY(-50%);
-  transition: opacity 160ms ease;
+  transform: translateY(-50%) scaleY(0.82);
+  transition: opacity 160ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.room-effect-articles.is-reading .room-reader-line {
+.room-margin-cue-left {
+  left: max(var(--page-x), calc(50% - min(24rem, 44vw)));
+}
+
+.room-margin-cue-right {
+  right: max(var(--page-x), calc(50% - min(24rem, 44vw)));
+}
+
+.room-margin-cue::before,
+.room-margin-cue::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  background: rgba(144, 238, 144, 0.88);
+  box-shadow: 0 0 18px rgba(var(--glow-rgb), 0.22);
+  transform: translateX(-50%);
+}
+
+.room-margin-cue::before {
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+
+.room-margin-cue::after {
+  top: 50%;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.room-effect-articles.is-reading .room-margin-cue {
   opacity: 1;
+  transform: translateY(-50%) scaleY(1);
+}
+
+.room-effect-moments {
+  cursor: none;
+}
+
+.room-effect-moments a,
+.room-effect-moments button {
+  cursor: none;
 }
 
 .room-viewfinder {
   left: var(--vf-x, 50%);
   top: var(--vf-y, 50%);
   z-index: 3;
-  width: clamp(8rem, 12vw, 10rem);
-  height: clamp(8rem, 12vw, 10rem);
+  width: clamp(2.75rem, 4vw, 3.5rem);
+  height: clamp(2.75rem, 4vw, 3.5rem);
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.96);
-  transition: opacity 160ms ease, transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 140ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1), filter 180ms ease;
 }
 
 .room-effect-moments.is-framing .room-viewfinder {
-  opacity: 0.78;
+  opacity: 0.88;
   transform: translate(-50%, -50%) scale(1);
+}
+
+.room-effect-moments.is-focusing .room-viewfinder {
+  opacity: 1;
+  filter: drop-shadow(0 0 18px rgba(var(--glow-rgb), 0.36));
+  transform: translate(-50%, -50%) scale(0.72);
+}
+
+.room-viewfinder::before,
+.room-viewfinder::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: rgba(219, 255, 212, 0.74);
+  transform: translate(-50%, -50%);
+}
+
+.room-viewfinder::before {
+  width: 0.9rem;
+  height: 1px;
+}
+
+.room-viewfinder::after {
+  width: 1px;
+  height: 0.9rem;
 }
 
 .room-viewfinder-corner {
   position: absolute;
-  width: 1.65rem;
-  height: 1.65rem;
-  border-color: rgba(144, 238, 144, 0.88);
+  width: 0.8rem;
+  height: 0.8rem;
+  border-color: rgba(144, 238, 144, 0.82);
   filter: drop-shadow(0 0 12px rgba(var(--glow-rgb), 0.18));
+  transition: border-color 180ms ease, width 180ms ease, height 180ms ease;
+}
+
+.room-effect-moments.is-focusing .room-viewfinder-corner {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-color: rgba(219, 255, 212, 0.98);
 }
 
 .room-viewfinder-corner.tl {
@@ -517,7 +602,7 @@ body.is-room-scrolled .room-header-reveal {
 .room-camera-flash {
   inset: 0;
   z-index: 6;
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(226, 233, 223, 0.16);
   opacity: 0;
 }
 
@@ -539,28 +624,80 @@ body.is-room-scrolled .room-header-reveal {
   }
 }
 
-.room-node-lines {
+.room-compass {
   inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
+  z-index: 3;
 }
 
-.room-node-lines line {
-  stroke: rgba(144, 238, 144, 0.72);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
+.room-compass-node {
+  position: absolute;
+  left: var(--node-x);
+  top: var(--node-y);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.46rem;
+  min-width: 2.15rem;
+  min-height: 2.15rem;
+  padding: 0 0.54rem;
+  border: 1px solid rgba(var(--glow-rgb), calc(0.08 + var(--node-proximity, 0) * 0.42));
+  border-radius: 999px;
+  background: rgba(3, 7, 10, calc(0.18 + var(--node-proximity, 0) * 0.24));
+  color: rgba(219, 255, 212, calc(0.3 + var(--node-proximity, 0) * 0.62));
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: calc(0.34 + var(--node-proximity, 0) * 0.66);
+  transform: translate(-50%, -50%) scale(calc(0.94 + var(--node-proximity, 0) * 0.13));
+  transition: opacity 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.room-compass-node small {
+  max-width: 0;
+  overflow: hidden;
+  color: rgba(144, 238, 144, 0.9);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
   opacity: 0;
-  transition: opacity 120ms ease;
+  transition: max-width 160ms ease, opacity 160ms ease;
 }
 
-.room-highlight-trail {
+.room-compass-node.is-active small {
+  max-width: 7rem;
+  opacity: 1;
+}
+
+.room-discovery-pins {
   inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  opacity: 0.82;
-  mix-blend-mode: screen;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.room-discovery-pin {
+  position: absolute;
+  color: rgba(180, 255, 92, 0.88);
+  font-size: 1.05rem;
+  line-height: 1;
+  text-shadow: 0 0 16px rgba(var(--glow-rgb), 0.24);
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(0.3rem) scale(0.72) rotate(-7deg);
+  animation: room-discovery-pin 1800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes room-discovery-pin {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(0.35rem) scale(0.72) rotate(-7deg);
+  }
+
+  12% {
+    opacity: 0.74;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(-1rem) scale(1) rotate(3deg);
+  }
 }
 
 .room-kicker {
