@@ -28,6 +28,75 @@ window.addEventListener("pointermove", event => {
   }
 }, { passive: true });
 
+function currentRoomId() {
+  const file = (window.location.pathname.split('/').pop() || '').replace(/\.html$/, '');
+  if (file) return file;
+  const active = document.querySelector('.room-nav a.is-active');
+  const href = active ? active.getAttribute('href') || '' : '';
+  return href.replace(/\.html.*$/, '') || 'showcase';
+}
+
+function createSvgNode(name, attrs = {}) {
+  const node = document.createElementNS('http://www.w3.org/2000/svg', name);
+  for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+  return node;
+}
+
+function drawSamoldWordField(group, width, height, compact) {
+  group.replaceChildren();
+  const fontSize = compact
+    ? Math.max(24, Math.min(50, width * 0.043))
+    : Math.max(54, Math.min(116, width * 0.098));
+  const wordWidth = fontSize * (compact ? 4.85 : 5.1);
+  const gapX = fontSize * (compact ? 0.82 : 1.24);
+  const stepX = wordWidth + gapX;
+  const stepY = compact ? fontSize * 1.34 : fontSize * 2.12;
+  const letterSpacing = compact ? '0.06em' : '0.04em';
+  const cols = Math.max(1, Math.floor(Math.max(0, width + gapX) / stepX));
+  const totalWidth = wordWidth + (cols - 1) * stepX;
+  const startX = (width - totalWidth) / 2 + wordWidth / 2;
+
+  for (let y = fontSize * 0.85; y <= height - fontSize * 0.45; y += stepY) {
+    for (let col = 0; col < cols; col += 1) {
+      const text = createSvgNode('text', {
+        x: String(startX + col * stepX),
+        y: String(y),
+        'font-size': String(fontSize),
+        'letter-spacing': letterSpacing,
+        'text-anchor': 'middle'
+      });
+      text.textContent = 'SAMOLD';
+      group.appendChild(text);
+    }
+  }
+}
+
+function createRoomWordField() {
+  const hero = document.querySelector('.room-hero');
+  if (!hero || hero.dataset.wordfieldReady === 'true') return null;
+  hero.dataset.wordfieldReady = 'true';
+
+  const baseField = createSvgNode('svg', { class: 'room-wordfield room-wordfield-base', 'aria-hidden': 'true' });
+  const baseWords = createSvgNode('g');
+  baseField.appendChild(baseWords);
+  hero.prepend(baseField);
+
+  function layout() {
+    const width = Math.max(1, Math.round(hero.clientWidth));
+    const height = Math.max(1, Math.round(hero.clientHeight));
+    baseField.setAttribute('width', String(width));
+    baseField.setAttribute('height', String(height));
+    baseField.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    drawSamoldWordField(baseWords, width, height, false);
+  }
+
+  window.addEventListener('resize', layout, { passive: true });
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(hero);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  layout();
+  return { refresh: layout };
+}
+
 // ── Cursor reveal layer ───────────────────────────────────────────────────
 // The visible page keeps the selected language. The cursor blob reveals the
 // other language on a light inverse layer, with a tighter SAMOLD word field.
@@ -57,6 +126,11 @@ function createRoomReveal(enCache, cn) {
     lastClientY: -600,
     targetOpacity: 0,
     revealOpacity: 0,
+    headerX: -600,
+    headerY: -600,
+    headerRadius: 120,
+    headerTargetOpacity: 0,
+    headerOpacity: 0,
     width: 1,
     height: 1
   };
@@ -66,11 +140,6 @@ function createRoomReveal(enCache, cn) {
     for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
     return node;
   }
-
-  const baseField = svgEl('svg', { class: 'room-wordfield room-wordfield-base', 'aria-hidden': 'true' });
-  const baseWords = svgEl('g');
-  baseField.appendChild(baseWords);
-  hero.prepend(baseField);
 
   const revealSvg = svgEl('svg', { class: 'room-reveal-svg', 'aria-hidden': 'true' });
   const defs = svgEl('defs');
@@ -106,6 +175,50 @@ function createRoomReveal(enCache, cn) {
   revealGroup.appendChild(revealContent);
   revealSvg.appendChild(revealGroup);
   hero.appendChild(revealSvg);
+
+  const headerReveal = createHeaderReveal();
+
+  function createHeaderReveal() {
+    const header = document.querySelector('.room-header');
+    if (!header || document.querySelector('.room-header-reveal')) return null;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'room-header-reveal';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    const inner = document.createElement('div');
+    inner.className = 'room-header-reveal-inner';
+
+    const brandSource = header.querySelector('.brand-block') || header.querySelector('.brand-home');
+    const navSource = header.querySelector('.room-nav');
+    if (brandSource) inner.appendChild(brandSource.cloneNode(true));
+    if (navSource) {
+      const navCopy = navSource.cloneNode(true);
+      inner.appendChild(navCopy);
+
+      const sourceLinks = [...navSource.querySelectorAll('a')];
+      const copyLinks = [...navCopy.querySelectorAll('a')];
+      sourceLinks.forEach((link, index) => {
+        const copy = copyLinks[index];
+        if (!copy) return;
+        const show = () => copy.classList.add('is-clone-hover');
+        const hide = () => copy.classList.remove('is-clone-hover');
+        link.addEventListener('pointerenter', show, { passive: true });
+        link.addEventListener('pointerleave', hide, { passive: true });
+        link.addEventListener('focus', show);
+        link.addEventListener('blur', hide);
+      });
+    }
+
+    overlay.appendChild(inner);
+    overlay.querySelectorAll('a, button').forEach(control => {
+      control.tabIndex = -1;
+      control.setAttribute('aria-hidden', 'true');
+      if (control.tagName === 'A') control.removeAttribute('href');
+    });
+    document.body.appendChild(overlay);
+    return overlay;
+  }
 
   const positions = followers.map(() => ({ x: -600, y: -600 }));
   const speeds = reduceMotion ? [1] : [0.44, 0.36, 0.29, 0.235, 0.19, 0.155, 0.13, 0.11];
@@ -186,36 +299,6 @@ function createRoomReveal(enCache, cn) {
     return Array.isArray(value) ? value[0] : value;
   }
 
-  function drawWordField(group, width, height, compact) {
-    group.replaceChildren();
-    const fontSize = compact
-      ? Math.max(24, Math.min(50, width * 0.043))
-      : Math.max(54, Math.min(116, width * 0.098));
-    const wordWidth = fontSize * (compact ? 4.85 : 5.1);
-    const gapX = fontSize * (compact ? 0.82 : 1.24);
-    const stepX = wordWidth + gapX;
-    const stepY = compact ? fontSize * 1.34 : fontSize * 2.12;
-    const letterSpacing = compact ? '0.06em' : '0.04em';
-    const cols = Math.max(1, Math.floor(Math.max(0, width + gapX) / stepX));
-    const totalWidth = wordWidth + (cols - 1) * stepX;
-    const startX = (width - totalWidth) / 2 + wordWidth / 2;
-
-    for (let y = fontSize * 0.85; y <= height - fontSize * 0.45; y += stepY) {
-      for (let col = 0; col < cols; col += 1) {
-        const x = startX + col * stepX;
-        const text = svgEl('text', {
-          x: String(x),
-          y: String(y),
-          'font-size': String(fontSize),
-          'letter-spacing': letterSpacing,
-          'text-anchor': 'middle'
-        });
-        text.textContent = 'SAMOLD';
-        group.appendChild(text);
-      }
-    }
-  }
-
   function syncFollowerNodes() {
     positions.forEach((pos, index) => {
       followers[index].setAttribute('cx', pos.x.toFixed(2));
@@ -237,11 +320,9 @@ function createRoomReveal(enCache, cn) {
     state.width = width;
     state.height = height;
 
-    for (const svg of [baseField, revealSvg]) {
-      svg.setAttribute('width', String(width));
-      svg.setAttribute('height', String(height));
-      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    }
+    revealSvg.setAttribute('width', String(width));
+    revealSvg.setAttribute('height', String(height));
+    revealSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     maskRect.setAttribute('width', String(width));
     maskRect.setAttribute('height', String(height));
@@ -249,12 +330,12 @@ function createRoomReveal(enCache, cn) {
     revealBg.setAttribute('height', String(height));
 
     const baseRadius = Math.max(86, Math.min(148, Math.min(width, height) * 0.19));
+    state.headerRadius = baseRadius;
     followers.forEach((dot, index) => {
       dot.setAttribute('r', String(Math.max(58, baseRadius - index * 4.8)));
     });
 
-    drawWordField(baseWords, width, height, false);
-    drawWordField(revealPattern, width, height, true);
+    drawSamoldWordField(revealPattern, width, height, true);
   }
 
   function syncCopyGeometry() {
@@ -327,6 +408,25 @@ function createRoomReveal(enCache, cn) {
       state.lastClientX <= rect.right &&
       state.lastClientY >= rect.top &&
       state.lastClientY <= rect.bottom;
+    const header = document.querySelector('.room-header');
+    const backdrop = document.querySelector('.room-top-backdrop');
+    const headerVisible = Boolean(
+      header &&
+      (document.body.classList.contains('is-room-scrolled') || header.matches(':focus-within'))
+    );
+    const headerHeight = backdrop
+      ? backdrop.getBoundingClientRect().height
+      : Math.max(116, window.innerHeight * 0.13);
+    const circleTouchesHeader =
+      headerVisible &&
+      state.lastClientX >= -state.headerRadius &&
+      state.lastClientX <= window.innerWidth + state.headerRadius &&
+      state.lastClientY - state.headerRadius <= headerHeight &&
+      state.lastClientY + state.headerRadius >= 0;
+
+    state.headerX = state.lastClientX;
+    state.headerY = state.lastClientY;
+    state.headerTargetOpacity = circleTouchesHeader ? 1 : 0;
 
     if (!inside) {
       state.targetOpacity = 0;
@@ -370,8 +470,14 @@ function createRoomReveal(enCache, cn) {
     state.targetOpacity = 0;
   }, { passive: true });
 
+  document.addEventListener('pointerleave', () => {
+    state.targetOpacity = 0;
+    state.headerTargetOpacity = 0;
+  }, { passive: true });
+
   window.addEventListener('blur', () => {
     state.targetOpacity = 0;
+    state.headerTargetOpacity = 0;
   });
 
   window.addEventListener('scroll', updateTargetFromLastPointer, { passive: true });
@@ -385,6 +491,16 @@ function createRoomReveal(enCache, cn) {
     if (state.revealOpacity < 0.002) state.revealOpacity = 0;
     if (state.revealOpacity > 0.998) state.revealOpacity = 1;
     revealGroup.setAttribute('opacity', state.revealOpacity.toFixed(3));
+
+    state.headerOpacity += (state.headerTargetOpacity - state.headerOpacity) * opacitySpeed;
+    if (state.headerOpacity < 0.002) state.headerOpacity = 0;
+    if (state.headerOpacity > 0.998) state.headerOpacity = 1;
+    if (headerReveal) {
+      headerReveal.style.setProperty('--header-reveal-x', `${state.headerX.toFixed(2)}px`);
+      headerReveal.style.setProperty('--header-reveal-y', `${state.headerY.toFixed(2)}px`);
+      headerReveal.style.setProperty('--header-reveal-radius', `${state.headerRadius.toFixed(2)}px`);
+      headerReveal.style.setProperty('--header-reveal-opacity', state.headerOpacity.toFixed(3));
+    }
 
     positions.forEach((pos, index) => {
       const speed = speeds[index] || speeds[speeds.length - 1];
@@ -403,6 +519,285 @@ function createRoomReveal(enCache, cn) {
   return window.__roomRevealApi;
 }
 
+// ── Per-room hero interactions ─────────────────────────────────────────────
+// Labs owns the intentionally hard-to-read inverse reveal. Other rooms keep
+// text directly readable and use lightweight pointer-driven effects.
+function createRoomHeroEffect(room) {
+  const hero = document.querySelector('.room-hero');
+  if (!hero) return { refresh() {} };
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  hero.dataset.roomEffect = room;
+  hero.classList.add(`room-effect-${room}`);
+
+  if (reduceMotion || !finePointer || room === 'labs') return { refresh() {} };
+
+  if (room === 'showcase') return createMagneticTitleEffect(hero);
+  if (room === 'articles') return createReaderLineEffect(hero);
+  if (room === 'moments') return createViewfinderEffect(hero);
+  if (room === 'overview') return createNodeLineEffect(hero);
+  if (room === 'discoveries') return createHighlighterTrailEffect(hero);
+  return { refresh() {} };
+}
+
+function createMagneticTitleEffect(hero) {
+  const title = hero.querySelector('.room-title');
+  if (!title) return { refresh() {} };
+  let letters = [];
+  let raf = 0;
+
+  function wrap() {
+    const text = (title.textContent || '').trim();
+    letters = [];
+    title.classList.add('room-title-magnetic');
+    title.setAttribute('aria-label', text);
+    title.replaceChildren();
+
+    Array.from(text).forEach(char => {
+      const span = document.createElement('span');
+      span.className = char === ' ' ? 'magnetic-letter magnetic-space' : 'magnetic-letter';
+      span.setAttribute('aria-hidden', 'true');
+      span.textContent = char === ' ' ? '\u00a0' : char;
+      title.appendChild(span);
+      letters.push({ el: span, x: 0, y: 0, s: 1, tx: 0, ty: 0, ts: 1 });
+    });
+  }
+
+  function setTargets(event) {
+    letters.forEach(item => {
+      const rect = item.el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = event.clientX - cx;
+      const dy = event.clientY - cy;
+      const distance = Math.hypot(dx, dy);
+      const radius = 220;
+      if (!distance || distance > radius) {
+        item.tx = 0;
+        item.ty = 0;
+        item.ts = 1;
+        return;
+      }
+      const pull = Math.pow(1 - distance / radius, 2);
+      const move = 12 * pull;
+      item.tx = (dx / distance) * move;
+      item.ty = (dy / distance) * move;
+      item.ts = 1 + 0.1 * pull;
+    });
+  }
+
+  function resetTargets() {
+    letters.forEach(item => {
+      item.tx = 0;
+      item.ty = 0;
+      item.ts = 1;
+    });
+  }
+
+  function tick() {
+    letters.forEach(item => {
+      item.x += (item.tx - item.x) * 0.18;
+      item.y += (item.ty - item.y) * 0.18;
+      item.s += (item.ts - item.s) * 0.18;
+      item.el.style.transform = `translate3d(${item.x.toFixed(2)}px, ${item.y.toFixed(2)}px, 0) scale(${item.s.toFixed(3)})`;
+    });
+    raf = requestAnimationFrame(tick);
+  }
+
+  hero.addEventListener('pointermove', setTargets, { passive: true });
+  hero.addEventListener('pointerleave', resetTargets, { passive: true });
+  wrap();
+  tick();
+
+  return {
+    refresh() {
+      cancelAnimationFrame(raf);
+      wrap();
+      tick();
+    }
+  };
+}
+
+function createReaderLineEffect(hero) {
+  const line = document.createElement('div');
+  line.className = 'room-reader-line';
+  line.setAttribute('aria-hidden', 'true');
+  hero.appendChild(line);
+
+  function move(event) {
+    const rect = hero.getBoundingClientRect();
+    hero.style.setProperty('--reader-y', `${event.clientY - rect.top}px`);
+    hero.classList.add('is-reading');
+  }
+
+  hero.addEventListener('pointermove', move, { passive: true });
+  hero.addEventListener('pointerleave', () => hero.classList.remove('is-reading'), { passive: true });
+  return { refresh() {} };
+}
+
+function createViewfinderEffect(hero) {
+  const frame = document.createElement('div');
+  frame.className = 'room-viewfinder';
+  frame.setAttribute('aria-hidden', 'true');
+  ['tl', 'tr', 'br', 'bl'].forEach(pos => {
+    const corner = document.createElement('span');
+    corner.className = `room-viewfinder-corner ${pos}`;
+    frame.appendChild(corner);
+  });
+
+  const flash = document.createElement('div');
+  flash.className = 'room-camera-flash';
+  flash.setAttribute('aria-hidden', 'true');
+  hero.append(frame, flash);
+
+  function move(event) {
+    const rect = hero.getBoundingClientRect();
+    hero.style.setProperty('--vf-x', `${event.clientX - rect.left}px`);
+    hero.style.setProperty('--vf-y', `${event.clientY - rect.top}px`);
+    hero.classList.add('is-framing');
+  }
+
+  hero.addEventListener('pointermove', move, { passive: true });
+  hero.addEventListener('pointerleave', () => hero.classList.remove('is-framing'), { passive: true });
+  hero.addEventListener('click', () => {
+    flash.classList.remove('is-flashing');
+    window.requestAnimationFrame(() => flash.classList.add('is-flashing'));
+    window.setTimeout(() => flash.classList.remove('is-flashing'), 120);
+  });
+  return { refresh() {} };
+}
+
+function createNodeLineEffect(hero) {
+  const svg = createSvgNode('svg', { class: 'room-node-lines', 'aria-hidden': 'true' });
+  const nodes = [
+    [0.18, 0.27],
+    [0.5, 0.18],
+    [0.82, 0.27],
+    [0.2, 0.72],
+    [0.5, 0.82],
+    [0.8, 0.72]
+  ];
+  const lines = nodes.map(() => {
+    const line = createSvgNode('line', { x1: '0', y1: '0', x2: '0', y2: '0' });
+    svg.appendChild(line);
+    return line;
+  });
+  hero.appendChild(svg);
+  let width = 1;
+  let height = 1;
+
+  function layout() {
+    width = Math.max(1, Math.round(hero.clientWidth));
+    height = Math.max(1, Math.round(hero.clientHeight));
+    svg.setAttribute('width', String(width));
+    svg.setAttribute('height', String(height));
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  }
+
+  function move(event) {
+    const rect = hero.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    lines.forEach((line, index) => {
+      const [px, py] = nodes[index];
+      const nx = px * width;
+      const ny = py * height;
+      const distance = Math.hypot(x - nx, y - ny);
+      const opacity = Math.max(0, 1 - distance / 200) * 0.5;
+      line.setAttribute('x1', x.toFixed(2));
+      line.setAttribute('y1', y.toFixed(2));
+      line.setAttribute('x2', nx.toFixed(2));
+      line.setAttribute('y2', ny.toFixed(2));
+      line.style.opacity = opacity.toFixed(3);
+    });
+  }
+
+  function hide() {
+    lines.forEach(line => {
+      line.style.opacity = '0';
+    });
+  }
+
+  window.addEventListener('resize', layout, { passive: true });
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(hero);
+  hero.addEventListener('pointermove', move, { passive: true });
+  hero.addEventListener('pointerleave', hide, { passive: true });
+  layout();
+  return { refresh: layout };
+}
+
+function createHighlighterTrailEffect(hero) {
+  const canvas = document.createElement('canvas');
+  canvas.className = 'room-highlight-trail';
+  canvas.setAttribute('aria-hidden', 'true');
+  hero.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return { refresh() {} };
+
+  const points = [];
+  let width = 1;
+  let height = 1;
+  let dpr = 1;
+  let raf = 0;
+
+  function layout() {
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    width = Math.max(1, Math.round(hero.clientWidth));
+    height = Math.max(1, Math.round(hero.clientHeight));
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function addPoint(event) {
+    const rect = hero.getBoundingClientRect();
+    points.push({
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+      t: performance.now()
+    });
+    if (points.length > 180) points.splice(0, points.length - 180);
+  }
+
+  function tick(now) {
+    ctx.clearRect(0, 0, width, height);
+    while (points.length && now - points[0].t > 2000) points.shift();
+
+    for (let i = 1; i < points.length; i += 1) {
+      const a = points[i - 1];
+      const b = points[i];
+      const age = now - b.t;
+      const alpha = Math.max(0, 1 - age / 2000) * 0.34;
+      ctx.strokeStyle = `rgba(180, 255, 92, ${alpha.toFixed(3)})`;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+
+    raf = requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('resize', layout, { passive: true });
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(hero);
+  hero.addEventListener('pointermove', addPoint, { passive: true });
+  layout();
+  raf = requestAnimationFrame(tick);
+  return {
+    refresh() {
+      points.length = 0;
+      layout();
+    }
+  };
+}
+
 // ── Language system ────────────────────────────────────────────────────────
 // Each room page declares window.ROOM_CN = { title, texts: { selector: val } }
 // before this script. Values can be a string (single element) or an array
@@ -417,6 +812,7 @@ function createRoomReveal(enCache, cn) {
 
   const enCache = {};
   let revealApi = null;
+  let heroEffect = null;
   let titleSlotReady = false;
 
   function cache() {
@@ -477,6 +873,7 @@ function createRoomReveal(enCache, cn) {
     updateBtn(lang);
     updateBrand(lang);
     if (revealApi) revealApi.update(lang);
+    if (heroEffect) heroEffect.refresh(lang);
     setLang(lang);
   }
 
@@ -502,7 +899,11 @@ function createRoomReveal(enCache, cn) {
   document.addEventListener('DOMContentLoaded', () => {
     cache();
     injectBtn();
-    revealApi = createRoomReveal(enCache, cn);
+    const room = currentRoomId();
+    document.body.dataset.room = room;
+    createRoomWordField();
+    if (room === 'labs') revealApi = createRoomReveal(enCache, cn);
+    heroEffect = createRoomHeroEffect(room);
     prepareTitleSlot();
     const stored = getLang();
     if (stored === 'cn') apply('cn');
@@ -510,6 +911,7 @@ function createRoomReveal(enCache, cn) {
       updateBtn('en');
       updateBrand('en');
       if (revealApi) revealApi.update('en');
+      if (heroEffect) heroEffect.refresh('en');
     }
   });
 })();
