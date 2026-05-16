@@ -721,7 +721,11 @@ function createOverviewCompassEffect(hero) {
       const ny = node.y * rect.height;
       const distance = Math.hypot(x - nx, y - ny);
       const proximity = Math.max(0, 1 - distance / 200);
+      const opacity = 0.34 + proximity * 0.66;
+      const scale = 0.94 + proximity * 0.13;
       nodeEls[index].style.setProperty('--node-proximity', proximity.toFixed(3));
+      nodeEls[index].style.setProperty('--node-opacity', opacity.toFixed(3));
+      nodeEls[index].style.setProperty('--node-scale', scale.toFixed(3));
       nodeEls[index].classList.toggle('is-active', proximity > 0.08);
     });
   }
@@ -729,6 +733,8 @@ function createOverviewCompassEffect(hero) {
   function hide() {
     nodeEls.forEach(node => {
       node.style.setProperty('--node-proximity', '0');
+      node.style.setProperty('--node-opacity', '0.34');
+      node.style.setProperty('--node-scale', '0.94');
       node.classList.remove('is-active');
     });
   }

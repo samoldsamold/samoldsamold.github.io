@@ -85,7 +85,7 @@ strong {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  width: min(calc(100vw - (2 * var(--page-x))), var(--room-stage));
+  width: min(calc(100vw - var(--page-x) - var(--page-x)), var(--room-stage));
   min-height: 3.55rem;
   margin-bottom: 0;
   opacity: 0;
@@ -158,7 +158,7 @@ body.is-room-scrolled .room-header-reveal {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  width: min(calc(100vw - (2 * var(--page-x))), var(--room-stage));
+  width: min(calc(100vw - var(--page-x) - var(--page-x)), var(--room-stage));
   min-height: 3.55rem;
   transform: translateX(-50%);
 }
@@ -254,14 +254,8 @@ body.is-room-scrolled .room-header-reveal {
   filter: none;
   mix-blend-mode: normal;
   opacity: 1;
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
-  mask-composite: intersect;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 0 70%, transparent 100%);
+  mask-image: radial-gradient(ellipse at center, #000 0 70%, transparent 100%);
   user-select: none;
 }
 
@@ -469,11 +463,11 @@ html[lang="zh-CN"] .room-title.room-title-magnetic {
 }
 
 .room-margin-cue-left {
-  left: max(var(--page-x), calc(50% - min(24rem, 44vw)));
+  left: clamp(1.25rem, 12vw, 10rem);
 }
 
 .room-margin-cue-right {
-  right: max(var(--page-x), calc(50% - min(24rem, 44vw)));
+  right: clamp(1.25rem, 12vw, 10rem);
 }
 
 .room-margin-cue::before,
@@ -633,23 +627,31 @@ html[lang="zh-CN"] .room-title.room-title-magnetic {
   position: absolute;
   left: var(--node-x);
   top: var(--node-y);
+  --node-opacity: 0.34;
+  --node-scale: 0.94;
   display: inline-flex;
   align-items: center;
   gap: 0.46rem;
   min-width: 2.15rem;
   min-height: 2.15rem;
   padding: 0 0.54rem;
-  border: 1px solid rgba(var(--glow-rgb), calc(0.08 + var(--node-proximity, 0) * 0.42));
+  border: 1px solid rgba(var(--glow-rgb), 0.16);
   border-radius: 999px;
-  background: rgba(3, 7, 10, calc(0.18 + var(--node-proximity, 0) * 0.24));
-  color: rgba(219, 255, 212, calc(0.3 + var(--node-proximity, 0) * 0.62));
+  background: rgba(3, 7, 10, 0.24);
+  color: rgba(219, 255, 212, 0.7);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  opacity: calc(0.34 + var(--node-proximity, 0) * 0.66);
-  transform: translate(-50%, -50%) scale(calc(0.94 + var(--node-proximity, 0) * 0.13));
+  opacity: var(--node-opacity);
+  transform: translate(-50%, -50%) scale(var(--node-scale));
   transition: opacity 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.room-compass-node.is-active {
+  border-color: rgba(var(--glow-rgb), 0.5);
+  background: rgba(3, 7, 10, 0.42);
+  color: rgba(219, 255, 212, 0.92);
 }
 
 .room-compass-node small {
@@ -1290,8 +1292,8 @@ body.is-room-scrolled .resume-bubble,
   }
 
   .room-hero > div {
-    width: min(100%, calc(100vw - (2 * var(--page-x))));
-    max-width: calc(100vw - (2 * var(--page-x)));
+    width: min(100%, calc(100vw - var(--page-x) - var(--page-x)));
+    max-width: calc(100vw - var(--page-x) - var(--page-x));
   }
 
   .room-hero::after {
@@ -1326,7 +1328,7 @@ body.is-room-scrolled .resume-bubble,
 
   .room-subtitle {
     width: 100%;
-    max-width: min(18.5rem, calc(100vw - (2 * var(--page-x))));
+    max-width: min(18.5rem, calc(100vw - var(--page-x) - var(--page-x)));
     font-size: 0.98rem;
     line-height: 1.62;
     overflow-wrap: anywhere;
@@ -1336,7 +1338,7 @@ body.is-room-scrolled .resume-bubble,
     gap: 0.6rem;
     margin-top: 1rem;
     width: 100%;
-    max-width: min(18rem, calc(100vw - (2 * var(--page-x))));
+    max-width: min(18rem, calc(100vw - var(--page-x) - var(--page-x)));
     font-size: 0.84rem;
     line-height: 1.55;
     overflow-wrap: anywhere;
