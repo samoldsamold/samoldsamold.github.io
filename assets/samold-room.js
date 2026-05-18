@@ -706,7 +706,7 @@ function createOverviewCompassEffect(hero) {
     item.className = 'room-compass-node';
     item.style.setProperty('--node-x', `${node.x * 100}%`);
     item.style.setProperty('--node-y', `${node.y * 100}%`);
-    item.innerHTML = `<span>${node.letter}</span><small>${node.label}</small>`;
+    item.innerHTML = `<span>${node.letter}</span><small>${node.label.toUpperCase()}</small>`;
     compass.appendChild(item);
     return item;
   });

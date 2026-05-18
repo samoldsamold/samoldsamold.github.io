@@ -150,7 +150,7 @@ body.is-room-scrolled .room-header-reveal {
 }
 
 .room-header-reveal-inner {
-  position: fixed;
+  position: absolute;
   top: clamp(1rem, 2.4vw, 2rem);
   left: 50%;
   z-index: 1;
@@ -642,7 +642,6 @@ html[lang="zh-CN"] .room-title.room-title-magnetic {
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
   opacity: var(--node-opacity);
   transform: translate(-50%, -50%) scale(var(--node-scale));
   transition: opacity 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease, transform 140ms ease;
