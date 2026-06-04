@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Showcase room of SAMOLD, featuring selected projects and work by Zhou Yongyu.">
   <title>Showcase | SAMOLD</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/samold-room.css?v=room-refined-hero-effects-20260514">
+  <link rel="stylesheet" href="assets/samold-room.css?v=samold-redesign-20260604-7">
 </head>
-<body>
+<body data-room="showcase">
   <div class="room-page">
     <header class="room-header">
       <a class="brand-home" href="index.html" aria-label="Back to SAMOLD home">
@@ -45,33 +46,39 @@
         </div>
       </section>
 
-      <p class="section-label">Selected work</p>
-      <section class="content-grid" aria-label="Showcase items">
-        <article class="room-card featured">
-          <div class="card-meta"><span class="pill">Interface</span><span>2026</span></div>
-          <h2>SAMOLD personal website</h2>
-          <p>
-            A portfolio built around one constant mark and six variable rooms. The homepage uses the letter-shape navigation as the main interaction, while this room system turns the idea into a more complete site.
-          </p>
-          <ul class="tag-list">
-            <li class="tag">HTML</li>
-            <li class="tag">CSS</li>
-            <li class="tag">Vanilla JS</li>
-            <li class="tag">Responsive Layout</li>
-          </ul>
-          <a class="inline-link" href="index.html">Open the mark <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+      <p class="section-label" data-reveal>Selected work</p>
+      <section class="content-grid showcase-stage" aria-label="Showcase items">
+        <article class="room-card exhibit-card featured" data-reveal>
+          <div class="exhibit-copy">
+            <div class="card-meta"><span class="pill">Interface</span><span>2026</span></div>
+            <h2>SAMOLD personal website</h2>
+            <p>
+              A personal site built around one constant mark and six variable rooms. The homepage keeps the letter-shaped navigation as the main interaction, while the room system turns the mark into a small living archive.
+            </p>
+            <ul class="tag-list">
+              <li class="tag">HTML</li>
+              <li class="tag">CSS</li>
+              <li class="tag">Vanilla JS</li>
+              <li class="tag">Responsive Layout</li>
+            </ul>
+            <a class="inline-link" href="index.html">Open the mark <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+          </div>
+          <div class="exhibit-media" aria-hidden="true">
+            <span class="placeholder-label">Image placeholder</span>
+            <span class="placeholder-note">Reserved for a real project capture or detail photo.</span>
+          </div>
         </article>
 
-        <article class="room-card">
+        <article class="room-card exhibit-card" data-reveal>
           <div class="card-meta"><span class="pill">Resume</span><span>Overview</span></div>
           <h3>Resume as a living page</h3>
           <p>
-            A bilingual professional overview with fixed desktop sidebar, mobile floating controls, contact actions, and section-aware navigation.
+            A bilingual professional overview with fixed desktop navigation, mobile floating controls, contact actions, and section-aware reading.
           </p>
           <a class="inline-link" href="resume.html">View resume <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
         </article>
 
-        <article class="room-card wide">
+        <article class="room-card exhibit-card wide" data-reveal>
           <div class="card-meta"><span class="pill">Internship</span><span>Testing delivery</span></div>
           <h3>Novo Nordisk project QA delivery</h3>
           <p>
@@ -84,11 +91,11 @@
           </ul>
         </article>
 
-        <article class="room-card wide">
+        <article class="room-card exhibit-card wide" data-reveal>
           <div class="card-meta"><span class="pill">Community</span><span>Operations</span></div>
           <h3>Financial leader and event planner</h3>
           <p>
-            Budgeting, procurement, and promotion work for a community service group, built around the less glamorous but essential job of keeping records clear.
+            Budgeting, procurement, and promotion work for a community service group, built around the quiet job of keeping records clear enough for people to trust the next action.
           </p>
           <ul class="tag-list">
             <li class="tag">Budgeting</li>
@@ -97,11 +104,11 @@
           </ul>
         </article>
 
-        <article class="room-card full">
+        <article class="room-card exhibit-card full" data-reveal>
           <div class="card-meta"><span class="pill">Visual notes</span><span>Always growing</span></div>
           <h3>Photography fragments and visual drafts</h3>
           <p>
-            A future home for photo walks, interface sketches, and other visual evidence. Not every project starts as code; some start as noticing the same street twice.
+            A reserved wall for photo walks, interface sketches, and other visual evidence. Not every project starts as code; some start as noticing the same street twice.
           </p>
         </article>
       </section>
@@ -130,16 +137,18 @@
         '财务负责人与活动策划',
         '摄影碎片与视觉草稿'
       ],
-      '.content-grid article > p': [
-        '以一个不变的标记为核心，六个字母各自通向不同的去处。首页把字形做成主要交互，这套板块系统把想法扩展成了完整站点。',
-        '中英双语、固定侧边栏、移动端浮动控件，以及随章节更新的导航。',
+      '.content-grid article p:not(.placeholder-note)': [
+        '以一个不变的标记为核心，六个字母各自通向不同的去处。首页保留字形导航作为主要交互，房间系统把标记扩展成一个小型个人档案。',
+        '中英双语、桌面导航、移动端浮动控件、联系动作，以及随章节变化的阅读体验。',
         '在跨职能项目里使用 Postman、Swagger UI 和 Teambition 完成端到端功能与 API 测试，以及缺陷全生命周期管理。',
-        '社区服务组的预算、采购和宣传工作。核心是把账目做清楚，让下一步行动获得更快的信任。',
-        '留给摄影散步、界面草图和其他视觉记录的地方。有些项目不从代码开始，从注意到同一条街两次开始。'
-      ]
+        '社区服务组的预算、采购和宣传工作。核心是把记录做清楚，让下一个动作更快获得信任。',
+        '留给摄影散步、界面草图和其他视觉证据的墙。有些项目不从代码开始，从注意到同一条街两次开始。'
+      ],
+      '.placeholder-label': '图片占位',
+      '.placeholder-note': '预留给真实项目截图或细节照片。'
     }
   };
   </script>
-  <script src="assets/samold-room.js?v=room-refined-hero-effects-20260514"></script>
+  <script src="assets/samold-room.js?v=samold-redesign-20260604-7"></script>
 </body>
 </html>

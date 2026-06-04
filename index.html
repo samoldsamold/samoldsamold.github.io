@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="SAMOLD, the personal website of Zhou Yongyu. Showcase, Articles, Moments, Overview, Labs, and Discoveries.">
   <title>SAMOLD | Zhou Yongyu</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
@@ -47,14 +48,43 @@
     }
 
     body {
+      --active-accent-rgb: 144, 238, 144;
       height: 100%;
       min-height: 100svh;
       margin: 0;
       overflow: hidden;
-      background: var(--page-bg);
+      background:
+        radial-gradient(circle at 22% 18%, rgba(var(--active-accent-rgb), 0.1), transparent 28rem),
+        radial-gradient(circle at 78% 68%, rgba(var(--glow-rgb), 0.06), transparent 32rem),
+        linear-gradient(135deg, rgba(var(--active-accent-rgb), 0.04), transparent 38rem),
+        var(--page-bg);
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, sans-serif;
       overscroll-behavior: none;
+    }
+
+    body[data-active-room="showcase"] {
+      --active-accent-rgb: 183, 255, 104;
+    }
+
+    body[data-active-room="articles"] {
+      --active-accent-rgb: 216, 247, 166;
+    }
+
+    body[data-active-room="moments"] {
+      --active-accent-rgb: 167, 242, 199;
+    }
+
+    body[data-active-room="overview"] {
+      --active-accent-rgb: 144, 238, 144;
+    }
+
+    body[data-active-room="labs"] {
+      --active-accent-rgb: 180, 255, 92;
+    }
+
+    body[data-active-room="discoveries"] {
+      --active-accent-rgb: 198, 239, 125;
     }
 
     body::before {
@@ -89,6 +119,39 @@
       flex-direction: column;
       justify-content: center;
       padding: clamp(3rem, 7vh, 5rem) var(--page-x);
+    }
+
+    .shell::before,
+    .shell::after {
+      content: "";
+      position: fixed;
+      pointer-events: none;
+    }
+
+    .shell::before {
+      inset: clamp(4.4rem, 8vh, 6rem) clamp(1rem, 3vw, 3rem);
+      z-index: -1;
+      border: 1px solid rgba(var(--active-accent-rgb), 0.12);
+      background:
+        linear-gradient(rgba(219, 255, 212, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(219, 255, 212, 0.018) 1px, transparent 1px),
+        rgba(7, 11, 18, 0.22);
+      background-size: 3.5rem 3.5rem, 3.5rem 3.5rem, auto;
+      transform: rotate(-0.35deg);
+      transform-origin: center;
+      opacity: 0.85;
+    }
+
+    .shell::after {
+      right: clamp(1.5rem, 4vw, 4rem);
+      bottom: clamp(6.2rem, 12vh, 9rem);
+      z-index: -1;
+      width: clamp(9rem, 16vw, 15rem);
+      height: clamp(9rem, 16vw, 15rem);
+      border: 1px dashed rgba(var(--active-accent-rgb), 0.16);
+      border-radius: 999px;
+      background: radial-gradient(circle, transparent 54%, rgba(var(--active-accent-rgb), 0.055) 55%, transparent 56%);
+      opacity: 0.78;
     }
 
     .site-header {
@@ -178,11 +241,13 @@
       transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
     }
 
+    .footer-left:hover .home-language,
     .home-language.is-visible,
     .home-language:focus-within {
       pointer-events: auto;
     }
 
+    .footer-left:hover .home-language,
     .home-language:focus-within {
       opacity: 1;
       transform: translateY(0);
@@ -247,6 +312,7 @@
 
     .home {
       --content-lift: clamp(3.45rem, 7.5vh, 4.95rem);
+      position: relative;
       display: grid;
       grid-template-columns: minmax(14rem, 1fr) minmax(18rem, var(--logo-size)) minmax(14rem, 1fr);
       align-items: start;
@@ -254,6 +320,19 @@
       width: min(100%, var(--stage-width));
       margin: 0 auto;
       padding: 0;
+    }
+
+    .home::before {
+      content: "";
+      position: absolute;
+      inset: clamp(-1rem, -1.6vw, -0.35rem);
+      z-index: -1;
+      border: 1px solid rgba(var(--active-accent-rgb), 0.09);
+      border-radius: 0.55rem;
+      background:
+        linear-gradient(90deg, rgba(var(--active-accent-rgb), 0.08), transparent 1px) 50% 0 / 1px 100% no-repeat,
+        linear-gradient(rgba(var(--active-accent-rgb), 0.06), transparent 1px) 0 50% / 100% 1px no-repeat;
+      opacity: 0.9;
     }
 
     .intro {
@@ -316,11 +395,26 @@
     }
 
     .portal::before {
-      content: none;
+      content: "";
+      position: absolute;
+      inset: 8%;
+      z-index: 0;
+      border: 1px solid rgba(var(--active-accent-rgb), 0.16);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 0 43%, rgba(var(--active-accent-rgb), 0.055) 44% 45%, transparent 46%),
+        conic-gradient(from 20deg, transparent, rgba(var(--active-accent-rgb), 0.12), transparent 26%, transparent 50%, rgba(var(--active-accent-rgb), 0.08), transparent 76%, transparent);
+      transform: rotate(-8deg);
     }
 
     .portal::after {
-      content: none;
+      content: "";
+      position: absolute;
+      inset: 18%;
+      z-index: 0;
+      border: 1px dashed rgba(var(--active-accent-rgb), 0.18);
+      border-radius: 50%;
+      opacity: 0.9;
     }
 
     .samold-logo {
@@ -432,11 +526,11 @@
       gap: clamp(0.55rem, 0.7vw, 0.8rem);
       min-width: max-content;
       padding: clamp(0.55rem, 0.7vw, 0.72rem) clamp(0.7rem, 0.9vw, 0.95rem);
-      border: 1px solid rgba(var(--glow-rgb), 0.38);
+      border: 1px solid rgba(var(--active-accent-rgb), 0.38);
       border-radius: 999px;
       background: rgba(7, 11, 18, 0.88);
       color: var(--green-soft);
-      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34), 0 0 26px rgba(var(--glow-rgb), 0.12);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34), 0 0 26px rgba(var(--active-accent-rgb), 0.12);
       opacity: 0;
       pointer-events: none;
       transform: translateY(0.5rem) scale(0.96);
@@ -444,7 +538,7 @@
     }
 
     .node-icon .material-symbols-outlined {
-      color: var(--green);
+      color: rgb(var(--active-accent-rgb));
       font-size: clamp(1.2rem, 1.1vw, 1.45rem);
     }
 
@@ -467,7 +561,7 @@
     .letter-hotspot:focus-visible .node-icon {
       opacity: 1;
       transform: translateY(0) scale(1);
-      border-color: rgba(var(--glow-rgb), 0.78);
+      border-color: rgba(var(--active-accent-rgb), 0.78);
     }
 
     .node-icon.top {
@@ -518,8 +612,9 @@
       align-self: start;
       justify-self: end;
       width: min(100%, var(--panel-width));
-      height: 31.5rem;
-      padding-left: 0;
+      height: 33.5rem;
+      padding-left: clamp(1rem, 1.8vw, 1.5rem);
+      border-left: 1px solid rgba(var(--active-accent-rgb), 0.18);
       position: relative;
     }
 
@@ -532,7 +627,7 @@
       top: calc(0rem - var(--content-lift));
       width: 100%;
       margin: 0;
-      color: rgba(144, 238, 144, 0.8);
+      color: rgba(var(--active-accent-rgb), 0.8);
       font-size: 0.8rem;
       font-weight: 700;
       letter-spacing: 0.16em;
@@ -570,7 +665,7 @@
       width: 100%;
       min-height: 1.45rem;
       margin: 0;
-      color: var(--green);
+      color: rgb(var(--active-accent-rgb));
       font-size: clamp(0.95rem, 1.2vw, 1.1rem);
       font-weight: 700;
     }
@@ -595,7 +690,7 @@
       gap: 0.8rem;
       position: absolute;
       left: 0;
-      top: calc(23.25rem - var(--content-lift));
+      top: calc(24.85rem - var(--content-lift));
       width: 100%;
       height: 3rem;
       margin-top: 0;
@@ -609,7 +704,7 @@
       width: 14.8rem;
       min-height: 2.7rem;
       padding: 0 1rem;
-      border: 1px solid rgba(var(--glow-rgb), 0.34);
+      border: 1px solid rgba(var(--active-accent-rgb), 0.34);
       border-radius: 999px;
       background: rgba(7, 11, 18, 0.52);
       color: var(--green-soft);
@@ -624,8 +719,8 @@
 
     .panel-link:hover,
     .panel-link:focus-visible {
-      border-color: rgba(var(--glow-rgb), 0.82);
-      background: rgba(var(--glow-rgb), 0.1);
+      border-color: rgba(var(--active-accent-rgb), 0.82);
+      background: rgba(var(--active-accent-rgb), 0.1);
       color: var(--green);
       outline: 0;
     }
@@ -635,7 +730,7 @@
       gap: 0.3rem;
       position: absolute;
       left: 0;
-      top: calc(27.35rem - var(--content-lift));
+      top: calc(29rem - var(--content-lift));
       margin-top: 0;
     }
 
@@ -666,7 +761,7 @@
     .route-list a:hover,
     .route-list a:focus-visible,
     .route-list a.is-active {
-      color: var(--green-soft);
+      color: rgb(var(--active-accent-rgb));
       outline: 0;
       transform: translateX(0.35rem);
     }
@@ -781,7 +876,7 @@
          At 3.28rem, the longest title wraps to ~3 lines (~10.6rem).
          All subsequent tops shift +1.45rem from the base values. */
       .section-panel {
-        height: 35rem;
+        height: 37rem;
       }
 
       .panel-title {
@@ -797,11 +892,11 @@
       }
 
       .panel-actions {
-        top: calc(24.7rem - var(--content-lift));
+        top: calc(26.1rem - var(--content-lift));
       }
 
       .route-list {
-        top: calc(28.8rem - var(--content-lift));
+        top: calc(30.35rem - var(--content-lift));
       }
     }
 
@@ -979,6 +1074,8 @@
         width: 100%;
         max-width: 100%;
         min-height: 100%;
+        padding-left: 0;
+        border-left: 0;
       }
 
       .panel-kicker,
@@ -1243,7 +1340,7 @@
     }
   </style>
 </head>
-<body>
+<body data-active-room="overview">
   <div class="shell">
     <main class="home">
       <section class="intro" aria-labelledby="home-title">
@@ -1545,7 +1642,8 @@
     };
 
     const roomOrder = ["showcase", "articles", "moments", "overview", "labs", "discoveries"];
-    const storageKey = "portfolio-lang";
+    const storageKey = "samold-lang";
+    const legacyStorageKey = "portfolio-lang";
     const root = document.documentElement;
     const metaDescription = document.querySelector('meta[name="description"]');
     const introEyebrow = document.querySelector(".eyebrow");
@@ -1583,7 +1681,7 @@
 
     function getStoredLang() {
       try {
-        const stored = localStorage.getItem(storageKey);
+        const stored = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
         return translations[stored] ? stored : "en";
       } catch {
         return "en";
@@ -1608,6 +1706,7 @@
 
     function setActive(key) {
       activeKey = roomOrder.includes(key) ? key : "overview";
+      document.body.dataset.activeRoom = activeKey;
       const item = t().rooms[activeKey] || t().rooms.overview;
       kicker.textContent = item.kicker;
       title.textContent = item.title;

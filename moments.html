@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Moments room of SAMOLD, a stream of fragments and personal updates by Zhou Yongyu.">
   <title>Moments | SAMOLD</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/samold-room.css?v=room-refined-hero-effects-20260514">
+  <link rel="stylesheet" href="assets/samold-room.css?v=samold-redesign-20260604-7">
 </head>
-<body>
+<body data-room="moments">
   <div class="room-page">
     <header class="room-header">
       <a class="brand-home" href="index.html" aria-label="Back to SAMOLD home">
@@ -45,43 +46,63 @@
         </div>
       </section>
 
-      <p class="section-label">Pinned fragments</p>
-      <section class="moment-stream" aria-label="Moment stream">
-        <article class="moment-row">
-          <p class="moment-date">Jun 18, 2024</p>
-          <div>
+      <p class="section-label" data-reveal>Pinned fragments</p>
+      <section class="moment-board" aria-label="Moment stream">
+        <article class="room-card moment-card wide" data-reveal>
+          <div class="moment-photo" aria-hidden="true">
+            <span class="placeholder-label">Photo placeholder</span>
+            <span class="placeholder-note">KLIA T1 reception frame</span>
+          </div>
+          <div class="moment-body">
+            <p class="moment-date">Jun 18, 2024</p>
             <h2>KLIA T1, formal clothes, a strange kind of calm.</h2>
             <p class="moment-text">Representing students during Premier Li Qiang's official visit reception felt like stepping briefly into a much larger page of history.</p>
           </div>
         </article>
 
-        <article class="moment-row">
-          <p class="moment-date">Apr - Jul 2024</p>
-          <div>
+        <article class="room-card moment-card" data-reveal>
+          <div class="moment-photo" aria-hidden="true">
+            <span class="placeholder-label">Ledger frame</span>
+            <span class="placeholder-note">Community service notes</span>
+          </div>
+          <div class="moment-body">
+            <p class="moment-date">Apr - Jul 2024</p>
             <h2>Budgets are also a kind of interface.</h2>
             <p class="moment-text">Community finance work taught me that clarity is not decorative. When records are clean, people trust the next action faster.</p>
           </div>
         </article>
 
-        <article class="moment-row">
-          <p class="moment-date">Shanghai</p>
-          <div>
+        <article class="room-card moment-card" data-reveal>
+          <div class="moment-photo" aria-hidden="true">
+            <span class="placeholder-label">Notebook frame</span>
+            <span class="placeholder-note">Shanghai testing days</span>
+          </div>
+          <div class="moment-body">
+            <p class="moment-date">Shanghai</p>
             <h2>The internship notebook kept getting longer.</h2>
             <p class="moment-text">Functional testing, API checks, defect tracking, and the repeated lesson that production work is mostly <strong>attention</strong> under a schedule.</p>
           </div>
         </article>
 
-        <article class="moment-row">
-          <p class="moment-date">Campus</p>
-          <div>
+        <article class="room-card moment-card" data-reveal>
+          <div class="moment-photo" aria-hidden="true">
+            <span class="placeholder-label">Walk frame</span>
+            <span class="placeholder-note">Campus and street composition</span>
+          </div>
+          <div class="moment-body">
+            <p class="moment-date">Campus</p>
             <h2>A good walk resets the stack.</h2>
             <p class="moment-text">Photography and travel are not separate from the work. They are how I notice composition, pacing, and what a scene is asking for.</p>
           </div>
         </article>
 
-        <article class="moment-row">
-          <p class="moment-date">Always</p>
-          <div>
+        <article class="room-card moment-card wide" data-reveal>
+          <div class="moment-photo" aria-hidden="true">
+            <span class="placeholder-label">Desk frame</span>
+            <span class="placeholder-note">Reading, writing, rereading</span>
+          </div>
+          <div class="moment-body">
+            <p class="moment-date">Always</p>
             <h2>Reading, writing, then reading again.</h2>
             <p class="moment-text">Some days the whole output is one paragraph that finally says what I meant. That still counts.</p>
           </div>
@@ -105,23 +126,37 @@
       '.section-label': '钉住的片段',
       '.room-footer > span': '大概，也不只是老样子。',
       '.room-footer > a': '下一站：概览',
-      '.moment-stream .moment-body h2': [
+      '.moment-card .moment-body h2': [
         'KLIA T1，正装，一种奇怪的平静。',
         '账目也是一种界面。',
         '实习笔记越写越厚。',
         '一次好的散步能重置思路。',
         '阅读、写作，再阅读。'
       ],
-      '.moment-stream .moment-body .moment-text': [
+      '.moment-card .moment-body .moment-text': [
         '作为学生代表参加李强总理来访的欢迎仪式，像是短暂踏入了一页更大的历史。',
         '社区财务工作告诉我，清晰本身不是装饰。记录干净，下一个动作就更容易获得信任。',
         '功能测试、API 检查、缺陷追踪，以及一再重复的课：生产环境的工作大多是在日程压力下保持注意力。',
         '摄影和旅行不是工作以外的事，而是我注意构图、节奏和一个场景在要求什么的方式。',
         '有些天，全部的产出就是一段终于说清楚了意思的话。这也算。'
+      ],
+      '.moment-photo .placeholder-label': [
+        '照片占位',
+        '账本画面',
+        '笔记画面',
+        '散步画面',
+        '桌面画面'
+      ],
+      '.moment-photo .placeholder-note': [
+        'KLIA T1 接待现场',
+        '社区服务记录',
+        '上海测试实习的日子',
+        '校园与街道构图',
+        '阅读、写作、再阅读'
       ]
     }
   };
   </script>
-  <script src="assets/samold-room.js?v=room-refined-hero-effects-20260514"></script>
+  <script src="assets/samold-room.js?v=samold-redesign-20260604-7"></script>
 </body>
 </html>

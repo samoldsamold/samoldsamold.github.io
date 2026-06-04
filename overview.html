@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Overview room of SAMOLD, a concise map of Zhou Yongyu and a floating resume entry.">
   <title>Overview | SAMOLD</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/samold-room.css?v=room-refined-hero-effects-20260514">
+  <link rel="stylesheet" href="assets/samold-room.css?v=samold-redesign-20260604-7">
 </head>
-<body>
+<body data-room="overview">
   <div class="room-page">
     <header class="room-header">
       <a class="brand-home" href="index.html" aria-label="Back to SAMOLD home">
@@ -45,7 +46,7 @@
         </div>
       </section>
 
-      <section class="overview-strip" aria-label="Overview facts">
+      <section class="overview-strip" aria-label="Overview facts" data-reveal>
         <div class="overview-fact">
           <span>Base</span>
           <p>Xiamen University Malaysia, Computer Science and Technology undergraduate.</p>
@@ -60,33 +61,37 @@
         </div>
       </section>
 
-      <p class="section-label">Quick routes</p>
-      <section class="content-grid" aria-label="Overview routes">
-        <article class="room-card wide">
+      <p class="section-label" data-reveal>Personal map</p>
+      <section class="overview-map" aria-label="Overview routes" data-reveal>
+        <div class="map-panel">
+          <div class="card-meta"><span class="pill">Map key</span><span>SAMOLD</span></div>
+          <h2>One person, six doors.</h2>
+          <p>
+            Overview is the quiet map: formal enough to orient you, loose enough to point back toward the rooms where the work, notes, fragments, experiments, and references live.
+          </p>
+          <a class="inline-link" href="resume.html">Open formal resume <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+        </div>
+
+        <div class="map-routes">
+          <a class="map-route" href="showcase.html"><span><strong>Showcase</strong><span>finished work and delivery</span></span><span>S</span></a>
+          <a class="map-route" href="articles.html"><span><strong>Articles</strong><span>slower notes and thinking</span></span><span>A</span></a>
+          <a class="map-route" href="moments.html"><span><strong>Moments</strong><span>daily fragments and photos</span></span><span>M</span></a>
+          <a class="map-route" href="labs.html"><span><strong>Labs</strong><span>experiments and prototypes</span></span><span>L</span></a>
+          <a class="map-route" href="discoveries.html"><span><strong>Discoveries</strong><span>tools, links, references</span></span><span>D</span></a>
+          <a class="map-route" href="index.html"><span><strong>Back to mark</strong><span>letter-shaped navigation</span></span><span>↵</span></a>
+        </div>
+      </section>
+
+      <section class="content-grid" aria-label="Overview notes">
+        <article class="room-card wide" data-reveal>
           <div class="card-meta"><span class="pill">Professional</span><span>Resume route</span></div>
           <h3>Need the formal version?</h3>
           <p>
             Open the resume for the structured record: <strong>summary</strong>, basic info, internship experience, education, skills, language, activities, and interests.
           </p>
-          <a class="inline-link" href="resume.html">Open resume <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
         </article>
 
-        <article class="room-card wide">
-          <div class="card-meta"><span class="pill">Site map</span><span>SAMOLD rooms</span></div>
-          <h3>Want the less formal version?</h3>
-          <p>
-            The other rooms hold the variable parts: projects in Showcase, thinking in Articles, fragments in Moments, experiments in Labs, and saved references in Discoveries.
-          </p>
-          <ul class="tag-list">
-            <li class="tag">Showcase</li>
-            <li class="tag">Articles</li>
-            <li class="tag">Moments</li>
-            <li class="tag">Labs</li>
-            <li class="tag">Discoveries</li>
-          </ul>
-        </article>
-
-        <article class="room-card full">
+        <article class="room-card wide" data-reveal>
           <div class="card-meta"><span class="pill">Contact</span><span>Same person, different door</span></div>
           <h3>For internships, collaboration, or a thoughtful hello.</h3>
           <p>
@@ -114,7 +119,7 @@
       '.room-title': '能放进一页里的版本。',
       '.room-subtitle': '这些板块背后同一个人的正式剪影：<strong>计算机科学</strong>、<strong>软件测试</strong>、双语沟通，以及把散乱的事情变得清晰的习惯。',
       '.room-note span:last-child': '完整简历在右下角的悬浮按钮里，这页是文件的前一步——先看地图再开门。',
-      '.section-label': '快速路径',
+      '.section-label': '个人地图',
       '.room-footer > span': '大概，也不只是老样子。',
       '.room-footer > a': '下一站：实验室',
       '.overview-fact p': [
@@ -122,19 +127,36 @@
         '软件测试工程师实习，有功能测试、API 测试和缺陷生命周期管理经验。',
         '中英双语沟通、社区财务工作、公务接待经历，以及界面设计实践。'
       ],
+      '.map-panel h2': '一个人，六扇门。',
+      '.map-panel p': '概览是一张安静的地图：足够正式，可以让你定位；也足够松动，会把你带回那些作品、笔记、碎片、实验和参考资料所在的房间。',
+      '.map-panel .inline-link': '打开正式简历 <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>',
+      '.map-route strong': [
+        '作品集',
+        '文章',
+        '瞬间',
+        '实验室',
+        '发现',
+        '回到标记'
+      ],
+      '.map-route strong + span': [
+        '完成的作品与交付',
+        '慢一点的笔记和思考',
+        '日常碎片和照片',
+        '实验与原型',
+        '工具、链接和参考',
+        '字母形状的导航'
+      ],
       '.content-grid article h3': [
         '需要正式版本？',
-        '想看不那么正式的版本？',
         '求职、合作，或者只是打个招呼'
       ],
       '.content-grid article > p': [
         '打开简历，里面有结构化的记录：<strong>概要</strong>、基本信息、实习经历、教育背景、技能、语言、活动和兴趣。',
-        '其他板块放着更灵活的部分：作品集有项目，文章有思考，瞬间有碎片，实验室有尝试，发现有收藏。',
         '简历页有完整的联系方式。简短版：GitHub、领英和邮件都从简历页和首页连通。'
       ]
     }
   };
   </script>
-  <script src="assets/samold-room.js?v=room-refined-hero-effects-20260514"></script>
+  <script src="assets/samold-room.js?v=samold-redesign-20260604-7"></script>
 </body>
 </html>

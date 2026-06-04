@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Labs room of SAMOLD, collecting experiments and prototypes by Zhou Yongyu.">
   <title>Labs | SAMOLD</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/samold-room.css?v=room-refined-hero-effects-20260514">
+  <link rel="stylesheet" href="assets/samold-room.css?v=samold-redesign-20260604-7">
 </head>
-<body>
+<body data-room="labs">
   <div class="room-page">
     <header class="room-header">
       <a class="brand-home" href="index.html" aria-label="Back to SAMOLD home">
@@ -45,43 +46,58 @@
         </div>
       </section>
 
-      <p class="section-label">Workbench</p>
-      <section class="content-grid" aria-label="Lab experiments">
-        <article class="room-card wide">
-          <div class="card-meta"><span class="pill">Active</span><span>Interface experiment</span></div>
-          <h3>SAMOLD letter router</h3>
-          <p>Turning a personal mark into a usable navigation model: invisible hotspots, room previews, and a homepage that behaves like a map.</p>
-          <ul class="tag-list">
-            <li class="tag">Interaction</li>
-            <li class="tag">CSS</li>
-            <li class="tag">Brand System</li>
+      <p class="section-label" data-reveal>Workbench</p>
+      <section class="lab-console" aria-label="Lab control surface" data-reveal>
+        <div class="lab-screen">
+          <div class="card-meta"><span class="pill">Active system</span><span>Cursor reveal preserved</span></div>
+          <h2>Translation layer online.</h2>
+          <ul class="lab-readout">
+            <li><span>Input</span><strong>pointer, focus, language</strong></li>
+            <li><span>Output</span><strong>masked bilingual hero</strong></li>
+            <li><span>Fallback</span><strong>reduced motion keeps text readable</strong></li>
+            <li><span>Status</span><strong>messy enough to learn</strong></li>
           </ul>
-        </article>
+        </div>
 
-        <article class="room-card wide">
-          <div class="card-meta"><span class="pill">Prototype</span><span>Resume system</span></div>
-          <h3>Bilingual resume controls</h3>
-          <p>A no-build language switcher for a static resume page, including mobile floating controls and section-aware navigation.</p>
-          <ul class="tag-list">
-            <li class="tag">i18n</li>
-            <li class="tag">Vanilla JS</li>
-            <li class="tag">Responsive</li>
-          </ul>
-        </article>
+        <section class="content-grid lab-grid" aria-label="Lab experiments">
+          <article class="room-card lab-card wide" data-reveal>
+            <div class="card-meta"><span class="pill">Active</span><span>Interface experiment</span></div>
+            <h3>SAMOLD letter router</h3>
+            <p>Turning a personal mark into a usable navigation model: invisible hotspots, room previews, and a homepage that behaves like a map.</p>
+            <ul class="tag-list">
+              <li class="tag">Interaction</li>
+              <li class="tag">CSS</li>
+              <li class="tag">Brand System</li>
+            </ul>
+          </article>
 
-        <article class="room-card">
+          <article class="room-card lab-card wide" data-reveal>
+            <div class="card-meta"><span class="pill">Prototype</span><span>Resume system</span></div>
+            <h3>Bilingual resume controls</h3>
+            <p>A no-build language switcher for a static resume page, including mobile floating controls and section-aware navigation.</p>
+            <ul class="tag-list">
+              <li class="tag">i18n</li>
+              <li class="tag">Vanilla JS</li>
+              <li class="tag">Responsive</li>
+            </ul>
+          </article>
+        </section>
+      </section>
+
+      <section class="content-grid" aria-label="Lab notes">
+        <article class="room-card lab-card" data-reveal>
           <div class="card-meta"><span class="pill">Notes</span><span>Testing</span></div>
           <h3>API test notebook</h3>
           <p>A structured place for Postman cases, Swagger UI checks, request patterns, and common data-integrity traps.</p>
         </article>
 
-        <article class="room-card">
+        <article class="room-card lab-card" data-reveal>
           <div class="card-meta"><span class="pill">Study</span><span>Systems</span></div>
           <h3>Linux command drills</h3>
           <p>Small exercises for shell scripting, process inspection, navigation, and the commands that become muscle memory.</p>
         </article>
 
-        <article class="room-card">
+        <article class="room-card lab-card" data-reveal>
           <div class="card-meta"><span class="pill">Play</span><span>Strategy</span></div>
           <h3>Deck idea sandbox</h3>
           <p>A future space for tracking Hearthstone deck combinations, matchups, and the small hypotheses behind each build.</p>
@@ -105,6 +121,13 @@
       '.section-label': '工作台',
       '.room-footer > span': '大概，也不只是老样子。',
       '.room-footer > a': '下一站：发现',
+      '.lab-screen h2': '翻译图层已上线。',
+      '.lab-readout li strong': [
+        '指针、焦点、语言',
+        '遮罩式双语 hero',
+        '减少动效时保持文字可读',
+        '足够混乱，才会学到东西'
+      ],
       '.content-grid article h3': [
         'SAMOLD 字母路由器',
         '双语简历控件',
@@ -122,6 +145,6 @@
     }
   };
   </script>
-  <script src="assets/samold-room.js?v=room-refined-hero-effects-20260514"></script>
+  <script src="assets/samold-room.js?v=samold-redesign-20260604-7"></script>
 </body>
 </html>

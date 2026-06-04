@@ -126,11 +126,6 @@ function createRoomReveal(enCache, cn) {
     lastClientY: -600,
     targetOpacity: 0,
     revealOpacity: 0,
-    headerX: -600,
-    headerY: -600,
-    headerRadius: 120,
-    headerTargetOpacity: 0,
-    headerOpacity: 0,
     width: 1,
     height: 1
   };
@@ -175,50 +170,6 @@ function createRoomReveal(enCache, cn) {
   revealGroup.appendChild(revealContent);
   revealSvg.appendChild(revealGroup);
   hero.appendChild(revealSvg);
-
-  const headerReveal = createHeaderReveal();
-
-  function createHeaderReveal() {
-    const header = document.querySelector('.room-header');
-    if (!header || document.querySelector('.room-header-reveal')) return null;
-
-    const overlay = document.createElement('div');
-    overlay.className = 'room-header-reveal';
-    overlay.setAttribute('aria-hidden', 'true');
-
-    const inner = document.createElement('div');
-    inner.className = 'room-header-reveal-inner';
-
-    const brandSource = header.querySelector('.brand-block') || header.querySelector('.brand-home');
-    const navSource = header.querySelector('.room-nav');
-    if (brandSource) inner.appendChild(brandSource.cloneNode(true));
-    if (navSource) {
-      const navCopy = navSource.cloneNode(true);
-      inner.appendChild(navCopy);
-
-      const sourceLinks = [...navSource.querySelectorAll('a')];
-      const copyLinks = [...navCopy.querySelectorAll('a')];
-      sourceLinks.forEach((link, index) => {
-        const copy = copyLinks[index];
-        if (!copy) return;
-        const show = () => copy.classList.add('is-clone-hover');
-        const hide = () => copy.classList.remove('is-clone-hover');
-        link.addEventListener('pointerenter', show, { passive: true });
-        link.addEventListener('pointerleave', hide, { passive: true });
-        link.addEventListener('focus', show);
-        link.addEventListener('blur', hide);
-      });
-    }
-
-    overlay.appendChild(inner);
-    overlay.querySelectorAll('a, button').forEach(control => {
-      control.tabIndex = -1;
-      control.setAttribute('aria-hidden', 'true');
-      if (control.tagName === 'A') control.removeAttribute('href');
-    });
-    document.body.appendChild(overlay);
-    return overlay;
-  }
 
   const positions = followers.map(() => ({ x: -600, y: -600 }));
   const speeds = reduceMotion ? [1] : [0.44, 0.36, 0.29, 0.235, 0.19, 0.155, 0.13, 0.11];
@@ -330,7 +281,6 @@ function createRoomReveal(enCache, cn) {
     revealBg.setAttribute('height', String(height));
 
     const baseRadius = Math.max(86, Math.min(148, Math.min(width, height) * 0.19));
-    state.headerRadius = baseRadius;
     followers.forEach((dot, index) => {
       dot.setAttribute('r', String(Math.max(58, baseRadius - index * 4.8)));
     });
@@ -408,25 +358,6 @@ function createRoomReveal(enCache, cn) {
       state.lastClientX <= rect.right &&
       state.lastClientY >= rect.top &&
       state.lastClientY <= rect.bottom;
-    const header = document.querySelector('.room-header');
-    const backdrop = document.querySelector('.room-top-backdrop');
-    const headerVisible = Boolean(
-      header &&
-      (document.body.classList.contains('is-room-scrolled') || header.matches(':focus-within'))
-    );
-    const headerHeight = backdrop
-      ? backdrop.getBoundingClientRect().height
-      : Math.max(116, window.innerHeight * 0.13);
-    const circleTouchesHeader =
-      headerVisible &&
-      state.lastClientX >= -state.headerRadius &&
-      state.lastClientX <= window.innerWidth + state.headerRadius &&
-      state.lastClientY - state.headerRadius <= headerHeight &&
-      state.lastClientY + state.headerRadius >= 0;
-
-    state.headerX = state.lastClientX;
-    state.headerY = state.lastClientY;
-    state.headerTargetOpacity = circleTouchesHeader ? 1 : 0;
 
     if (!inside) {
       state.targetOpacity = 0;
@@ -472,12 +403,10 @@ function createRoomReveal(enCache, cn) {
 
   document.addEventListener('pointerleave', () => {
     state.targetOpacity = 0;
-    state.headerTargetOpacity = 0;
   }, { passive: true });
 
   window.addEventListener('blur', () => {
     state.targetOpacity = 0;
-    state.headerTargetOpacity = 0;
   });
 
   window.addEventListener('scroll', updateTargetFromLastPointer, { passive: true });
@@ -491,16 +420,6 @@ function createRoomReveal(enCache, cn) {
     if (state.revealOpacity < 0.002) state.revealOpacity = 0;
     if (state.revealOpacity > 0.998) state.revealOpacity = 1;
     revealGroup.setAttribute('opacity', state.revealOpacity.toFixed(3));
-
-    state.headerOpacity += (state.headerTargetOpacity - state.headerOpacity) * opacitySpeed;
-    if (state.headerOpacity < 0.002) state.headerOpacity = 0;
-    if (state.headerOpacity > 0.998) state.headerOpacity = 1;
-    if (headerReveal) {
-      headerReveal.style.setProperty('--header-reveal-x', `${state.headerX.toFixed(2)}px`);
-      headerReveal.style.setProperty('--header-reveal-y', `${state.headerY.toFixed(2)}px`);
-      headerReveal.style.setProperty('--header-reveal-radius', `${state.headerRadius.toFixed(2)}px`);
-      headerReveal.style.setProperty('--header-reveal-opacity', state.headerOpacity.toFixed(3));
-    }
 
     positions.forEach((pos, index) => {
       const speed = speeds[index] || speeds[speeds.length - 1];
@@ -548,7 +467,8 @@ function createMagneticTitleEffect(hero) {
   let raf = 0;
 
   function wrap() {
-    const text = (title.textContent || '').trim();
+    const isAlreadyWrapped = title.classList.contains('room-title-magnetic') && title.querySelector('.magnetic-letter');
+    const text = ((isAlreadyWrapped ? title.getAttribute('aria-label') : title.textContent) || '').trim();
     letters = [];
     title.classList.add('room-title-magnetic');
     title.setAttribute('aria-label', text);
@@ -666,20 +586,44 @@ function createViewfinderEffect(hero) {
 
   const interactiveSelector = 'a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])';
 
+  function hide() {
+    hero.classList.remove('is-framing', 'is-focusing');
+    frame.classList.remove('is-visible', 'is-focusing');
+    hero.style.setProperty('--vf-x', '-9999px');
+    hero.style.setProperty('--vf-y', '-9999px');
+    frame.style.opacity = '';
+    frame.style.transform = '';
+  }
+
   function move(event) {
     const rect = hero.getBoundingClientRect();
+    const isInsideHero = event.clientX >= rect.left
+      && event.clientX <= rect.right
+      && event.clientY >= rect.top
+      && event.clientY <= rect.bottom;
+
+    if (!isInsideHero) {
+      hide();
+      return;
+    }
+
     hero.style.setProperty('--vf-x', `${event.clientX - rect.left}px`);
     hero.style.setProperty('--vf-y', `${event.clientY - rect.top}px`);
     const target = document.elementFromPoint(event.clientX, event.clientY);
     const isInteractive = Boolean(target && target.closest(interactiveSelector));
     hero.classList.add('is-framing');
     hero.classList.toggle('is-focusing', isInteractive);
+    frame.classList.add('is-visible');
+    frame.classList.toggle('is-focusing', isInteractive);
+    frame.style.opacity = isInteractive ? '1' : '0.88';
+    frame.style.transform = isInteractive
+      ? 'translate3d(-50%, -50%, 0) scale(0.72)'
+      : 'translate3d(-50%, -50%, 0) scale(1)';
   }
 
-  hero.addEventListener('pointermove', move, { passive: true });
-  hero.addEventListener('pointerleave', () => {
-    hero.classList.remove('is-framing', 'is-focusing');
-  }, { passive: true });
+  window.addEventListener('pointermove', move, { passive: true });
+  hero.addEventListener('pointerleave', hide, { passive: true });
+  document.addEventListener('pointerleave', hide, { passive: true });
   hero.addEventListener('click', () => {
     flash.classList.remove('is-flashing');
     window.requestAnimationFrame(() => flash.classList.add('is-flashing'));
@@ -794,8 +738,19 @@ function createDiscoveryPinEffect(hero) {
   if (!cn || !cn.texts) return;
 
   const LANG_KEY = 'samold-lang';
-  const getLang = () => { try { return localStorage.getItem(LANG_KEY) || 'en'; } catch { return 'en'; } };
-  const setLang = l => { try { localStorage.setItem(LANG_KEY, l); } catch {} };
+  const LEGACY_LANG_KEY = 'portfolio-lang';
+  const getLang = () => {
+    try {
+      return localStorage.getItem(LANG_KEY) || localStorage.getItem(LEGACY_LANG_KEY) || 'en';
+    } catch {
+      return 'en';
+    }
+  };
+  const setLang = l => {
+    try {
+      localStorage.setItem(LANG_KEY, l);
+    } catch {}
+  };
 
   const enCache = {};
   let revealApi = null;
@@ -903,30 +858,56 @@ function createDiscoveryPinEffect(hero) {
   });
 })();
 
-// The hero starts as a pure room landing screen. The header returns only after
-// the visitor begins scrolling, with a soft top-down reveal.
+// Lightweight entrance reveal for room content. Elements remain visible without
+// IntersectionObserver, so old browsers get the static page.
 (function () {
-  const page = document.querySelector('.room-page');
-  if (!page) return;
-  let backdrop = document.querySelector('.room-top-backdrop');
-  if (!backdrop) {
-    backdrop = document.createElement('div');
-    backdrop.className = 'room-top-backdrop';
-    backdrop.setAttribute('aria-hidden', 'true');
-    document.body.prepend(backdrop);
+  const items = [...document.querySelectorAll('[data-reveal]')];
+  if (!items.length) return;
+  document.body.classList.add('reveal-ready');
+
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(item => item.classList.add('is-visible'));
+    return;
   }
 
-  function updateHeaderState() {
-    const threshold = Math.min(120, window.innerHeight * 0.12);
-    const scrolled = window.scrollY > threshold;
-    page.classList.toggle('is-room-scrolled', scrolled);
-    document.body.classList.toggle('is-room-scrolled', scrolled);
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+  items.forEach((item, index) => {
+    item.style.transitionDelay = `${Math.min(index * 42, 260)}ms`;
+    observer.observe(item);
+  });
+})();
+
+// Discoveries shelf filtering.
+(function () {
+  const filters = [...document.querySelectorAll('[data-filter]')];
+  const cards = [...document.querySelectorAll('[data-category]')];
+  if (!filters.length || !cards.length) return;
+
+  function applyFilter(filter) {
+    filters.forEach(button => {
+      const active = button.dataset.filter === filter;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+
+    cards.forEach(card => {
+      const show = filter === 'all' || card.dataset.category === filter;
+      card.classList.toggle('is-filtered-out', !show);
+    });
   }
 
-  window.addEventListener('scroll', updateHeaderState, { passive: true });
-  window.addEventListener('resize', updateHeaderState, { passive: true });
-  document.addEventListener('DOMContentLoaded', updateHeaderState);
-  updateHeaderState();
+  filters.forEach(button => {
+    button.addEventListener('click', () => applyFilter(button.dataset.filter || 'all'));
+  });
+
+  applyFilter('all');
 })();
 
 // Room content cards use the same cursor-lit language as the resume cards:

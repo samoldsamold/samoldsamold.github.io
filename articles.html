@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Articles room of SAMOLD, collecting writing notes and technical reflections by Zhou Yongyu.">
   <title>Articles | SAMOLD</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/samold-room.css?v=room-refined-hero-effects-20260514">
+  <link rel="stylesheet" href="assets/samold-room.css?v=samold-redesign-20260604-7">
 </head>
-<body>
+<body data-room="articles">
   <div class="room-page">
     <header class="room-header">
       <a class="brand-home" href="index.html" aria-label="Back to SAMOLD home">
@@ -45,47 +46,88 @@
         </div>
       </section>
 
-      <p class="section-label">Writing queue</p>
+      <p class="section-label" data-reveal>Writing queue</p>
       <section class="article-list" aria-label="Article drafts">
-        <article class="article-row">
-          <p class="article-date">Essay note</p>
-          <div>
-            <h2>Same old is not boring.</h2>
-            <p>Routine is the background layer that makes variation visible. The site name started as a joke; the more useful reading is that <strong>consistency</strong> can be designed.</p>
+        <details class="article-row" data-reveal open>
+          <summary>
+            <span class="article-date">Essay note</span>
+            <span class="article-summary">
+              <span class="article-status">Drafting</span>
+              <span class="article-title">Same old is not boring.</span>
+            </span>
+            <span class="article-toggle material-symbols-outlined" aria-hidden="true">add</span>
+          </summary>
+          <div class="article-body">
+            <div>
+              <p>Routine is the background layer that makes variation visible. The site name started as a joke; the more useful reading is that <strong>consistency</strong> can be designed.</p>
+              <a class="inline-link" href="moments.html">See fragments <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+            </div>
           </div>
-        </article>
+        </details>
 
-        <article class="article-row">
-          <p class="article-date">Testing</p>
-          <div>
-            <h2>What a defect ticket is really for.</h2>
-            <p>A good bug report is not just proof that something broke. It is a small coordination artifact for <strong>engineering</strong>, <strong>product</strong>, and everyone who needs the same truth.</p>
+        <details class="article-row" data-reveal>
+          <summary>
+            <span class="article-date">Testing</span>
+            <span class="article-summary">
+              <span class="article-status">Outline</span>
+              <span class="article-title">What a defect ticket is really for.</span>
+            </span>
+            <span class="article-toggle material-symbols-outlined" aria-hidden="true">add</span>
+          </summary>
+          <div class="article-body">
+            <div>
+              <p>A good bug report is not just proof that something broke. It is a small coordination artifact for <strong>engineering</strong>, <strong>product</strong>, and everyone who needs the same truth.</p>
+            </div>
           </div>
-        </article>
+        </details>
 
-        <article class="article-row">
-          <p class="article-date">Interface</p>
-          <div>
-            <h2>A portfolio is a navigation problem.</h2>
-            <p>Most personal sites fail when everything tries to be the homepage. This one treats the mark as a map, then lets each letter become a different kind of entrance.</p>
+        <details class="article-row" data-reveal>
+          <summary>
+            <span class="article-date">Interface</span>
+            <span class="article-summary">
+              <span class="article-status">Working note</span>
+              <span class="article-title">A portfolio is a navigation problem.</span>
+            </span>
+            <span class="article-toggle material-symbols-outlined" aria-hidden="true">add</span>
+          </summary>
+          <div class="article-body">
+            <div>
+              <p>Most personal sites fail when everything tries to be the homepage. This one treats the mark as a map, then lets each letter become a different kind of entrance.</p>
+            </div>
           </div>
-        </article>
+        </details>
 
-        <article class="article-row">
-          <p class="article-date">Team work</p>
-          <div>
-            <h2>What bilingual work changes.</h2>
-            <p>Switching between English and Chinese is not only translation. It changes what gets clarified, what gets assumed, and how quickly a team can reach shared context.</p>
+        <details class="article-row" data-reveal>
+          <summary>
+            <span class="article-date">Team work</span>
+            <span class="article-summary">
+              <span class="article-status">Question</span>
+              <span class="article-title">What bilingual work changes.</span>
+            </span>
+            <span class="article-toggle material-symbols-outlined" aria-hidden="true">add</span>
+          </summary>
+          <div class="article-body">
+            <div>
+              <p>Switching between English and Chinese is not only translation. It changes what gets clarified, what gets assumed, and how quickly a team can reach shared context.</p>
+            </div>
           </div>
-        </article>
+        </details>
 
-        <article class="article-row">
-          <p class="article-date">Tools</p>
-          <div>
-            <h2>Postman, Swagger UI, and the quiet work.</h2>
-            <p>API testing often looks simple from the outside. The real work is noticing patterns, naming uncertainty, and checking that data integrity survives the normal path.</p>
+        <details class="article-row" data-reveal>
+          <summary>
+            <span class="article-date">Tools</span>
+            <span class="article-summary">
+              <span class="article-status">Notebook</span>
+              <span class="article-title">Postman, Swagger UI, and the quiet work.</span>
+            </span>
+            <span class="article-toggle material-symbols-outlined" aria-hidden="true">add</span>
+          </summary>
+          <div class="article-body">
+            <div>
+              <p>API testing often looks simple from the outside. The real work is noticing patterns, naming uncertainty, and checking that data integrity survives the normal path.</p>
+            </div>
           </div>
-        </article>
+        </details>
       </section>
     </main>
 
@@ -105,12 +147,19 @@
       '.section-label': '写作队列',
       '.room-footer > span': '大概，也不只是老样子。',
       '.room-footer > a': '下一站：瞬间',
-      '.article-list .article-body h2': [
+      '.article-title': [
         '老样子并不无聊。',
         '一张缺陷单真正用来做什么。',
         '作品集是一个导航问题。',
         '做双语工作会改变什么。',
         'Postman、Swagger UI 和那些安静的工作。'
+      ],
+      '.article-status': [
+        '起草中',
+        '提纲',
+        '工作笔记',
+        '问题',
+        '笔记本'
       ],
       '.article-list .article-body p': [
         '重复是让变化可见的底色。这个站名最初是个玩笑；更有用的解读是：<strong>稳定</strong>是可以被设计的。',
@@ -118,10 +167,11 @@
         '大多数个人站失败，是因为所有东西都在争做首页。这个站把标记当地图，让每个字母成为不同类型的入口。',
         '中英切换不只是翻译，它改变了什么需要说清楚、什么可以默认，以及团队多快能对齐。',
         'API 测试从外面看简单，真正的工作是发现规律、命名不确定性，确认数据完整性能撑过正常路径。'
-      ]
+      ],
+      '.article-body .inline-link': '看碎片 <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>'
     }
   };
   </script>
-  <script src="assets/samold-room.js?v=room-refined-hero-effects-20260514"></script>
+  <script src="assets/samold-room.js?v=samold-redesign-20260604-7"></script>
 </body>
 </html>
