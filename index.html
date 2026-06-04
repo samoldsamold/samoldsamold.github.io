@@ -38,6 +38,7 @@
       --language-reveal: 0;
       --language-shift: 0rem;
       --language-glow: 0px;
+      --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     html {
@@ -445,6 +446,169 @@
     .portal:hover .samold-logo,
     .portal:focus-within .samold-logo {
       filter: none;
+    }
+
+    .samold-breakwater {
+      --breakwater-x: -16deg;
+      --breakwater-y: 28deg;
+      --breakwater-z: 0deg;
+      --breakwater-accent-rgb: var(--active-accent-rgb);
+      position: fixed;
+      left: calc(var(--page-x) + clamp(6.5rem, 9vw, 10rem));
+      bottom: clamp(6.6rem, 12vh, 9rem);
+      z-index: 18;
+      width: clamp(4.6rem, 7.4vw, 7.4rem);
+      aspect-ratio: 1;
+      color: rgb(var(--breakwater-accent-rgb));
+      opacity: 0.9;
+      perspective: 680px;
+      pointer-events: none;
+      filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.42));
+    }
+
+    .samold-breakwater::before,
+    .samold-breakwater::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .samold-breakwater::before {
+      inset: -18%;
+      border: 1px dashed rgba(var(--breakwater-accent-rgb), 0.2);
+      border-radius: 999px;
+      opacity: 0.64;
+      transform: rotate(-14deg);
+    }
+
+    .samold-breakwater::after {
+      left: 20%;
+      right: 16%;
+      bottom: 3%;
+      height: 12%;
+      border-radius: 999px;
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55), transparent 68%);
+      filter: blur(4px);
+    }
+
+    .breakwater-button {
+      all: unset;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      border-radius: 999px;
+      cursor: grab;
+      pointer-events: auto;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .breakwater-button:focus-visible {
+      outline: 1px solid rgba(var(--breakwater-accent-rgb), 0.86);
+      outline-offset: 0.44rem;
+    }
+
+    .samold-breakwater.is-dragging .breakwater-button {
+      cursor: grabbing;
+    }
+
+    .breakwater-tilt,
+    .breakwater-spinner {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+
+    .breakwater-tilt {
+      transform: rotateX(var(--breakwater-x)) rotateY(var(--breakwater-y)) rotateZ(var(--breakwater-z));
+      transition: transform 240ms var(--ease-out-quint), filter 180ms ease;
+      will-change: transform;
+    }
+
+    .breakwater-spinner {
+      animation: breakwater-spin 24s linear infinite;
+    }
+
+    .samold-breakwater:hover .breakwater-spinner,
+    .samold-breakwater:focus-within .breakwater-spinner {
+      animation-duration: 9s;
+    }
+
+    .samold-breakwater.is-dragging .breakwater-spinner {
+      animation-play-state: paused;
+    }
+
+    .samold-breakwater.is-clicked .breakwater-tilt {
+      filter: drop-shadow(0 0 18px rgba(var(--breakwater-accent-rgb), 0.3));
+    }
+
+    .breakwater-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .breakwater-ground {
+      fill: rgba(0, 0, 0, 0.52);
+    }
+
+    .breakwater-aura {
+      mix-blend-mode: screen;
+      opacity: 0.72;
+    }
+
+    .breakwater-glyph {
+      transform-origin: 80px 82px;
+      transform: translateZ(14px);
+    }
+
+    .breakwater-arm,
+    .breakwater-core,
+    .breakwater-face,
+    .breakwater-chip,
+    .breakwater-ridge {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .breakwater-arm,
+    .breakwater-core {
+      stroke: rgba(219, 255, 212, 0.28);
+      stroke-width: 1.3;
+    }
+
+    .breakwater-face {
+      fill: rgba(219, 255, 212, 0.15);
+      stroke: rgba(var(--breakwater-accent-rgb), 0.5);
+      stroke-width: 1;
+    }
+
+    .breakwater-chip {
+      fill: rgba(3, 7, 10, 0.36);
+      stroke: rgba(219, 255, 212, 0.18);
+      stroke-width: 0.8;
+    }
+
+    .breakwater-ridge {
+      fill: none;
+      stroke: rgba(219, 255, 212, 0.26);
+      stroke-linecap: round;
+      stroke-width: 1;
+      opacity: 0.72;
+    }
+
+    .breakwater-arm-back {
+      opacity: 0.78;
+    }
+
+    @keyframes breakwater-spin {
+      to {
+        transform: rotateZ(360deg);
+      }
     }
 
     .letter-hotspot {
@@ -919,6 +1083,11 @@
         padding-bottom: 0;
       }
 
+      .samold-breakwater {
+        width: clamp(4rem, 9vw, 5.4rem);
+        opacity: 0.78;
+      }
+
       .home {
         --content-lift: clamp(1.6rem, 4.2vh, 2.55rem);
         position: relative;
@@ -982,6 +1151,19 @@
 
       .shell {
         padding: clamp(0.9rem, 3.5vw, 1.2rem);
+      }
+
+      .samold-breakwater {
+        right: clamp(0.9rem, 3.5vw, 1.2rem);
+        bottom: 4.65rem;
+        left: auto;
+        width: 3.55rem;
+        opacity: 0.68;
+        filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.32));
+      }
+
+      .samold-breakwater::before {
+        inset: -12%;
       }
 
       .site-header,
@@ -1267,6 +1449,11 @@
         width: min(66vmin, 18.2rem);
       }
 
+      .samold-breakwater {
+        bottom: 4.35rem;
+        width: 3.25rem;
+      }
+
       h1 {
         font-size: clamp(1.92rem, 9.5vw, 2.6rem);
       }
@@ -1300,6 +1487,10 @@
         animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
+      }
+
+      .breakwater-spinner {
+        animation: none !important;
       }
     }
 
@@ -1457,6 +1648,7 @@
     </div>
   </div>
 
+  <script src="assets/samold-breakwater.js?v=samold-redesign-20260604-8"></script>
   <script>
     const translations = {
       en: {
@@ -1873,6 +2065,15 @@
         root.style.setProperty("--language-shift", "0.35rem");
         root.style.setProperty("--language-glow", "0px");
         homeLanguage?.classList.remove("is-visible");
+        return;
+      }
+
+      const pointerTarget = document.elementFromPoint(pointerX, pointerY);
+      if (pointerTarget?.closest(".samold-breakwater")) {
+        root.style.setProperty("--language-reveal", "0");
+        root.style.setProperty("--language-shift", "0.35rem");
+        root.style.setProperty("--language-glow", "0px");
+        homeLanguage.classList.remove("is-visible");
         return;
       }
 

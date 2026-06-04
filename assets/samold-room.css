@@ -715,6 +715,169 @@ html[lang="zh-CN"] .room-title.room-title-magnetic {
   }
 }
 
+.samold-breakwater {
+  --breakwater-x: -16deg;
+  --breakwater-y: 28deg;
+  --breakwater-z: 0deg;
+  --breakwater-accent-rgb: var(--room-accent-rgb);
+  position: fixed;
+  left: clamp(1rem, 3.2vw, 3.2rem);
+  bottom: clamp(1rem, 3vw, 2.8rem);
+  z-index: 24;
+  width: clamp(4.9rem, 7vw, 7.6rem);
+  aspect-ratio: 1;
+  color: rgb(var(--breakwater-accent-rgb));
+  opacity: 0.92;
+  perspective: 680px;
+  pointer-events: none;
+  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.42));
+}
+
+.samold-breakwater::before,
+.samold-breakwater::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.samold-breakwater::before {
+  inset: -18%;
+  border: 1px dashed rgba(var(--breakwater-accent-rgb), 0.2);
+  border-radius: 999px;
+  opacity: 0.64;
+  transform: rotate(-14deg);
+}
+
+.samold-breakwater::after {
+  left: 20%;
+  right: 16%;
+  bottom: 3%;
+  height: 12%;
+  border-radius: 999px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55), transparent 68%);
+  filter: blur(4px);
+}
+
+.breakwater-button {
+  all: unset;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  border-radius: 999px;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.breakwater-button:focus-visible {
+  outline: 1px solid rgba(var(--breakwater-accent-rgb), 0.86);
+  outline-offset: 0.44rem;
+}
+
+.samold-breakwater.is-dragging .breakwater-button {
+  cursor: grabbing;
+}
+
+.breakwater-tilt,
+.breakwater-spinner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.breakwater-tilt {
+  transform: rotateX(var(--breakwater-x)) rotateY(var(--breakwater-y)) rotateZ(var(--breakwater-z));
+  transition: transform 240ms var(--ease-out-quint), filter 180ms ease;
+  will-change: transform;
+}
+
+.breakwater-spinner {
+  animation: breakwater-spin 24s linear infinite;
+}
+
+.samold-breakwater:hover .breakwater-spinner,
+.samold-breakwater:focus-within .breakwater-spinner {
+  animation-duration: 9s;
+}
+
+.samold-breakwater.is-dragging .breakwater-spinner {
+  animation-play-state: paused;
+}
+
+.samold-breakwater.is-clicked .breakwater-tilt {
+  filter: drop-shadow(0 0 18px rgba(var(--breakwater-accent-rgb), 0.3));
+}
+
+.breakwater-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.breakwater-ground {
+  fill: rgba(0, 0, 0, 0.52);
+}
+
+.breakwater-aura {
+  mix-blend-mode: screen;
+  opacity: 0.72;
+}
+
+.breakwater-glyph {
+  transform-origin: 80px 82px;
+  transform: translateZ(14px);
+}
+
+.breakwater-arm,
+.breakwater-core,
+.breakwater-face,
+.breakwater-chip,
+.breakwater-ridge {
+  vector-effect: non-scaling-stroke;
+}
+
+.breakwater-arm,
+.breakwater-core {
+  stroke: rgba(219, 255, 212, 0.28);
+  stroke-width: 1.3;
+}
+
+.breakwater-face {
+  fill: rgba(219, 255, 212, 0.15);
+  stroke: rgba(var(--breakwater-accent-rgb), 0.5);
+  stroke-width: 1;
+}
+
+.breakwater-chip {
+  fill: rgba(3, 7, 10, 0.36);
+  stroke: rgba(219, 255, 212, 0.18);
+  stroke-width: 0.8;
+}
+
+.breakwater-ridge {
+  fill: none;
+  stroke: rgba(219, 255, 212, 0.26);
+  stroke-linecap: round;
+  stroke-width: 1;
+  opacity: 0.72;
+}
+
+.breakwater-arm-back {
+  opacity: 0.78;
+}
+
+@keyframes breakwater-spin {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
 .room-kicker {
   display: flex;
   align-items: center;
@@ -1558,6 +1721,11 @@ details.article-row .article-body > div {
     padding-top: clamp(1rem, 2.8vw, 1.6rem);
   }
 
+  .samold-breakwater {
+    width: clamp(4.4rem, 10vw, 5.4rem);
+    opacity: 0.82;
+  }
+
   .room-header {
     align-items: center;
     min-height: 3.2rem;
@@ -1657,6 +1825,20 @@ details.article-row .article-body > div {
   .room-page {
     padding-top: clamp(0.9rem, 3vw, 1.15rem);
     padding-bottom: 5rem;
+  }
+
+  .samold-breakwater {
+    top: 4.35rem;
+    right: 1rem;
+    bottom: auto;
+    left: auto;
+    width: 3.7rem;
+    opacity: 0.7;
+    filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.32));
+  }
+
+  .samold-breakwater::before {
+    inset: -12%;
   }
 
   .room-header {
@@ -1858,5 +2040,9 @@ details.article-row .article-body > div {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .breakwater-spinner {
+    animation: none !important;
   }
 }
