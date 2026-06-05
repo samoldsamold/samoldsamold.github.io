@@ -17,11 +17,11 @@ const MODULES = {
 const MODEL_HEIGHT = 1.6;
 const ARM_LENGTH = MODEL_HEIGHT * (2539 / 3060);
 const OUTER_RADIUS = MODEL_HEIGHT * ((672 / 2) / 3060);
-const ROOT_RADIUS = OUTER_RADIUS * 0.66;
-const TIP_RADIUS = OUTER_RADIUS * 1.04;
+const ROOT_RADIUS = OUTER_RADIUS * 1.08;
+const TIP_RADIUS = OUTER_RADIUS * 0.56;
 const CAP_DEPTH = MODEL_HEIGHT * 0.052;
 const LEG_FULL_LENGTH = ARM_LENGTH + CAP_DEPTH;
-const HUB_RADIUS = OUTER_RADIUS * 1.28;
+const HUB_RADIUS = ROOT_RADIUS * 0.96;
 const MAX_BLOCKS = 20;
 
 if (statusNode && 'MutationObserver' in window) {
@@ -238,10 +238,10 @@ function createBlock(THREE, CANNON, directions, up, material, visualKit) {
   directions.forEach(direction => {
     const offset = toCannon(direction, LEG_FULL_LENGTH * 0.5, CANNON);
     const end = toCannon(direction, LEG_FULL_LENGTH * 0.96, CANNON);
-    const armShape = new CANNON.Box(new CANNON.Vec3(TIP_RADIUS * 0.72, LEG_FULL_LENGTH * 0.5, TIP_RADIUS * 0.72));
+    const armShape = new CANNON.Box(new CANNON.Vec3(ROOT_RADIUS * 0.52, LEG_FULL_LENGTH * 0.5, ROOT_RADIUS * 0.52));
     const armQuaternion = cannonQuatFromDirection(THREE, CANNON, direction);
     body.addShape(armShape, offset, armQuaternion);
-    body.addShape(new CANNON.Sphere(TIP_RADIUS * 0.72), end);
+    body.addShape(new CANNON.Sphere(TIP_RADIUS * 0.88), end);
   });
 
   return { mesh, body };
@@ -286,7 +286,7 @@ function createTetrapodKit(THREE) {
 
   return {
     legGeometry: createTaperedLegGeometry(THREE),
-    capGeometry: new THREE.CircleGeometry(TIP_RADIUS * 0.83, 30),
+    capGeometry: new THREE.CircleGeometry(TIP_RADIUS * 0.9, 30),
     hubGeometry: createHubGeometry(THREE),
     legMaterials: [base, warmer, base, cooler],
     hubMaterial: hub,
@@ -309,12 +309,12 @@ function createTaperedLegGeometry(THREE) {
   const radialSegments = 30;
   const profile = [
     { y: 0, r: ROOT_RADIUS * 1.18 },
-    { y: ARM_LENGTH * 0.1, r: ROOT_RADIUS },
-    { y: ARM_LENGTH * 0.42, r: OUTER_RADIUS * 0.72 },
-    { y: ARM_LENGTH * 0.76, r: OUTER_RADIUS * 0.88 },
-    { y: ARM_LENGTH * 0.94, r: TIP_RADIUS * 1.02 },
-    { y: ARM_LENGTH + CAP_DEPTH * 0.42, r: TIP_RADIUS * 1.03 },
-    { y: LEG_FULL_LENGTH, r: TIP_RADIUS * 0.9 }
+    { y: ARM_LENGTH * 0.1, r: ROOT_RADIUS * 1.08 },
+    { y: ARM_LENGTH * 0.34, r: OUTER_RADIUS * 0.94 },
+    { y: ARM_LENGTH * 0.62, r: OUTER_RADIUS * 0.78 },
+    { y: ARM_LENGTH * 0.86, r: OUTER_RADIUS * 0.64 },
+    { y: ARM_LENGTH + CAP_DEPTH * 0.42, r: TIP_RADIUS * 1.02 },
+    { y: LEG_FULL_LENGTH, r: TIP_RADIUS * 0.92 }
   ];
   const vertices = [];
   const indices = [];
