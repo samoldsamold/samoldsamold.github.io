@@ -17,9 +17,12 @@ const MODULES = {
 const MODEL_HEIGHT = 1.6;
 const ARM_LENGTH = MODEL_HEIGHT * (2539 / 3060);
 const OUTER_RADIUS = MODEL_HEIGHT * ((672 / 2) / 3060);
-const INNER_RADIUS = OUTER_RADIUS * 0.58;
-const CORE_RADIUS = MODEL_HEIGHT * 0.145;
-const MAX_BLOCKS = 34;
+const ROOT_RADIUS = OUTER_RADIUS * 0.66;
+const TIP_RADIUS = OUTER_RADIUS * 1.04;
+const CAP_DEPTH = MODEL_HEIGHT * 0.052;
+const LEG_FULL_LENGTH = ARM_LENGTH + CAP_DEPTH;
+const HUB_RADIUS = OUTER_RADIUS * 1.28;
+const MAX_BLOCKS = 20;
 
 if (statusNode && 'MutationObserver' in window) {
   new MutationObserver(() => renderStatus()).observe(document.documentElement, {
@@ -50,7 +53,7 @@ async function initTetrapodLab() {
   const impactLayer = createImpactLayer();
 
   dropButton.addEventListener('click', () => {
-    state.dropPile(reducedMotion.matches ? 5 : 12);
+    state.dropPile(reducedMotion.matches ? 4 : 8);
     playDropImpact(anime, impactLayer, reducedMotion.matches);
     pulse(anime, dropButton);
   });
@@ -66,7 +69,7 @@ async function initTetrapodLab() {
 
   if (!reducedMotion.matches) {
     window.setTimeout(() => {
-      state.dropPile(8);
+      state.dropPile(3);
       playDropImpact(anime, impactLayer, reducedMotion.matches);
     }, 720);
   }
@@ -92,9 +95,17 @@ function createSimulation(THREE, CANNON, reducedMotion) {
   const blocks = [];
   const clock = new THREE.Clock();
   const directions = tetrapodDirections(THREE);
+  const visualKit = createTetrapodKit(THREE);
   const up = new THREE.Vector3(0, 1, 0);
 
   renderer.setClearColor(0x000000, 0);
+  if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) {
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+  }
+  if (THREE.ACESFilmicToneMapping) {
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.02;
+  }
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   world.allowSleep = true;
@@ -105,14 +116,14 @@ function createSimulation(THREE, CANNON, reducedMotion) {
   world.defaultContactMaterial.friction = 0.6;
   world.defaultContactMaterial.restitution = 0.08;
 
-  scene.add(new THREE.HemisphereLight(0xe8ffe4, 0x112015, 1.55));
-  const key = new THREE.DirectionalLight(0xdfffd8, 2.6);
-  key.position.set(-3.2, 5.2, 4.4);
+  scene.add(new THREE.HemisphereLight(0xd8ded2, 0x182019, 1.28));
+  const key = new THREE.DirectionalLight(0xf0f2e7, 2.75);
+  key.position.set(-3.6, 5.8, 4.8);
   key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.mapSize.set(1536, 1536);
   scene.add(key);
-  const rim = new THREE.DirectionalLight(0x9eff67, 1.4);
-  rim.position.set(3.4, 2.6, -4.6);
+  const rim = new THREE.DirectionalLight(0xb4ff80, 0.92);
+  rim.position.set(3.6, 2.2, -4.4);
   scene.add(rim);
 
   const floorMesh = new THREE.Mesh(
@@ -138,23 +149,23 @@ function createSimulation(THREE, CANNON, reducedMotion) {
     renderer.setSize(width, height, false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     camera.aspect = width / height;
-    camera.position.set(0, 1.9, width < 620 ? 6.7 : 5.45);
-    camera.lookAt(0, -0.15, 0);
+    camera.position.set(0, width < 620 ? 1.65 : 1.5, width < 620 ? 6.2 : 5.05);
+    camera.lookAt(0, -0.38, 0);
     camera.updateProjectionMatrix();
   }
 
   function dropPile(count) {
     for (let index = 0; index < count; index += 1) {
       if (blocks.length >= MAX_BLOCKS) removeBlock(blocks[0]);
-      const block = createBlock(THREE, CANNON, directions, up, concreteMaterial);
-      const spread = stage.clientWidth < 620 ? 1.25 : 1.9;
+      const block = createBlock(THREE, CANNON, directions, up, concreteMaterial, visualKit);
+      const spread = stage.clientWidth < 620 ? 1.08 : 1.62;
       block.body.position.set(
         randomBetween(-spread, spread),
-        3.4 + index * 0.24,
-        randomBetween(-0.65, 0.65)
+        3.25 + index * 0.28,
+        randomBetween(-0.52, 0.52)
       );
-      block.body.velocity.set(randomBetween(-0.2, 0.2), reducedMotion.matches ? -0.4 : -1.2, randomBetween(-0.1, 0.1));
-      block.body.angularVelocity.set(randomBetween(-1.8, 1.8), randomBetween(-2.2, 2.2), randomBetween(-1.8, 1.8));
+      block.body.velocity.set(randomBetween(-0.16, 0.16), reducedMotion.matches ? -0.36 : -1.05, randomBetween(-0.08, 0.08));
+      block.body.angularVelocity.set(randomBetween(-1.35, 1.35), randomBetween(-1.9, 1.9), randomBetween(-1.35, 1.35));
       randomizeQuaternion(CANNON, block.body);
       scene.add(block.mesh);
       world.addBody(block.body);
@@ -167,9 +178,6 @@ function createSimulation(THREE, CANNON, reducedMotion) {
   function removeBlock(block) {
     world.removeBody(block.body);
     scene.remove(block.mesh);
-    block.mesh.traverse(child => {
-      if (child.geometry) child.geometry.dispose();
-    });
     const index = blocks.indexOf(block);
     if (index >= 0) blocks.splice(index, 1);
   }
@@ -214,8 +222,8 @@ function tetrapodDirections(THREE) {
   ].map(vector => vector.normalize());
 }
 
-function createBlock(THREE, CANNON, directions, up, material) {
-  const mesh = createTetrapodMesh(THREE, directions, up);
+function createBlock(THREE, CANNON, directions, up, material, visualKit) {
+  const mesh = createTetrapodMesh(THREE, directions, up, visualKit);
   const body = new CANNON.Body({
     mass: 2.35,
     material,
@@ -226,47 +234,40 @@ function createBlock(THREE, CANNON, directions, up, material) {
     sleepTimeLimit: 0.9
   });
 
-  body.addShape(new CANNON.Sphere(CORE_RADIUS * 0.95));
+  body.addShape(new CANNON.Sphere(HUB_RADIUS * 0.86));
   directions.forEach(direction => {
-    const offset = toCannon(direction, ARM_LENGTH * 0.52, CANNON);
-    const end = toCannon(direction, ARM_LENGTH, CANNON);
-    const armShape = new CANNON.Box(new CANNON.Vec3(INNER_RADIUS * 0.92, ARM_LENGTH * 0.52, INNER_RADIUS * 0.92));
+    const offset = toCannon(direction, LEG_FULL_LENGTH * 0.5, CANNON);
+    const end = toCannon(direction, LEG_FULL_LENGTH * 0.96, CANNON);
+    const armShape = new CANNON.Box(new CANNON.Vec3(TIP_RADIUS * 0.72, LEG_FULL_LENGTH * 0.5, TIP_RADIUS * 0.72));
     const armQuaternion = cannonQuatFromDirection(THREE, CANNON, direction);
     body.addShape(armShape, offset, armQuaternion);
-    body.addShape(new CANNON.Sphere(OUTER_RADIUS * 0.98), end);
+    body.addShape(new CANNON.Sphere(TIP_RADIUS * 0.72), end);
   });
 
   return { mesh, body };
 }
 
-function createTetrapodMesh(THREE, directions, up) {
+function createTetrapodMesh(THREE, directions, up, kit) {
   const group = new THREE.Group();
-  const concrete = createConcreteMaterial(THREE);
-  const darker = concrete.clone();
-  darker.color.set(0x6f7d6e);
-  const armGeometry = new THREE.CylinderGeometry(OUTER_RADIUS, INNER_RADIUS, ARM_LENGTH, 20, 2, false);
-  const capGeometry = new THREE.SphereGeometry(OUTER_RADIUS, 18, 12);
-  const coreGeometry = new THREE.DodecahedronGeometry(CORE_RADIUS * 1.28, 1);
+  const zAxis = new THREE.Vector3(0, 0, 1);
 
   directions.forEach((direction, index) => {
-    const material = index === 2 ? darker : concrete;
-    const arm = new THREE.Mesh(armGeometry.clone(), material);
-    arm.position.copy(direction).multiplyScalar(ARM_LENGTH * 0.5);
+    const material = kit.legMaterials[index % kit.legMaterials.length];
+    const arm = new THREE.Mesh(kit.legGeometry, material);
     arm.quaternion.setFromUnitVectors(up, direction);
     arm.castShadow = true;
     arm.receiveShadow = true;
     group.add(arm);
 
-    const cap = new THREE.Mesh(capGeometry.clone(), material);
-    cap.position.copy(direction).multiplyScalar(ARM_LENGTH);
-    cap.scale.set(1.08, 0.86, 1.08);
-    cap.quaternion.setFromUnitVectors(up, direction);
-    cap.castShadow = true;
+    const cap = new THREE.Mesh(kit.capGeometry, kit.capMaterial);
+    cap.position.copy(direction).multiplyScalar(LEG_FULL_LENGTH + 0.004);
+    cap.quaternion.setFromUnitVectors(zAxis, direction);
     cap.receiveShadow = true;
+    cap.castShadow = true;
     group.add(cap);
   });
 
-  const core = new THREE.Mesh(coreGeometry, darker);
+  const core = new THREE.Mesh(kit.hubGeometry, kit.hubMaterial);
   core.castShadow = true;
   core.receiveShadow = true;
   group.add(core);
@@ -275,32 +276,143 @@ function createTetrapodMesh(THREE, directions, up) {
   return group;
 }
 
-function createConcreteMaterial(THREE) {
+function createTetrapodKit(THREE) {
   const texture = createConcreteTexture(THREE);
+  const base = createConcreteMaterial(THREE, texture, 0x8b9288);
+  const warmer = createConcreteMaterial(THREE, texture, 0x93988d);
+  const cooler = createConcreteMaterial(THREE, texture, 0x7d857e);
+  const hub = createConcreteMaterial(THREE, texture, 0x80877f);
+  const cap = createConcreteMaterial(THREE, texture, 0x626a63);
+
+  return {
+    legGeometry: createTaperedLegGeometry(THREE),
+    capGeometry: new THREE.CircleGeometry(TIP_RADIUS * 0.83, 30),
+    hubGeometry: createHubGeometry(THREE),
+    legMaterials: [base, warmer, base, cooler],
+    hubMaterial: hub,
+    capMaterial: cap
+  };
+}
+
+function createConcreteMaterial(THREE, texture, color) {
   return new THREE.MeshStandardMaterial({
-    color: 0x9da894,
+    color,
     map: texture,
-    roughness: 0.96,
-    metalness: 0.02
+    bumpMap: texture,
+    bumpScale: 0.022,
+    roughness: 0.98,
+    metalness: 0.01
   });
+}
+
+function createTaperedLegGeometry(THREE) {
+  const radialSegments = 30;
+  const profile = [
+    { y: 0, r: ROOT_RADIUS * 1.18 },
+    { y: ARM_LENGTH * 0.1, r: ROOT_RADIUS },
+    { y: ARM_LENGTH * 0.42, r: OUTER_RADIUS * 0.72 },
+    { y: ARM_LENGTH * 0.76, r: OUTER_RADIUS * 0.88 },
+    { y: ARM_LENGTH * 0.94, r: TIP_RADIUS * 1.02 },
+    { y: ARM_LENGTH + CAP_DEPTH * 0.42, r: TIP_RADIUS * 1.03 },
+    { y: LEG_FULL_LENGTH, r: TIP_RADIUS * 0.9 }
+  ];
+  const vertices = [];
+  const indices = [];
+  const uvs = [];
+
+  profile.forEach((point, ringIndex) => {
+    for (let segment = 0; segment < radialSegments; segment += 1) {
+      const angle = (segment / radialSegments) * Math.PI * 2;
+      const rough = 1 + Math.sin(segment * 1.7 + ringIndex * 0.63) * 0.008;
+      vertices.push(
+        Math.cos(angle) * point.r * rough,
+        point.y,
+        Math.sin(angle) * point.r * rough
+      );
+      uvs.push(segment / radialSegments, point.y / LEG_FULL_LENGTH);
+    }
+  });
+
+  for (let ring = 0; ring < profile.length - 1; ring += 1) {
+    const current = ring * radialSegments;
+    const next = (ring + 1) * radialSegments;
+    for (let segment = 0; segment < radialSegments; segment += 1) {
+      const a = current + segment;
+      const b = current + ((segment + 1) % radialSegments);
+      const c = next + segment;
+      const d = next + ((segment + 1) % radialSegments);
+      indices.push(a, c, b, b, c, d);
+    }
+  }
+
+  const rootCenter = vertices.length / 3;
+  vertices.push(0, 0, 0);
+  uvs.push(0.5, 0);
+  for (let segment = 0; segment < radialSegments; segment += 1) {
+    indices.push(rootCenter, segment, (segment + 1) % radialSegments);
+  }
+
+  const tipCenter = vertices.length / 3;
+  vertices.push(0, LEG_FULL_LENGTH, 0);
+  uvs.push(0.5, 1);
+  const tipStart = (profile.length - 1) * radialSegments;
+  for (let segment = 0; segment < radialSegments; segment += 1) {
+    indices.push(tipCenter, tipStart + ((segment + 1) % radialSegments), tipStart + segment);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function createHubGeometry(THREE) {
+  const geometry = new THREE.SphereGeometry(HUB_RADIUS, 26, 18);
+  const position = geometry.attributes.position;
+  for (let index = 0; index < position.count; index += 1) {
+    const x = position.getX(index);
+    const y = position.getY(index);
+    const z = position.getZ(index);
+    const rough = 1 + Math.sin(x * 19.1 + y * 13.7 + z * 11.3) * 0.018;
+    position.setXYZ(index, x * 1.08 * rough, y * 0.98 * rough, z * 1.03 * rough);
+  }
+  geometry.computeVertexNormals();
+  return geometry;
 }
 
 function createConcreteTexture(THREE) {
   const textureCanvas = document.createElement('canvas');
-  textureCanvas.width = 96;
-  textureCanvas.height = 96;
+  textureCanvas.width = 160;
+  textureCanvas.height = 160;
   const ctx = textureCanvas.getContext('2d');
-  ctx.fillStyle = '#9da894';
+  ctx.fillStyle = '#8d9389';
   ctx.fillRect(0, 0, textureCanvas.width, textureCanvas.height);
-  for (let i = 0; i < 850; i += 1) {
-    const shade = 126 + Math.floor(Math.random() * 74);
-    ctx.fillStyle = `rgba(${shade}, ${Math.min(220, shade + 12)}, ${shade}, ${Math.random() * 0.24})`;
-    ctx.fillRect(Math.random() * 96, Math.random() * 96, Math.random() * 2.4 + 0.4, Math.random() * 2.4 + 0.4);
+  for (let i = 0; i < 2100; i += 1) {
+    const shade = 104 + Math.floor(Math.random() * 82);
+    const alpha = Math.random() * 0.2;
+    ctx.fillStyle = `rgba(${shade}, ${Math.min(196, shade + 8)}, ${Math.max(92, shade - 4)}, ${alpha})`;
+    ctx.fillRect(
+      Math.random() * textureCanvas.width,
+      Math.random() * textureCanvas.height,
+      Math.random() * 2.6 + 0.35,
+      Math.random() * 2.6 + 0.35
+    );
+  }
+  for (let i = 0; i < 48; i += 1) {
+    const shade = 76 + Math.floor(Math.random() * 42);
+    ctx.strokeStyle = `rgba(${shade}, ${shade + 8}, ${shade}, 0.12)`;
+    ctx.lineWidth = Math.random() * 1.2 + 0.35;
+    ctx.beginPath();
+    ctx.moveTo(Math.random() * 160, Math.random() * 160);
+    ctx.lineTo(Math.random() * 160, Math.random() * 160);
+    ctx.stroke();
   }
   const texture = new THREE.CanvasTexture(textureCanvas);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(2, 2);
+  texture.repeat.set(1.45, 1.45);
   return texture;
 }
 
