@@ -715,169 +715,6 @@ html[lang="zh-CN"] .room-title.room-title-magnetic {
   }
 }
 
-.samold-breakwater {
-  --breakwater-x: -16deg;
-  --breakwater-y: 28deg;
-  --breakwater-z: 0deg;
-  --breakwater-accent-rgb: var(--room-accent-rgb);
-  position: fixed;
-  left: clamp(1rem, 3.2vw, 3.2rem);
-  bottom: clamp(1rem, 3vw, 2.8rem);
-  z-index: 24;
-  width: clamp(4.9rem, 7vw, 7.6rem);
-  aspect-ratio: 1;
-  color: rgb(var(--breakwater-accent-rgb));
-  opacity: 0.92;
-  perspective: 680px;
-  pointer-events: none;
-  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.42));
-}
-
-.samold-breakwater::before,
-.samold-breakwater::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-}
-
-.samold-breakwater::before {
-  inset: -18%;
-  border: 1px dashed rgba(var(--breakwater-accent-rgb), 0.2);
-  border-radius: 999px;
-  opacity: 0.64;
-  transform: rotate(-14deg);
-}
-
-.samold-breakwater::after {
-  left: 20%;
-  right: 16%;
-  bottom: 3%;
-  height: 12%;
-  border-radius: 999px;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55), transparent 68%);
-  filter: blur(4px);
-}
-
-.breakwater-button {
-  all: unset;
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 100%;
-  height: 100%;
-  place-items: center;
-  border-radius: 999px;
-  cursor: grab;
-  pointer-events: auto;
-  touch-action: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.breakwater-button:focus-visible {
-  outline: 1px solid rgba(var(--breakwater-accent-rgb), 0.86);
-  outline-offset: 0.44rem;
-}
-
-.samold-breakwater.is-dragging .breakwater-button {
-  cursor: grabbing;
-}
-
-.breakwater-tilt,
-.breakwater-spinner {
-  display: block;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-}
-
-.breakwater-tilt {
-  transform: rotateX(var(--breakwater-x)) rotateY(var(--breakwater-y)) rotateZ(var(--breakwater-z));
-  transition: transform 240ms var(--ease-out-quint), filter 180ms ease;
-  will-change: transform;
-}
-
-.breakwater-spinner {
-  animation: breakwater-spin 24s linear infinite;
-}
-
-.samold-breakwater:hover .breakwater-spinner,
-.samold-breakwater:focus-within .breakwater-spinner {
-  animation-duration: 9s;
-}
-
-.samold-breakwater.is-dragging .breakwater-spinner {
-  animation-play-state: paused;
-}
-
-.samold-breakwater.is-clicked .breakwater-tilt {
-  filter: drop-shadow(0 0 18px rgba(var(--breakwater-accent-rgb), 0.3));
-}
-
-.breakwater-svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.breakwater-ground {
-  fill: rgba(0, 0, 0, 0.52);
-}
-
-.breakwater-aura {
-  mix-blend-mode: screen;
-  opacity: 0.72;
-}
-
-.breakwater-glyph {
-  transform-origin: 80px 82px;
-  transform: translateZ(14px);
-}
-
-.breakwater-arm,
-.breakwater-core,
-.breakwater-face,
-.breakwater-chip,
-.breakwater-ridge {
-  vector-effect: non-scaling-stroke;
-}
-
-.breakwater-arm,
-.breakwater-core {
-  stroke: rgba(219, 255, 212, 0.28);
-  stroke-width: 1.3;
-}
-
-.breakwater-face {
-  fill: rgba(219, 255, 212, 0.15);
-  stroke: rgba(var(--breakwater-accent-rgb), 0.5);
-  stroke-width: 1;
-}
-
-.breakwater-chip {
-  fill: rgba(3, 7, 10, 0.36);
-  stroke: rgba(219, 255, 212, 0.18);
-  stroke-width: 0.8;
-}
-
-.breakwater-ridge {
-  fill: none;
-  stroke: rgba(219, 255, 212, 0.26);
-  stroke-linecap: round;
-  stroke-width: 1;
-  opacity: 0.72;
-}
-
-.breakwater-arm-back {
-  opacity: 0.78;
-}
-
-@keyframes breakwater-spin {
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-
 .room-kicker {
   display: flex;
   align-items: center;
@@ -1502,6 +1339,216 @@ details.article-row .article-body > div {
   font-weight: 800;
 }
 
+.tetrapod-yard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.62fr) minmax(24rem, 1.38fr);
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+  align-items: stretch;
+  margin: 0 0 clamp(3.5rem, 8vw, 6rem);
+  padding-block: clamp(1.2rem, 3vw, 2rem);
+  border-block: 1px solid rgba(var(--room-accent-rgb), 0.18);
+}
+
+.tetrapod-brief {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(1rem, 2vw, 1.4rem);
+  padding: clamp(0.4rem, 1vw, 0.8rem) 0;
+}
+
+.tetrapod-brief .section-label {
+  margin-bottom: 0;
+}
+
+.tetrapod-brief h2 {
+  max-width: 11ch;
+  margin: 0;
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(2.3rem, 5.5vw, 5.8rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+
+.tetrapod-brief p:not(.section-label) {
+  max-width: 30rem;
+  margin: 0;
+  color: rgba(191, 202, 186, 0.82);
+  font-size: clamp(0.98rem, 1.05vw, 1.12rem);
+  line-height: 1.7;
+}
+
+.tetrapod-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.tetrapod-controls button {
+  appearance: none;
+  display: inline-flex;
+  min-height: 2.8rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.95rem;
+  border: 1px solid rgba(var(--room-accent-rgb), 0.28);
+  border-radius: 999px;
+  background: rgba(3, 7, 10, 0.74);
+  color: var(--green-soft);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.tetrapod-controls button:hover,
+.tetrapod-controls button:focus-visible {
+  border-color: rgba(var(--room-accent-rgb), 0.72);
+  background: rgba(var(--room-accent-rgb), 0.12);
+  color: var(--green);
+  outline: 0;
+  transform: translateY(-2px);
+}
+
+.tetrapod-controls .material-symbols-outlined {
+  color: var(--room-accent);
+  font-size: 1.2rem;
+}
+
+.tetrapod-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(32rem, 62vh, 45rem);
+  border: 1px solid rgba(var(--room-accent-rgb), 0.22);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(rgba(var(--room-accent-rgb), 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 46% 34%, rgba(var(--room-accent-rgb), 0.14), transparent 30rem),
+    linear-gradient(180deg, rgba(19, 28, 21, 0.92), rgba(3, 7, 10, 0.96));
+  background-size: 100% 1.35rem, auto, auto;
+  contain: layout paint;
+}
+
+.tetrapod-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(219, 255, 212, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, transparent 72%, rgba(3, 7, 10, 0.72));
+  background-size: 3.5rem 100%, auto;
+  mix-blend-mode: screen;
+}
+
+.tetrapod-buried-copy {
+  position: absolute;
+  inset: clamp(1rem, 3vw, 2rem);
+  z-index: 1;
+  display: grid;
+  align-content: center;
+  gap: 0.9rem;
+  color: rgba(226, 233, 223, 0.9);
+  pointer-events: none;
+}
+
+.tetrapod-buried-copy span {
+  color: rgba(var(--room-accent-rgb), 0.76);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tetrapod-buried-copy strong {
+  max-width: 9ch;
+  color: rgba(226, 233, 223, 0.96);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(3.6rem, 9vw, 8.5rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 0.86;
+}
+
+.tetrapod-buried-copy em {
+  color: rgba(191, 202, 186, 0.72);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.tetrapod-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tetrapod-impact-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tetrapod-impact-chip {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: clamp(0.28rem, 0.62vw, 0.48rem);
+  height: clamp(1.7rem, 3.4vw, 3rem);
+  border-radius: 999px;
+  background: linear-gradient(to bottom, rgba(219, 255, 212, 0.92), rgba(var(--room-accent-rgb), 0.22));
+  box-shadow: 0 0 18px rgba(var(--room-accent-rgb), 0.2);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(var(--chip-rotate, 0deg));
+  transform-origin: 50% 100%;
+}
+
+.tetrapod-impact-chip.is-scan {
+  left: 0;
+  top: var(--scan-y, 50%);
+  width: 100%;
+  height: 1px;
+  border-radius: 0;
+  background: linear-gradient(90deg, transparent, rgba(var(--room-accent-rgb), 0.82), transparent);
+  box-shadow: 0 0 22px rgba(var(--room-accent-rgb), 0.28);
+}
+
+.tetrapod-status {
+  position: absolute;
+  right: clamp(0.8rem, 2vw, 1.1rem);
+  bottom: clamp(0.8rem, 2vw, 1.1rem);
+  z-index: 5;
+  max-width: min(24rem, calc(100% - 2rem));
+  margin: 0;
+  padding: 0.48rem 0.75rem;
+  border: 1px solid rgba(var(--room-accent-rgb), 0.26);
+  border-radius: 999px;
+  background: rgba(3, 7, 10, 0.78);
+  color: rgba(219, 255, 212, 0.78);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tetrapod-yard.is-engine-error .tetrapod-stage {
+  border-color: rgba(255, 179, 71, 0.46);
+}
+
 .lab-console {
   display: grid;
   grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
@@ -1721,11 +1768,6 @@ details.article-row .article-body > div {
     padding-top: clamp(1rem, 2.8vw, 1.6rem);
   }
 
-  .samold-breakwater {
-    width: clamp(4.4rem, 10vw, 5.4rem);
-    opacity: 0.82;
-  }
-
   .room-header {
     align-items: center;
     min-height: 3.2rem;
@@ -1777,8 +1819,17 @@ details.article-row .article-body > div {
 
   .exhibit-card.featured,
   .overview-map,
+  .tetrapod-yard,
   .lab-console {
     grid-template-columns: 1fr;
+  }
+
+  .tetrapod-brief h2 {
+    max-width: 13ch;
+  }
+
+  .tetrapod-stage {
+    min-height: clamp(28rem, 58vh, 38rem);
   }
 
   .map-routes {
@@ -1825,20 +1876,6 @@ details.article-row .article-body > div {
   .room-page {
     padding-top: clamp(0.9rem, 3vw, 1.15rem);
     padding-bottom: 5rem;
-  }
-
-  .samold-breakwater {
-    top: 4.35rem;
-    right: 1rem;
-    bottom: auto;
-    left: auto;
-    width: 3.7rem;
-    opacity: 0.7;
-    filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.32));
-  }
-
-  .samold-breakwater::before {
-    inset: -12%;
   }
 
   .room-header {
@@ -1966,6 +2003,32 @@ details.article-row .article-body > div {
     min-height: 12rem;
   }
 
+  .tetrapod-yard {
+    gap: 1rem;
+    margin-bottom: 3rem;
+    padding-block: 1rem;
+  }
+
+  .tetrapod-brief h2 {
+    max-width: 10ch;
+    font-size: clamp(2.1rem, 11vw, 3.35rem);
+  }
+
+  .tetrapod-controls button {
+    min-height: 2.55rem;
+    padding: 0 0.82rem;
+    font-size: 0.74rem;
+  }
+
+  .tetrapod-stage {
+    min-height: 27rem;
+    border-radius: 0.45rem;
+  }
+
+  .tetrapod-buried-copy strong {
+    font-size: clamp(2.7rem, 14vw, 4.2rem);
+  }
+
   .moment-card {
     min-height: auto;
   }
@@ -2040,9 +2103,5 @@ details.article-row .article-body > div {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .breakwater-spinner {
-    animation: none !important;
   }
 }

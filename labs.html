@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/samold-room.css?v=samold-redesign-20260604-8">
+  <link rel="stylesheet" href="assets/samold-room.css?v=samold-physics-20260605c">
 </head>
 <body data-room="labs">
   <div class="room-page">
@@ -43,6 +43,36 @@
             <span class="material-symbols-outlined" aria-hidden="true">science</span>
             <span>Some entries will eventually graduate to Showcase. Others are useful because they stayed messy.</span>
           </p>
+        </div>
+      </section>
+
+      <section class="tetrapod-yard" id="tetrapod-yard" data-tetrapod-yard data-reveal aria-labelledby="tetrapod-title">
+        <div class="tetrapod-brief">
+          <p class="section-label">Concrete drop test</p>
+          <h2 id="tetrapod-title">Drop tetrapods until the text disappears.</h2>
+          <p>
+            A real 3D tetrapod model: four truncated-cone legs, tetrahedral axes, pear-shaped outer ends, and Cannon rigid bodies.
+          </p>
+          <div class="tetrapod-controls" aria-label="Tetrapod controls">
+            <button class="tetrapod-drop-btn" type="button" data-tetrapod-drop>
+              <span class="material-symbols-outlined" aria-hidden="true">south</span>
+              <span>Drop pile</span>
+            </button>
+            <button class="tetrapod-clear-btn" type="button" data-tetrapod-clear>
+              <span class="material-symbols-outlined" aria-hidden="true">cleaning_services</span>
+              <span>Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="tetrapod-stage" data-tetrapod-stage>
+          <div class="tetrapod-buried-copy" aria-hidden="true">
+            <span>LAB TEXT</span>
+            <strong>Let the concrete cover this note.</strong>
+            <em>Drop. Interlock. Clear.</em>
+          </div>
+          <canvas class="tetrapod-canvas" data-tetrapod-canvas aria-label="3D tetrapod physics simulation"></canvas>
+          <p class="tetrapod-status" data-tetrapod-status role="status" aria-live="polite">Loading 3D physics engine...</p>
         </div>
       </section>
 
@@ -119,6 +149,15 @@
       '.room-subtitle': '实验、半成品工具、学习笔记和小原型。这里的东西可以在<strong>未完成的状态</strong>停留足够久，直到教会自己一些什么。',
       '.room-note span:last-child': '有些东西之后会去作品集，另一些因为维持混乱而有用。',
       '.section-label': '工作台',
+      '.tetrapod-brief .section-label': '消波块坠落实验',
+      '#tetrapod-title': '把消波块砸下来，直到文字被盖住。',
+      '.tetrapod-brief > p:last-of-type': '真正的 3D tetrapod：四条截头圆锥腿、四面体轴线、外端更大的梨形比例，并交给 Cannon 刚体计算。',
+      '.tetrapod-drop-btn span:last-child': '投下一堆',
+      '.tetrapod-clear-btn span:last-child': '一键清除',
+      '.tetrapod-buried-copy span': '实验室文字',
+      '.tetrapod-buried-copy strong': '让混凝土把这行字盖住。',
+      '.tetrapod-buried-copy em': '坠落。咬合。清除。',
+      '.tetrapod-status': '正在加载 3D 物理引擎...',
       '.room-footer > span': '大概，也不只是老样子。',
       '.room-footer > a': '下一站：发现',
       '.lab-screen h2': '翻译图层已上线。',
@@ -145,7 +184,7 @@
     }
   };
   </script>
-  <script src="assets/samold-breakwater.js?v=samold-redesign-20260604-8"></script>
-  <script src="assets/samold-room.js?v=samold-redesign-20260604-8"></script>
+  <script type="module" src="assets/samold-breakwater.js?v=samold-physics-20260605c"></script>
+  <script src="assets/samold-room.js?v=samold-physics-20260605c"></script>
 </body>
 </html>
