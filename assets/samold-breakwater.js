@@ -22,8 +22,8 @@ const ROOT_RADIUS = OUTER_RADIUS * 1.08;
 const TIP_RADIUS = OUTER_RADIUS * 0.56;
 const CAP_DEPTH = MODEL_HEIGHT * 0.036;
 const LEG_FULL_LENGTH = ARM_LENGTH + CAP_DEPTH;
-const HUB_RADIUS = ROOT_RADIUS * 1.32;
-const ROOT_COLLAR_LENGTH = ROOT_RADIUS * 0.76;
+const HUB_RADIUS = ROOT_RADIUS * 1.08;
+const ROOT_COLLAR_LENGTH = ROOT_RADIUS * 0.42;
 const MAX_BLOCKS = 36;
 
 if (statusNode && 'MutationObserver' in window) {
@@ -282,7 +282,7 @@ function createTetrapodMesh(THREE, directions, up, kit) {
     group.add(arm);
 
     const collar = new THREE.Mesh(kit.collarGeometry, kit.hubMaterial);
-    collar.position.copy(direction).multiplyScalar(ROOT_COLLAR_LENGTH * 0.34);
+    collar.position.copy(direction).multiplyScalar(ROOT_COLLAR_LENGTH * 0.26);
     collar.quaternion.setFromUnitVectors(up, direction);
     collar.castShadow = true;
     collar.receiveShadow = true;
@@ -317,8 +317,8 @@ function createTetrapodKit(THREE) {
     legGeometry: createTaperedLegGeometry(THREE),
     capGeometry: new THREE.CircleGeometry(TIP_RADIUS * 0.9, 30),
     collarGeometry: new THREE.CylinderGeometry(
-      ROOT_RADIUS * 1.2,
-      ROOT_RADIUS * 1.34,
+      ROOT_RADIUS * 1.04,
+      ROOT_RADIUS * 1.14,
       ROOT_COLLAR_LENGTH,
       30,
       2,
