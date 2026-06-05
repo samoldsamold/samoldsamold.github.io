@@ -13,13 +13,14 @@ const MODULES = {
 };
 
 // Fudo Tetra's 20t row lists h=3060mm, leg length l=2539mm, 2r=672mm.
-// The scene keeps those ratios: l/h ~= 0.83 and outer radius/h ~= 0.11.
+// This lab variant keeps the radius reference but cuts leg height down to 3/7.
 const MODEL_HEIGHT = 1.6;
-const ARM_LENGTH = MODEL_HEIGHT * (2539 / 3060);
+const LEG_HEIGHT_SCALE = 3 / 7;
+const ARM_LENGTH = MODEL_HEIGHT * (2539 / 3060) * LEG_HEIGHT_SCALE;
 const OUTER_RADIUS = MODEL_HEIGHT * ((672 / 2) / 3060);
 const ROOT_RADIUS = OUTER_RADIUS * 1.08;
 const TIP_RADIUS = OUTER_RADIUS * 0.56;
-const CAP_DEPTH = MODEL_HEIGHT * 0.052;
+const CAP_DEPTH = MODEL_HEIGHT * 0.036;
 const LEG_FULL_LENGTH = ARM_LENGTH + CAP_DEPTH;
 const HUB_RADIUS = ROOT_RADIUS * 0.96;
 const MAX_BLOCKS = 20;
@@ -135,7 +136,7 @@ function createSimulation(THREE, CANNON, reducedMotion) {
       roughness: 1
     })
   );
-  floorMesh.position.set(0, -1.82, 0);
+  floorMesh.position.set(0, -1.38, 0);
   floorMesh.receiveShadow = true;
   scene.add(floorMesh);
 
@@ -149,8 +150,8 @@ function createSimulation(THREE, CANNON, reducedMotion) {
     renderer.setSize(width, height, false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     camera.aspect = width / height;
-    camera.position.set(0, width < 620 ? 1.65 : 1.5, width < 620 ? 6.2 : 5.05);
-    camera.lookAt(0, -0.38, 0);
+    camera.position.set(0, width < 620 ? 1.28 : 1.06, width < 620 ? 4.18 : 3.36);
+    camera.lookAt(0, -0.24, 0);
     camera.updateProjectionMatrix();
   }
 
@@ -161,7 +162,7 @@ function createSimulation(THREE, CANNON, reducedMotion) {
       const spread = stage.clientWidth < 620 ? 1.08 : 1.62;
       block.body.position.set(
         randomBetween(-spread, spread),
-        3.25 + index * 0.28,
+        2.55 + index * 0.2,
         randomBetween(-0.52, 0.52)
       );
       block.body.velocity.set(randomBetween(-0.16, 0.16), reducedMotion.matches ? -0.36 : -1.05, randomBetween(-0.08, 0.08));
@@ -420,7 +421,7 @@ function createWorldBounds(CANNON, groundMaterial) {
   const bodies = [];
   const floor = new CANNON.Body({ mass: 0, material: groundMaterial });
   floor.addShape(new CANNON.Box(new CANNON.Vec3(4.6, 0.08, 2.6)));
-  floor.position.set(0, -1.86, 0);
+  floor.position.set(0, -1.42, 0);
   bodies.push(floor);
 
   const wallSpecs = [
