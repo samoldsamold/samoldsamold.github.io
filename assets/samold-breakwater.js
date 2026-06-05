@@ -22,8 +22,9 @@ const ROOT_RADIUS = OUTER_RADIUS * 1.08;
 const TIP_RADIUS = OUTER_RADIUS * 0.56;
 const CAP_DEPTH = MODEL_HEIGHT * 0.036;
 const LEG_FULL_LENGTH = ARM_LENGTH + CAP_DEPTH;
-const HUB_RADIUS = ROOT_RADIUS * 0.96;
-const MAX_BLOCKS = 20;
+const HUB_RADIUS = ROOT_RADIUS * 1.32;
+const ROOT_COLLAR_LENGTH = ROOT_RADIUS * 0.76;
+const MAX_BLOCKS = 36;
 
 if (statusNode && 'MutationObserver' in window) {
   new MutationObserver(() => renderStatus()).observe(document.documentElement, {
@@ -54,8 +55,7 @@ async function initTetrapodLab() {
   const impactLayer = createImpactLayer();
 
   dropButton.addEventListener('click', () => {
-    state.dropPile(reducedMotion.matches ? 4 : 8);
-    playDropImpact(anime, impactLayer, reducedMotion.matches);
+    runDropSequence(state, anime, impactLayer, reducedMotion);
     pulse(anime, dropButton);
   });
 
@@ -70,10 +70,20 @@ async function initTetrapodLab() {
 
   if (!reducedMotion.matches) {
     window.setTimeout(() => {
-      state.dropPile(3);
-      playDropImpact(anime, impactLayer, reducedMotion.matches);
+      runDropSequence(state, anime, impactLayer, reducedMotion, 3);
     }, 720);
   }
+}
+
+function runDropSequence(state, anime, impactLayer, reducedMotion, count = reducedMotion.matches ? 4 : 8) {
+  playDropPrelude(anime, impactLayer, reducedMotion.matches, () => {
+    const dropped = state.dropPile(count);
+    if (dropped > 0 && !reducedMotion.matches) {
+      window.setTimeout(() => {
+        playDropImpact(anime, impactLayer, false);
+      }, 560);
+    }
+  });
 }
 
 function createSimulation(THREE, CANNON, reducedMotion) {
@@ -156,8 +166,18 @@ function createSimulation(THREE, CANNON, reducedMotion) {
   }
 
   function dropPile(count) {
-    for (let index = 0; index < count; index += 1) {
-      if (blocks.length >= MAX_BLOCKS) removeBlock(blocks[0]);
+    const availableSlots = Math.max(0, MAX_BLOCKS - blocks.length);
+    const dropCount = Math.min(count, availableSlots);
+
+    if (dropCount === 0) {
+      setStatus(
+        `Yard full: ${blocks.length} tetrapods, use Clear to reset`,
+        `试验槽已满：${blocks.length} 个消波块，手动清除后再投`
+      );
+      return 0;
+    }
+
+    for (let index = 0; index < dropCount; index += 1) {
       const block = createBlock(THREE, CANNON, directions, up, concreteMaterial, visualKit);
       const spread = stage.clientWidth < 620 ? 1.08 : 1.62;
       block.body.position.set(
@@ -174,6 +194,7 @@ function createSimulation(THREE, CANNON, reducedMotion) {
     }
 
     setStatus(`${blocks.length} tetrapods in the yard`, `试验槽内 ${blocks.length} 个消波块`);
+    return dropCount;
   }
 
   function removeBlock(block) {
@@ -260,6 +281,13 @@ function createTetrapodMesh(THREE, directions, up, kit) {
     arm.receiveShadow = true;
     group.add(arm);
 
+    const collar = new THREE.Mesh(kit.collarGeometry, kit.hubMaterial);
+    collar.position.copy(direction).multiplyScalar(ROOT_COLLAR_LENGTH * 0.34);
+    collar.quaternion.setFromUnitVectors(up, direction);
+    collar.castShadow = true;
+    collar.receiveShadow = true;
+    group.add(collar);
+
     const cap = new THREE.Mesh(kit.capGeometry, kit.capMaterial);
     cap.position.copy(direction).multiplyScalar(LEG_FULL_LENGTH + 0.004);
     cap.quaternion.setFromUnitVectors(zAxis, direction);
@@ -288,6 +316,14 @@ function createTetrapodKit(THREE) {
   return {
     legGeometry: createTaperedLegGeometry(THREE),
     capGeometry: new THREE.CircleGeometry(TIP_RADIUS * 0.9, 30),
+    collarGeometry: new THREE.CylinderGeometry(
+      ROOT_RADIUS * 1.2,
+      ROOT_RADIUS * 1.34,
+      ROOT_COLLAR_LENGTH,
+      30,
+      2,
+      false
+    ),
     hubGeometry: createHubGeometry(THREE),
     legMaterials: [base, warmer, base, cooler],
     hubMaterial: hub,
@@ -344,13 +380,6 @@ function createTaperedLegGeometry(THREE) {
       const d = next + ((segment + 1) % radialSegments);
       indices.push(a, c, b, b, c, d);
     }
-  }
-
-  const rootCenter = vertices.length / 3;
-  vertices.push(0, 0, 0);
-  uvs.push(0.5, 0);
-  for (let segment = 0; segment < radialSegments; segment += 1) {
-    indices.push(rootCenter, segment, (segment + 1) % radialSegments);
   }
 
   const tipCenter = vertices.length / 3;
@@ -476,30 +505,130 @@ function createImpactLayer() {
   return layer;
 }
 
+function createEffectBurst(layer, className) {
+  const burst = document.createElement('div');
+  burst.className = `tetrapod-effect-burst ${className}`;
+  layer.appendChild(burst);
+  return burst;
+}
+
+function playDropPrelude(anime, layer, reduced, onDrop) {
+  if (!anime || !layer || reduced) {
+    onDrop();
+    return;
+  }
+
+  const burst = createEffectBurst(layer, 'is-prelude');
+  const copy = stage.querySelector('.tetrapod-buried-copy');
+  const glow = document.createElement('span');
+  glow.className = 'tetrapod-prelight-glow';
+  burst.appendChild(glow);
+
+  const beams = Array.from({ length: 4 }, (_, index) => {
+    const beam = document.createElement('span');
+    beam.className = 'tetrapod-drop-beam';
+    beam.style.setProperty('--beam-x', `${30 + index * 14 + randomBetween(-3, 3)}%`);
+    burst.appendChild(beam);
+    return beam;
+  });
+
+  const rings = Array.from({ length: 3 }, (_, index) => {
+    const ring = document.createElement('span');
+    ring.className = 'tetrapod-target-ring';
+    ring.style.setProperty('--ring-x', `${42 + index * 10 + randomBetween(-5, 5)}%`);
+    ring.style.setProperty('--ring-y', `${58 + index * 7 + randomBetween(-4, 4)}%`);
+    burst.appendChild(ring);
+    return ring;
+  });
+
+  let fired = false;
+  const fireDrop = () => {
+    if (fired) return;
+    fired = true;
+    onDrop();
+  };
+  const dropTimer = window.setTimeout(fireDrop, 520);
+  const cleanupTimer = window.setTimeout(() => burst.remove(), 1300);
+
+  anime.remove([stage, copy, glow, ...beams, ...rings].filter(Boolean));
+  anime.timeline({
+    easing: 'easeOutExpo',
+    complete: () => {
+      window.clearTimeout(dropTimer);
+      window.clearTimeout(cleanupTimer);
+      fireDrop();
+      burst.remove();
+    }
+  })
+    .add({
+      targets: glow,
+      opacity: [0, 0.82, 0],
+      scale: [0.72, 1.1, 1.28],
+      duration: 760
+    }, 0)
+    .add({
+      targets: beams,
+      opacity: [0, 0.78, 0.12],
+      scaleY: [0.02, 1, 0.58],
+      delay: anime.stagger(46),
+      duration: 700
+    }, 30)
+    .add({
+      targets: rings,
+      opacity: [0, 0.88, 0],
+      scale: [0.62, 1.12, 1.74],
+      delay: anime.stagger(58),
+      duration: 720
+    }, 70)
+    .add({
+      targets: stage,
+      boxShadow: [
+        '0 0 0 rgba(180,255,92,0)',
+        '0 0 76px rgba(180,255,92,0.28), inset 0 0 48px rgba(180,255,92,0.12)',
+        '0 0 0 rgba(180,255,92,0)'
+      ],
+      duration: 760
+    }, 0)
+    .add({
+      targets: copy,
+      opacity: [1, 0.78, 1],
+      textShadow: [
+        '0 0 0 rgba(180,255,92,0)',
+        '0 0 28px rgba(180,255,92,0.36)',
+        '0 0 0 rgba(180,255,92,0)'
+      ],
+      duration: 700
+    }, 70);
+}
+
 function playDropImpact(anime, layer, reduced) {
   if (!anime || !layer || reduced) return;
 
-  layer.replaceChildren();
+  const burst = createEffectBurst(layer, 'is-impact');
   const copy = stage.querySelector('.tetrapod-buried-copy');
   const chips = Array.from({ length: 16 }, (_, index) => {
     const chip = document.createElement('span');
     chip.className = 'tetrapod-impact-chip';
     chip.style.setProperty('--chip-rotate', `${index * 22.5 + randomBetween(-8, 8)}deg`);
-    layer.appendChild(chip);
+    burst.appendChild(chip);
     return chip;
   });
   const scans = Array.from({ length: 3 }, (_, index) => {
     const scan = document.createElement('span');
     scan.className = 'tetrapod-impact-chip is-scan';
     scan.style.setProperty('--scan-y', `${32 + index * 17}%`);
-    layer.appendChild(scan);
+    burst.appendChild(scan);
     return scan;
   });
+  const cleanupTimer = window.setTimeout(() => burst.remove(), 1200);
 
   anime.remove([stage, copy, ...chips, ...scans].filter(Boolean));
   anime.timeline({
     easing: 'easeOutExpo',
-    complete: () => layer.replaceChildren()
+    complete: () => {
+      window.clearTimeout(cleanupTimer);
+      burst.remove();
+    }
   })
     .add({
       targets: stage,
